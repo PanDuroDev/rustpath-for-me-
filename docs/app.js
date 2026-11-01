@@ -1,5 +1,4 @@
-// Values mirror the verified state in LEARNING_PROGRESS.md.
-// This static dashboard never marks lessons complete automatically.
+// Dashboard progress and appearance preferences.
 (() => {
   const completed = 3;
   const total = 4;
@@ -12,7 +11,33 @@
   document.getElementById("progress-caption").textContent = percent + "%";
   document.querySelector('[role="progressbar"]').setAttribute("aria-valuenow", String(completed));
 
-  if (window.lucide) {
-    window.lucide.createIcons();
+  const root = document.documentElement;
+  const themeButton = document.getElementById("theme-toggle");
+
+  function applyTheme(theme) {
+    const isLight = theme === "light";
+    root.dataset.theme = isLight ? "light" : "dark";
+    themeButton.innerHTML = isLight
+      ? '<i data-lucide="moon" aria-hidden="true"></i><span class="theme-label">الوضع الداكن</span>'
+      : '<i data-lucide="sun" aria-hidden="true"></i><span class="theme-label">الوضع الفاتح</span>';
+    themeButton.setAttribute("aria-label", isLight ? "التبديل إلى الوضع الداكن" : "التبديل إلى الوضع الفاتح");
+    themeButton.title = isLight ? "التبديل إلى الوضع الداكن" : "التبديل إلى الوضع الفاتح";
+    if (window.lucide) window.lucide.createIcons();
   }
+
+  let savedTheme = "dark";
+  try {
+    savedTheme = localStorage.getItem("rustpath-theme") || "dark";
+  } catch (_) {}
+  applyTheme(savedTheme);
+
+  themeButton.addEventListener("click", () => {
+    const nextTheme = root.dataset.theme === "light" ? "dark" : "light";
+    applyTheme(nextTheme);
+    try {
+      localStorage.setItem("rustpath-theme", nextTheme);
+    } catch (_) {}
+  });
+
+  if (window.lucide) window.lucide.createIcons();
 })();
