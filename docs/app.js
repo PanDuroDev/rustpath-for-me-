@@ -32,7 +32,7 @@
   const filters = [...document.querySelectorAll(".filter-button")];
   const lessons = [...document.querySelectorAll(".lesson-list .lesson")];
   const feedback = byId("filter-feedback");
-  const messages = {all:"تعرض جميع دروس المرحلة الحالية.",done:"تعرض الدروس التي اجتازت التقييم فقط.",active:"تعرض الدرس الذي نعمل عليه الآن.",upcoming:"لا توجد دروس تالية داخل المرحلة الحالية."};
+  const messages = {all:"تعرض جميع دروس المرحلة الحالية.",done:"تعرض الدروس التي اجتازت التقييم فقط.",active:"تعرض الدرس الذي نعمل عليه الآن.",upcoming:"هذه هي الخطوة التالية بعد اجتياز التقييم الحالي."};
   filters.forEach((button) => button.addEventListener("click", () => {
     const filter = button.dataset.filter;
     filters.forEach((item) => {
@@ -41,6 +41,8 @@
       item.setAttribute("aria-pressed", String(selected));
     });
     lessons.forEach((lesson) => { lesson.hidden = !(filter === "all" || lesson.classList.contains(filter)); });
+    const nextStep = byId("next-step");
+    if (nextStep) nextStep.hidden = filter !== "all" && filter !== "upcoming";
     feedback.textContent = messages[filter];
   }));
 
