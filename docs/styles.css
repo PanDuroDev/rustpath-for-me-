@@ -62,3 +62,32 @@
 :root[data-theme="light"] footer{color:#777}
 :root[data-theme="light"] .footer-brand{color:#111}
 @media(max-width:720px){.theme-toggle{padding:8px}.theme-toggle .theme-label{display:none}}
+
+
+/* Interactive learning dashboard */
+.lesson-filters{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 8px}
+.filter-button,.roadmap-toggle{display:inline-flex;align-items:center;gap:8px;padding:9px 12px;border:1px solid var(--line);background:transparent;color:var(--muted);font:500 11px var(--font);cursor:pointer;transition:background .2s,border-color .2s,color .2s}
+.filter-button span{font:10px Arial,sans-serif;color:var(--dim)}
+.filter-button:hover,.roadmap-toggle:hover{border-color:var(--muted);color:var(--white)}
+.filter-button.is-active{background:var(--white);border-color:var(--white);color:var(--bg)}
+.filter-button.is-active span{color:inherit;opacity:.65}
+.filter-feedback{font-size:10px;color:var(--dim);margin:0 0 12px}
+.lesson[hidden],.topic-list[hidden]{display:none}
+.next-step-card{display:flex;align-items:center;gap:15px;padding:17px 20px;margin-top:12px;border:1px dashed var(--line);background:var(--panel)}
+.next-step-icon{width:38px;height:38px;display:grid;place-items:center;background:var(--panel-2);border:1px solid var(--line);flex:none}
+.next-step-icon svg{width:18px;height:18px}
+.next-step-copy{flex:1;min-width:0}
+.next-step-copy>span{font-size:10px;color:var(--muted)}
+.next-step-copy h3{font-size:13px;margin:4px 0}
+.next-step-copy p{font-size:11px;color:var(--muted);margin:0;line-height:1.8}
+.next-step-state{font-size:10px;color:var(--dim);white-space:nowrap}
+.roadmap-tools{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:-5px 0 13px;color:var(--dim);font-size:10px}
+.roadmap-toggle{padding:7px 10px}
+.phase-expand{width:29px;height:29px;display:grid;place-items:center;flex:none;border:1px solid var(--line);background:transparent;color:var(--muted);cursor:pointer}
+.phase-expand:hover{color:var(--white);border-color:var(--muted)}
+.phase-expand svg{width:15px;height:15px}
+:root[data-theme="light"] .filter-button.is-active{background:#111;border-color:#111;color:#fff}
+:root[data-theme="light"] .next-step-card{background:#fafafa;border-color:#ccc}
+:root[data-theme="light"] .next-step-icon{background:#eee;border-color:#ddd}
+:root[data-theme="light"] .phase-expand{background:transparent;color:#444;border-color:#ccc}
+@media(max-width:600px){.next-step-card{align-items:flex-start;flex-wrap:wrap;padding:15px}.next-step-state{margin-right:53px}.roadmap-tools{align-items:flex-start;flex-direction:column}}
