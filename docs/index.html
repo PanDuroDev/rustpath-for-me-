@@ -3,71 +3,157 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#ffffff">
-  <meta name="description" content="لوحة متابعة منهج تعلم Rust من الصفر.">
-  <title>RustPath | مسار التعلم</title>
+  <meta name="theme-color" content="#080808">
+  <meta name="description" content="RustPath — مسار عملي لتعلّم لغة Rust من الصفر، خطوة بخطوة.">
+  <title>RustPath — تعلّم Rust من الصفر</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
   <header class="topbar">
-    <a class="brand" href="./" aria-label="RustPath">
-      <span class="brand-mark">R</span><span>RustPath</span>
+    <a class="brand" href="./" aria-label="RustPath الصفحة الرئيسية">
+      <span class="brand-mark"><i data-lucide="terminal" aria-hidden="true"></i></span>
+      <span class="brand-name">Rust<span>Path</span></span>
     </a>
-    <a class="repo-link" href="https://github.com/PanDuroDev/rustpath-for-me-" target="_blank" rel="noreferrer">المستودع <span aria-hidden="true">↗</span></a>
+    <nav class="top-actions" aria-label="روابط رئيسية">
+      <a class="nav-link" href="#roadmap"><i data-lucide="map" aria-hidden="true"></i> <span>مسار التعلم</span></a>
+      <a class="repo-link" href="https://github.com/PanDuroDev/rustpath-for-me-" target="_blank" rel="noreferrer">
+        <i data-lucide="github" aria-hidden="true"></i><span>المستودع</span><i data-lucide="arrow-up-right" class="external-icon" aria-hidden="true"></i>
+      </a>
+    </nav>
   </header>
 
   <main class="shell">
-    <section class="intro">
-      <p class="eyebrow">مسار تعلّم شخصي</p>
-      <h1>تعلّم Rust من الصفر.</h1>
-      <p class="lead">من أول مفهوم برمجي إلى بناء تطبيقات حقيقية. التقدم هنا مبني على ما تم إثبات فهمه، لا على عدد الصفحات التي قرأتها.</p>
+    <section class="hero">
+      <div class="hero-copy">
+        <div class="eyebrow"><span class="eyebrow-line"></span> منهج تعلّم من الصفر</div>
+        <h1>اكتب أقل تخميناً.<br><span>وافهم أكثر.</span></h1>
+        <p class="lead">رحلة منظّمة لتعلّم Rust، تبدأ من فهم البرمجة نفسها وتنتهي ببناء مشاريع حقيقية. لا قفز فوق الأساسيات، ولا اعتبار للدرس مكتملاً قبل إثبات فهمه.</p>
+        <a class="primary-link" href="#current-lesson">تابع من حيث توقفت <i data-lucide="arrow-left" aria-hidden="true"></i></a>
+      </div>
+      <div class="hero-art" aria-hidden="true">
+        <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div>
+        <div class="core-mark"><i data-lucide="terminal-square"></i></div>
+        <span class="code-chip chip-top">fn main()</span>
+        <span class="code-chip chip-bottom">println!("Rust");</span>
+      </div>
     </section>
 
-    <section class="overview" aria-label="ملخص التقدم">
-      <div class="overview-main">
-        <div class="section-kicker">التقدم الحالي</div>
-        <div class="progress-line"><strong id="completed-count">3</strong><span>من</span><strong id="lesson-count">4</strong><span>دروس المرحلة الأولى</span></div>
-        <div class="bar" role="progressbar" aria-label="تقدم المرحلة الأولى" aria-valuemin="0" aria-valuemax="4" aria-valuenow="3"><span id="progress-fill"></span></div>
-        <p class="muted" id="progress-caption">75% من دروس المرحلة الأولى مكتملة</p>
+    <section class="stats" aria-label="ملخص التقدم">
+      <article class="stat-card">
+        <div class="stat-icon"><i data-lucide="book-open-check" aria-hidden="true"></i></div>
+        <div><span class="stat-label">الدروس المكتملة</span><strong><b id="completed-count">3</b><small> / <span id="lesson-count">4</span></small></strong></div>
+      </article>
+      <article class="stat-card">
+        <div class="stat-icon"><i data-lucide="chart-no-axes-column-increasing" aria-hidden="true"></i></div>
+        <div><span class="stat-label">تقدم المرحلة الحالية</span><strong id="progress-percent">75<small>%</small></strong></div>
+      </article>
+      <article class="stat-card">
+        <div class="stat-icon"><i data-lucide="layers-3" aria-hidden="true"></i></div>
+        <div><span class="stat-label">مراحل المنهج</span><strong>06</strong></div>
+      </article>
+    </section>
+
+    <section class="current-section" id="current-lesson">
+      <div class="section-heading">
+        <div><div class="eyebrow">نقطة الاستئناف</div><h2>أكمل الدرس الحالي</h2></div>
+        <span class="status-pill"><span></span> قيد التنفيذ</span>
       </div>
-      <div class="overview-side">
-        <span class="status-dot"></span>
-        <div><strong>الدرس الحالي</strong><p>Terminal والملفات والمجلدات</p></div>
-      </div>
+      <article class="current-card">
+        <div class="current-main">
+          <div class="lesson-number">04 <span>/ 04</span></div>
+          <div class="current-copy">
+            <span class="phase-label">المرحلة الأولى · أساسيات البرمجة</span>
+            <h3>Terminal والملفات والمجلدات</h3>
+            <p>فهم نافذة الأوامر، وكيفية التعامل مع الملفات والمجلدات والامتدادات والمسارات.</p>
+            <div class="current-meta"><i data-lucide="clock-3" aria-hidden="true"></i> المتبقي: الاختبار والتطبيق العملي</div>
+          </div>
+        </div>
+        <div class="progress-panel">
+          <div class="progress-head"><span>تقدم المرحلة</span><strong id="progress-caption">75%</strong></div>
+          <div class="progress-track" role="progressbar" aria-label="تقدم المرحلة الأولى" aria-valuemin="0" aria-valuemax="4" aria-valuenow="3"><span id="progress-fill"></span></div>
+          <span class="progress-foot">3 من 4 دروس مثبتة</span>
+        </div>
+      </article>
     </section>
 
     <section class="section">
       <div class="section-heading">
-        <div><p class="eyebrow">المرحلة 01</p><h2>أساسيات البرمجة</h2></div>
-        <span class="pill">قيد التنفيذ</span>
+        <div><div class="eyebrow">ما أُنجز حتى الآن</div><h2>المرحلة الأولى</h2></div>
+        <span class="subtle-count">03 مكتملة · 01 جارية</span>
       </div>
       <div class="lesson-list">
-        <article class="lesson done"><span class="lesson-index">01</span><div class="lesson-copy"><h3>ما هي البرمجة؟</h3><p>التعليمات، البرامج، والمدخلات والمعالجة والمخرجات.</p><small>مكتمل · تم تأكيد صحة الإجابات</small></div><span class="check" aria-label="مكتمل">✓</span></article>
-        <article class="lesson done"><span class="lesson-index">02</span><div class="lesson-copy"><h3>كيف يعمل الكمبيوتر؟</h3><p>المعالج CPU والذاكرة RAM والتخزين واللوحة الأم.</p><small>مكتمل · نتيجة الاختبار 4/4</small></div><span class="check" aria-label="مكتمل">✓</span></article>
-        <article class="lesson done"><span class="lesson-index">03</span><div class="lesson-copy"><h3>لغات البرمجة و Compiler</h3><p>Binary والمترجم والمفسّر وكيف تتحول التعليمات.</p><small>مكتمل · نتيجة الاختبار 4/4</small></div><span class="check" aria-label="مكتمل">✓</span></article>
-        <article class="lesson current"><span class="lesson-index">04</span><div class="lesson-copy"><h3>Terminal والملفات والمجلدات</h3><p>الأوامر، امتدادات الملفات، المجلدات، والمسارات.</p><small>قيد الدراسة · بانتظار اختبار الدرس</small></div><span class="current-marker">الحالي</span></article>
+        <article class="lesson done">
+          <span class="lesson-index">01</span><span class="lesson-icon"><i data-lucide="lightbulb" aria-hidden="true"></i></span>
+          <div class="lesson-copy"><h3>ما هي البرمجة؟</h3><p>التعليمات، البرامج، المدخلات والمعالجة والمخرجات.</p><small>تم اجتياز التقييم</small></div><span class="lesson-state"><i data-lucide="check" aria-label="مكتمل"></i></span>
+        </article>
+        <article class="lesson done">
+          <span class="lesson-index">02</span><span class="lesson-icon"><i data-lucide="cpu" aria-hidden="true"></i></span>
+          <div class="lesson-copy"><h3>كيف يعمل الكمبيوتر؟</h3><p>المعالج CPU والذاكرة RAM والتخزين واللوحة الأم.</p><small>نتيجة الاختبار: 4 / 4</small></div><span class="lesson-state"><i data-lucide="check" aria-label="مكتمل"></i></span>
+        </article>
+        <article class="lesson done">
+          <span class="lesson-index">03</span><span class="lesson-icon"><i data-lucide="binary" aria-hidden="true"></i></span>
+          <div class="lesson-copy"><h3>لغات البرمجة و Compiler</h3><p>Binary والمترجم والمفسّر وكيف تتحول التعليمات.</p><small>تم تأكيد صحة الإجابات</small></div><span class="lesson-state"><i data-lucide="check" aria-label="مكتمل"></i></span>
+        </article>
+        <article class="lesson active">
+          <span class="lesson-index">04</span><span class="lesson-icon"><i data-lucide="folder-tree" aria-hidden="true"></i></span>
+          <div class="lesson-copy"><h3>Terminal والملفات والمجلدات</h3><p>الأوامر، امتدادات الملفات، المجلدات، والمسارات.</p><small>بانتظار إجابة الاختبار والتطبيق</small></div><span class="lesson-state current-state">الحالي</span>
+        </article>
       </div>
     </section>
 
-    <section class="next-card">
-      <div><p class="eyebrow">الخطوة التالية</p><h2>أول مشروع Rust يقترب.</h2><p>بعد إنهاء الدرس الحالي، نتحقق من بيئة Rust ونتعلم Cargo، ثم ننشئ مشروعاً فعلياً ونفهم ملفاته قبل كتابة الكود.</p></div>
-      <div class="next-number"><strong>05</strong><span>الدرس القادم</span></div>
-    </section>
-
-    <section class="section roadmap">
-      <div class="section-heading"><div><p class="eyebrow">الخريطة</p><h2>مراحل المنهج</h2></div></div>
-      <div class="phase-grid">
-        <div class="phase active"><span>01</span><strong>أساسيات البرمجة</strong><small>قيد التنفيذ</small></div>
-        <div class="phase"><span>02</span><strong>بيئة Rust و Cargo</strong><small>التالي</small></div>
-        <div class="phase"><span>03</span><strong>أساسيات اللغة</strong><small>لم تبدأ</small></div>
-        <div class="phase"><span>04</span><strong>مفاهيم Rust الأساسية</strong><small>لم تبدأ</small></div>
-        <div class="phase"><span>05</span><strong>المفاهيم المتقدمة</strong><small>لم تبدأ</small></div>
-        <div class="phase"><span>06</span><strong>مشاريع عملية</strong><small>لم تبدأ</small></div>
+    <section class="section roadmap-section" id="roadmap">
+      <div class="section-heading">
+        <div><div class="eyebrow">الخطة الكاملة</div><h2>مسار التعلم</h2><p class="section-description">ست مراحل متدرجة. كل مرحلة تبني على التي قبلها، والمشاريع تأتي بعد امتلاك الأدوات اللازمة لها.</p></div>
+      </div>
+      <div class="roadmap-list">
+        <article class="phase-card phase-current">
+          <div class="phase-head"><span class="phase-icon"><i data-lucide="graduation-cap"></i></span><div class="phase-title"><span>المرحلة 01</span><h3>أساسيات البرمجة</h3></div><span class="phase-status">قيد التنفيذ</span></div>
+          <p>تكوين فهم صحيح لما يحدث داخل الكمبيوتر قبل التعامل مع أي لغة.</p>
+          <div class="topic-list"><span>مفهوم البرمجة</span><span>عمل الكمبيوتر</span><span>لغات البرمجة والمترجم</span><span>Terminal والملفات والمسارات</span></div>
+        </article>
+        <article class="phase-card">
+          <div class="phase-head"><span class="phase-icon"><i data-lucide="wrench"></i></span><div class="phase-title"><span>المرحلة 02</span><h3>بيئة Rust وأول مشروع</h3></div><span class="phase-status upcoming">التالية</span></div>
+          <p>تجهيز الأدوات وفهم بنية المشروع وتشغيل أول برنامج Rust فعلي.</p>
+          <div class="topic-list"><span>تثبيت والتحقق من Rust</span><span>rustc و Cargo</span><span>إنشاء مشروع</span><span>Cargo.toml و main.rs</span><span>البناء والتشغيل</span><span>قراءة الأخطاء</span></div>
+        </article>
+        <article class="phase-card">
+          <div class="phase-head"><span class="phase-icon"><i data-lucide="code-2"></i></span><div class="phase-title"><span>المرحلة 03</span><h3>أساسيات لغة Rust</h3></div><span class="phase-status upcoming">لم تبدأ</span></div>
+          <p>تعلم كتابة البرامج والتحكم في البيانات وتسلسل تنفيذ التعليمات.</p>
+          <div class="topic-list"><span>الطباعة</span><span>المتغيرات والثوابت</span><span>أنواع البيانات</span><span>العمليات الحسابية</span><span>النصوص والإدخال</span><span>الشروط والحلقات</span><span>الدوال</span></div>
+        </article>
+        <article class="phase-card">
+          <div class="phase-head"><span class="phase-icon"><i data-lucide="shield-check"></i></span><div class="phase-title"><span>المرحلة 04</span><h3>مفاهيم Rust الأساسية</h3></div><span class="phase-status upcoming">لم تبدأ</span></div>
+          <p>فهم طريقة Rust في إدارة الذاكرة وبناء البيانات والتعامل الآمن مع الأخطاء.</p>
+          <div class="topic-list"><span>Ownership</span><span>Borrowing و References</span><span>Slices</span><span>Structs و Enums</span><span>Match</span><span>Option و Result</span><span>Error Handling</span><span>Collections</span></div>
+        </article>
+        <article class="phase-card">
+          <div class="phase-head"><span class="phase-icon"><i data-lucide="network"></i></span><div class="phase-title"><span>المرحلة 05</span><h3>المفاهيم المتقدمة</h3></div><span class="phase-status upcoming">لم تبدأ</span></div>
+          <p>الانتقال إلى بناء أنظمة أكبر وفهم أدوات اللغة المتقدمة.</p>
+          <div class="topic-list"><span>Modules و Crates</span><span>Traits و Generics</span><span>Lifetimes</span><span>Iterators و Closures</span><span>Smart Pointers</span><span>Concurrency</span><span>Async Rust</span></div>
+        </article>
+        <article class="phase-card">
+          <div class="phase-head"><span class="phase-icon"><i data-lucide="rocket"></i></span><div class="phase-title"><span>المرحلة 06</span><h3>مشاريع عملية</h3></div><span class="phase-status upcoming">لم تبدأ</span></div>
+          <p>تطبيق ما تعلمته في برامج قابلة للاستخدام، مع زيادة الصعوبة تدريجياً.</p>
+          <div class="topic-list"><span>آلة حاسبة</span><span>إدارة مهام</span><span>أداة ملفات</span><span>تطبيق CLI</span><span>HTTP Client</span><span>التعامل مع APIs</span><span>مشاريع بمكتبات خارجية</span></div>
+        </article>
       </div>
     </section>
 
-    <footer><span>RustPath</span><span>مصدر التقدم الرسمي: <a href="https://github.com/PanDuroDev/rustpath-for-me-/blob/main/LEARNING_PROGRESS.md" target="_blank" rel="noreferrer">LEARNING_PROGRESS.md ↗</a></span></footer>
+    <section class="principles">
+      <div class="principle-icon"><i data-lucide="target" aria-hidden="true"></i></div>
+      <div><h2>التقدم يُثبت، لا يُفترض.</h2><p>لن ننتقل من درس إلى آخر لمجرد قراءة الشرح. ستنفذ تطبيقاً قصيراً وتجيب عن اختبار، وبعدها فقط نحدّث سجل التقدم.</p></div>
+    </section>
+
+    <footer>
+      <a class="footer-brand" href="./"><i data-lucide="terminal" aria-hidden="true"></i> RustPath</a>
+      <a href="https://github.com/PanDuroDev/rustpath-for-me-/blob/main/LEARNING_PROGRESS.md" target="_blank" rel="noreferrer">سجل التقدم المعتمد <i data-lucide="arrow-up-right" aria-hidden="true"></i></a>
+      <span>منهج تعلّم مفتوح المصدر</span>
+    </footer>
   </main>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.468.0/dist/umd/lucide.min.js"></script>
   <script src="./app.js"></script>
 </body>
 </html>
