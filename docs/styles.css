@@ -91,3 +91,5 @@
 :root[data-theme="light"] .next-step-icon{background:#eee;border-color:#ddd}
 :root[data-theme="light"] .phase-expand{background:transparent;color:#444;border-color:#ccc}
 @media(max-width:600px){.next-step-card{align-items:flex-start;flex-wrap:wrap;padding:15px}.next-step-state{margin-right:53px}.roadmap-tools{align-items:flex-start;flex-direction:column}}
+
+.next-step-card[hidden]{display:none}
