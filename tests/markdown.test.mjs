@@ -207,7 +207,16 @@ test("callouts render in markdown and inside lessons, unknown names fail", () =>
   assert.match(renderMarkdown(md).html, /<aside class="callout callout-warning">/);
   assert.match(renderMarkdown(md).html, /mingcute:alert-fill/);
   assert.match(renderLesson(md).html, /callout-warning/);
-  assert.throws(() => renderMarkdown(":::danger\nx\n:::"), /Only :::note, :::tip and :::warning/);
+  assert.throws(() => renderMarkdown(":::danger\nx\n:::"), /Only :::note, :::tip, :::warning and :::details/);
+});
+
+test("details block renders a collapsible section", () => {
+  const md = ":::details لماذا؟\n**جواب**\n:::";
+  const { html } = renderMarkdown(md);
+  assert.match(html, /<details class="md-details">/);
+  assert.match(html, /<summary class="md-details-summary">[\s\S]*لماذا؟/);
+  assert.match(html, /<div class="md-details-body"><p><strong>جواب<\/strong><\/p><\/div>/);
+  assert.match(renderLesson(md).html, /md-details/);
 });
 
 test("highlighted text and hard line breaks render", () => {

@@ -290,6 +290,10 @@ function renderCallout(info, inner) {
   return `<aside class="callout callout-${info.key}"><p class="callout-title"><iconify-icon icon="${info.icon}" aria-hidden="true"></iconify-icon>${info.label}</p><div class="callout-body">${inner}</div></aside>`;
 }
 
+function renderDetails(title, inner) {
+  return `<details class="md-details"><summary class="md-details-summary"><iconify-icon icon="mingcute:down-fill" aria-hidden="true"></iconify-icon><span>${renderInline(title || "تفاصيل")}</span></summary><div class="md-details-body">${inner}</div></details>`;
+}
+
 function renderBlocks(lines, options = {}) {
   const headingPrefix = options.headingPrefix || "";
   const html = [];
@@ -304,11 +308,13 @@ function renderBlocks(lines, options = {}) {
       continue;
     }
 
-    const directive = line.trimStart().match(/^:::([A-Za-z][\w-]*)\s*$/);
+    const directive = line.trimStart().match(/^:::([A-Za-z][\w-]*)[ \t]*(.*)$/);
     if (directive) {
-      const info = CALLOUTS[directive[1].toLowerCase()];
-      if (!info) {
-        throw new Error("Only :::note, :::tip and :::warning are supported in general Markdown.");
+      const name = directive[1].toLowerCase();
+      const title = directive[2].trim();
+      const info = CALLOUTS[name];
+      if (!info && name !== "details") {
+        throw new Error("Only :::note, :::tip, :::warning and :::details are supported in general Markdown.");
       }
       const body = [];
       i += 1;
@@ -320,7 +326,7 @@ function renderBlocks(lines, options = {}) {
       i += 1;
       const inner = renderBlocks(body, { headingPrefix });
       headings.push(...inner.headings);
-      html.push(renderCallout(info, inner.html));
+      html.push(name === "details" ? renderDetails(title, inner.html) : renderCallout(info, inner.html));
       continue;
     }
 
@@ -644,7 +650,7 @@ export function renderLesson(source, options = {}) {
   };
 
   while (i < lines.length) {
-    const directive = lines[i].match(/^:::([A-Za-z][\w-]*)\s*$/);
+    const directive = lines[i].match(/^:::([A-Za-z][\w-]*)[ \t]*(.*)$/);
     if (!directive) {
       buffer.push(lines[i]);
       i += 1;
@@ -653,6 +659,7 @@ export function renderLesson(source, options = {}) {
 
     flush();
     const name = directive[1];
+    const arg = directive[2].trim();
     const startLine = i + 1;
     const body = [];
     i += 1;
@@ -667,9 +674,10 @@ export function renderLesson(source, options = {}) {
       i += 1;
     }
     if (!closed) throw new Error(`${file}:${startLine}: :::${name} is not closed with :::`);
-    const callout = CALLOUTS[name.toLowerCase()];
-    if (callout) {
-      blocks.push({ type: "directive", name, body: body.join("\n"), callout, line: startLine });
+    const key = name.toLowerCase();
+    const callout = CALLOUTS[key];
+    if (callout || key === "details") {
+      blocks.push({ type: "directive", name, body: body.join("\n"), callout, details: key === "details", title: arg, line: startLine });
       continue;
     }
     const parsed = parseKeyValueLines(body, `${file}:${startLine}`);
@@ -679,6 +687,7 @@ export function renderLesson(source, options = {}) {
 
   const parsedBlocks = blocks.map((block) => {
     if (block.type !== "directive") return block;
+    if (block.details) return { ...block, type: "details" };
     if (block.callout) return { ...block, type: "callout" };
     const type = normalizeType(block.name, block.parsed.fields);
     return { ...block, type };
@@ -733,6 +742,13 @@ export function renderLesson(source, options = {}) {
 
     const { name, parsed, line } = block;
     const type = block.type;
+
+    if (type === "details") {
+      const rendered = renderMarkdown(block.body);
+      html.push(renderDetails(block.title, rendered.html));
+      headings.push(...rendered.headings);
+      continue;
+    }
 
     if (type === "callout") {
       const rendered = renderMarkdown(block.body);
