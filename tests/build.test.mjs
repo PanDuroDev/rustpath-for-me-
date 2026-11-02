@@ -90,6 +90,8 @@ draft: true
     assert.match(index, /المرحلة 1/);
     assert.match(index, /class="nav-link" href="index.html" aria-current="page"/);
     assert.match(index, /class="footer-top"/);
+    assert.match(index, /id="lesson-search"/);
+    assert.match(index, /id="lesson-search-index"/);
 
     const stage = await readFile(path.join(outDir, "stages", "1.html"), "utf8");
     assert.match(stage, /درس تجريبي/);

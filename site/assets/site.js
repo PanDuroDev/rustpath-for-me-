@@ -110,4 +110,45 @@
       });
     }, 600);
   }
+  const search = document.getElementById("lesson-search");
+  const searchIndex = document.getElementById("lesson-search-index");
+  const searchResults = document.getElementById("search-results");
+  if (search && searchIndex && searchResults) {
+    const normalize = (value) => value.replace(/[\u064B-\u0652]/g, "").toLowerCase().trim();
+    const lessons = JSON.parse(searchIndex.textContent);
+
+    search.addEventListener("input", () => {
+      const query = normalize(search.value);
+      searchResults.replaceChildren();
+      if (query.length < 2) {
+        searchResults.hidden = true;
+        return;
+      }
+      const matches = lessons
+        .filter((lesson) => normalize(`${lesson.title} ${lesson.summary} ${lesson.stageTitle}`).includes(query))
+        .slice(0, 8);
+      searchResults.hidden = false;
+      if (!matches.length) {
+        const empty = document.createElement("li");
+        empty.className = "search-empty";
+        empty.textContent = "لا توجد دروس مطابقة.";
+        searchResults.append(empty);
+        return;
+      }
+      for (const lesson of matches) {
+        const link = document.createElement("a");
+        link.href = lesson.url;
+        const title = document.createElement("span");
+        title.className = "result-title";
+        title.textContent = lesson.title;
+        const meta = document.createElement("span");
+        meta.className = "result-meta";
+        meta.textContent = `المرحلة ${lesson.stage} · الدرس ${String(lesson.id).padStart(2, "0")}`;
+        link.append(title, meta);
+        const item = document.createElement("li");
+        item.append(link);
+        searchResults.append(item);
+      }
+    });
+  }
 })();

@@ -761,6 +761,67 @@ button {
   font-size: 0.8125rem;
 }
 
+.lesson-search {
+  margin-block-end: var(--s4);
+}
+
+.lesson-search input {
+  width: 100%;
+  min-height: 44px;
+  padding: var(--s2) var(--s4);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+}
+
+.lesson-search input::placeholder {
+  color: var(--text-3);
+}
+
+.lesson-search input:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 2px;
+}
+
+.search-results {
+  list-style: none;
+  margin: var(--s2) 0 0;
+  padding: 0;
+  border: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.search-results a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s3);
+  min-height: 44px;
+  padding: var(--s2) var(--s4);
+  color: var(--text);
+}
+
+.search-results a:hover {
+  background: var(--surface-2);
+}
+
+.search-results .result-title {
+  min-width: 0;
+}
+
+.search-results .result-meta {
+  color: var(--text-2);
+  font-size: 0.8125rem;
+  white-space: nowrap;
+}
+
+.search-empty {
+  padding: var(--s3) var(--s4);
+  color: var(--text-2);
+  font-size: 0.875rem;
+}
+
 .roadmap-list {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));

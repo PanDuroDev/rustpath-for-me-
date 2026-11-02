@@ -235,6 +235,11 @@ function dashboardPage({ stages, lessons }) {
     <div><p class="eyebrow"><span class="eyebrow-line"></span> المنهج</p><h2 id="stages-title">المراحل والدروس</h2><p class="section-description">افتح أي مرحلة لترى دروسها، ثم ابدأ من الدرس الذي يناسبك.</p></div>
     <span class="subtle-count">${stats.available} درسًا متاحًا</span>
   </div>
+  <div class="lesson-search">
+    <input id="lesson-search" type="search" aria-label="ابحث في الدروس" placeholder="ابحث باسم الدرس أو المرحلة…" autocomplete="off">
+    <ul class="search-results" id="search-results" aria-live="polite" hidden></ul>
+  </div>
+  <script type="application/json" id="lesson-search-index">${JSON.stringify(lessons.map((lesson) => ({ id: lesson.id, title: lesson.title, summary: lesson.summary, url: lesson.url, stage: lesson.stage, stageTitle: lesson.stageTitle }))).replaceAll("<", "\\u003c")}</script>
   <div class="roadmap-list">${stages.map(renderStageCard).join("\n")}</div>
 </section>
 
