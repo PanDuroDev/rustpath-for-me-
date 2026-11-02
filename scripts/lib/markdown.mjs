@@ -350,7 +350,7 @@ function renderBlocks(lines, options = {}) {
         ? `<button class="run-code" type="button" data-run><iconify-icon class="run-icon" icon="mingcute:play-fill" aria-hidden="true"></iconify-icon><span class="run-label">${runner === "rust" ? "تشغيل" : "تشغيل المحاكاة"}</span></button>`
         : "";
       html.push(
-        `<div class="code-block"${runner ? ` data-runner="${runner}"` : ""}><div class="code-head"><span class="code-lang">${escapeHtml(language || "code")}</span>${title ? `<span class="code-title" dir="ltr">${escapeHtml(title)}</span>` : ""}${runButton}<button class="copy-code" type="button" data-copy><iconify-icon class="copy-icon" icon="mingcute:copy-2-fill" aria-hidden="true"></iconify-icon><span class="copy-label" aria-live="polite">نسخ</span></button></div><pre dir="ltr"><code${language ? ` class="language-${escapeHtml(language)}"` : ""}>${escapeHtml(code.join("\n"))}</code></pre></div>`,
+        `<div class="code-block"${runner ? ` data-runner="${runner}"` : ""}><div class="code-head"><span class="code-lang">${escapeHtml(language || "code")}</span>${title ? `<span class="code-title" dir="ltr">${escapeHtml(title)}</span>` : ""}<span class="code-actions">${runButton}<button class="copy-code" type="button" data-copy><iconify-icon class="copy-icon" icon="mingcute:copy-2-fill" aria-hidden="true"></iconify-icon><span class="copy-label" aria-live="polite">نسخ</span></button></span></div><pre dir="ltr"><code${language ? ` class="language-${escapeHtml(language)}"` : ""}>${escapeHtml(code.join("\n"))}</code></pre></div>`,
       );
       continue;
     }

@@ -1330,6 +1330,13 @@
 }
 
 /* Runnable code blocks */
+.code-actions {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
 .run-code {
   flex: none;
   min-height: 30px;
