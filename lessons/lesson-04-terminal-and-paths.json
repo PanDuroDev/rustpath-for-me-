@@ -1,0 +1,618 @@
+{
+  "version": 1,
+  "id": 4,
+  "slug": "terminal-and-paths",
+  "title": {
+    "ar": "الطرفية والملفات والمجلدات والمسارات",
+    "en": "Terminal, files, folders, and paths"
+  },
+  "intro": {
+    "ar": "قبل أن نكتب Rust، نحتاج أن نعرف أين نحن داخل الجهاز، وكيف نتحرك بين المجلدات، وكيف ننشئ الملفات. ستتعلم المفاهيم ثم تطبقها داخل طرفية تدريبية في هذه الصفحة.",
+    "en": "Before writing Rust, you need to know where you are on your computer, how to move between folders, and how to create files. Learn the concepts, then practise in the simulated terminal on this page."
+  },
+  "objectives": [
+    {
+      "ar": "التمييز بين تطبيق الطرفية وPowerShell ومستكشف الملفات.",
+      "en": "Distinguish the terminal app, PowerShell, and File Explorer."
+    },
+    {
+      "ar": "معرفة المجلد الحالي وعرض محتوياته.",
+      "en": "Identify the current directory and list its contents."
+    },
+    {
+      "ar": "التنقل بين المجلدات باستخدام المسارات.",
+      "en": "Navigate between folders using paths."
+    },
+    {
+      "ar": "إنشاء مجلد وملف وفهم امتداد الملف.",
+      "en": "Create a directory and a file, and understand file extensions."
+    }
+  ],
+  "sections": [
+    {
+      "id": "terminal-shell",
+      "title": {
+        "ar": "1. الطرفية وPowerShell: شيئان مختلفان",
+        "en": "1. Terminal and PowerShell are different things"
+      },
+      "paragraphs": [
+        {
+          "ar": "تطبيق الطرفية (Terminal) هو النافذة التي تكتب فيها الأوامر وتقرأ النتائج. أما PowerShell فهو الصدفة (Shell): البرنامج الذي يستقبل الأمر ويفسره وينفذه.",
+          "en": "A terminal is the window where you type commands and read output. PowerShell is the shell: the program that receives, interprets, and runs those commands."
+        },
+        {
+          "ar": "مستكشف الملفات (File Explorer) يعرض الملفات بصرياً. الطرفية تمنحك طريقة نصية للتعامل معها. كلاهما يتعامل مع ملفات الجهاز، لكن بأسلوب مختلف.",
+          "en": "File Explorer shows files visually. A terminal gives you a text-based way to work with them. Both work with your computer's files, but through different interfaces."
+        },
+        {
+          "ar": "في هذا الدرس سنستخدم أوامر PowerShell على Windows. الطرفية الموجودة داخل الموقع محاكاة تعليمية فقط، ولا تنفذ أوامر على جهازك.",
+          "en": "In this lesson we use PowerShell commands on Windows. The terminal inside this website is only a learning simulation; it does not run commands on your computer."
+        }
+      ],
+      "bullets": [
+        {
+          "ar": "Terminal = نافذة إدخال وإخراج.",
+          "en": "Terminal = input and output window."
+        },
+        {
+          "ar": "PowerShell = Shell يفسر الأوامر.",
+          "en": "PowerShell = the shell that interprets commands."
+        },
+        {
+          "ar": "File Explorer = واجهة رسومية للملفات والمجلدات.",
+          "en": "File Explorer = graphical file and folder interface."
+        }
+      ],
+      "example": {
+        "command": "Get-Location",
+        "explanation": {
+          "ar": "هذا أمر PowerShell. الطرفية تعرض ما يطبعه PowerShell بعد تنفيذ الأمر.",
+          "en": "This is a PowerShell command. The terminal displays the output produced by PowerShell."
+        }
+      }
+    },
+    {
+      "id": "working-directory",
+      "title": {
+        "ar": "2. ما هو المجلد الحالي؟",
+        "en": "2. What is the current directory?"
+      },
+      "paragraphs": [
+        {
+          "ar": "عندما تفتح PowerShell، تكون الأوامر مرتبطة بمجلد حالي. تخيله المكان الذي تقف فيه الآن. إذا طلبت إنشاء ملف باسم notes.txt دون كتابة مسار كامل، فسيُنشأ داخل هذا المجلد.",
+          "en": "When you open PowerShell, commands operate relative to a current directory. Think of it as the place where you are standing. If you create notes.txt without writing a full path, it is created in this directory."
+        },
+        {
+          "ar": "لمعرفة مكانك استخدم Get-Location. يوجد له اختصار شائع هو pwd. كلاهما يعرض المسار الحالي.",
+          "en": "Use Get-Location to see where you are. A common alias is pwd. Both display the current path."
+        }
+      ],
+      "bullets": [
+        {
+          "ar": "المجلد الحالي يؤثر في معنى المسارات النسبية.",
+          "en": "The current directory affects how relative paths are interpreted."
+        },
+        {
+          "ar": "اعرف مكانك قبل إنشاء الملفات أو التنقل.",
+          "en": "Check your location before creating files or navigating."
+        }
+      ],
+      "example": {
+        "command": "Get-Location",
+        "explanation": {
+          "ar": "في المحاكاة سيظهر C:\\Users\\Learner. هذا هو مجلد البداية الافتراضي.",
+          "en": "The simulator shows C:\\Users\\Learner. This is its default starting directory."
+        }
+      }
+    },
+    {
+      "id": "list-files",
+      "title": {
+        "ar": "3. عرض الملفات والمجلدات",
+        "en": "3. List files and folders"
+      },
+      "paragraphs": [
+        {
+          "ar": "استخدم Get-ChildItem لعرض العناصر الموجودة داخل المجلد الحالي. الاختصارات dir وls تعمل أيضاً في PowerShell.",
+          "en": "Use Get-ChildItem to list the items inside the current directory. The aliases dir and ls also work in PowerShell."
+        },
+        {
+          "ar": "قد ترى مجلدات وملفات في النتيجة. المجلد يمكن أن يحتوي عناصر أخرى، بينما الملف يحتوي بيانات مثل نص أو صورة أو شيفرة.",
+          "en": "The output may contain directories and files. A directory can contain other items, while a file holds data such as text, an image, or source code."
+        }
+      ],
+      "bullets": [
+        {
+          "ar": "Get-ChildItem أو dir لعرض المحتويات.",
+          "en": "Get-ChildItem or dir lists the contents."
+        },
+        {
+          "ar": "الاسم وحده لا يخبرك دائماً بنوع العنصر؛ انتبه إلى كونه مجلداً أو ملفاً.",
+          "en": "A name alone does not always tell you the item type; check whether it is a directory or a file."
+        }
+      ],
+      "example": {
+        "command": "Get-ChildItem",
+        "explanation": {
+          "ar": "يعرض هذا الأمر محتويات المجلد الذي تقف بداخله الآن.",
+          "en": "This command lists the contents of the directory you are currently in."
+        }
+      }
+    },
+    {
+      "id": "paths",
+      "title": {
+        "ar": "4. المسار المطلق والمسار النسبي",
+        "en": "4. Absolute and relative paths"
+      },
+      "paragraphs": [
+        {
+          "ar": "المسار (Path) هو عنوان يحدد مكان ملف أو مجلد. المسار المطلق يبدأ من جذر القرص، مثل C:\\Users\\Learner\\Documents. لذلك يحدد المكان دون الاعتماد على مجلدك الحالي.",
+          "en": "A path is an address that identifies a file or directory. An absolute path starts at the drive root, such as C:\\Users\\Learner\\Documents. It identifies a location without depending on your current directory."
+        },
+        {
+          "ar": "المسار النسبي يصف مكاناً انطلاقاً من المجلد الحالي. مثلاً Documents\\Rust يعني مجلد Rust الموجود داخل Documents بالنسبة إلى موقعك الحالي.",
+          "en": "A relative path describes a location starting from the current directory. For example, Documents\\Rust means the Rust directory inside Documents, relative to where you are."
+        },
+        {
+          "ar": "النقطة . تعني المجلد الحالي، والنقطتان .. تعنيان المجلد الأب. أما .\\notes.txt فيعني الملف notes.txt الموجود في المجلد الحالي.",
+          "en": "A single dot . means the current directory, and two dots .. mean the parent directory. .\\notes.txt means the file notes.txt in the current directory."
+        }
+      ],
+      "bullets": [
+        {
+          "ar": "C:\\Users\\Learner\\Documents = مسار مطلق.",
+          "en": "C:\\Users\\Learner\\Documents = absolute path."
+        },
+        {
+          "ar": "Documents\\Rust = مسار نسبي.",
+          "en": "Documents\\Rust = relative path."
+        },
+        {
+          "ar": ".. = المجلد الأب، و . = المجلد الحالي.",
+          "en": ".. = parent directory, and . = current directory."
+        }
+      ],
+      "example": {
+        "command": "Set-Location ..",
+        "explanation": {
+          "ar": "ينقلك إلى المجلد الأب للمجلد الحالي. الاختصار هو cd ..",
+          "en": "Moves to the parent directory. The short form is cd .."
+        }
+      }
+    },
+    {
+      "id": "navigate",
+      "title": {
+        "ar": "5. التنقل بين المجلدات",
+        "en": "5. Move between directories"
+      },
+      "paragraphs": [
+        {
+          "ar": "استخدم Set-Location لتغيير المجلد الحالي. الاختصار cd يؤدي الغرض نفسه. إذا كان اسم المجلد يحتوي مسافة، ضعه بين علامتي اقتباس.",
+          "en": "Use Set-Location to change the current directory. The alias cd does the same job. If a directory name contains spaces, put it in quotation marks."
+        },
+        {
+          "ar": "مثال: cd Documents ينقلك إلى مجلد Documents الموجود داخل مجلدك الحالي. و cd \"Project Files\" ينقلك إلى مجلد اسمه Project Files.",
+          "en": "Example: cd Documents moves into the Documents directory inside your current directory. cd \"Project Files\" moves into a directory named Project Files."
+        }
+      ],
+      "bullets": [
+        {
+          "ar": "cd اسم_المجلد = الدخول إلى مجلد داخلي.",
+          "en": "cd folder-name = enter a child directory."
+        },
+        {
+          "ar": "cd .. = الرجوع إلى المجلد الأب.",
+          "en": "cd .. = move to the parent directory."
+        },
+        {
+          "ar": "cd . = البقاء في المجلد الحالي.",
+          "en": "cd . = remain in the current directory."
+        }
+      ],
+      "example": {
+        "command": "Set-Location \"Project Files\"",
+        "explanation": {
+          "ar": "علامتا الاقتباس تجعلان المسافة جزءاً من اسم المجلد بدلاً من فصل الأمر إلى أجزاء.",
+          "en": "Quotation marks keep the space inside the directory name instead of splitting the command into separate arguments."
+        }
+      }
+    },
+    {
+      "id": "files-extensions",
+      "title": {
+        "ar": "6. الملفات والامتدادات",
+        "en": "6. Files and extensions"
+      },
+      "paragraphs": [
+        {
+          "ar": "الملف عنصر يخزن بيانات. غالباً يتكون الاسم من اسم أساسي وامتداد بعد آخر نقطة. في notes.txt الاسم notes والامتداد txt. وفي main.rs الامتداد rs الذي نستخدمه لملفات مصدر Rust.",
+          "en": "A file stores data. A filename commonly has a base name and an extension after the final dot. In notes.txt, the name is notes and the extension is txt. In main.rs, the extension rs is used for Rust source files."
+        },
+        {
+          "ar": "انتبه: report.rs.txt امتداده الأخير txt، وليس rs. الامتداد يساعد البرامج والمستخدم على معرفة نوع الملف، لكنه لا يحوّل محتوى الملف تلقائياً إلى ذلك النوع.",
+          "en": "Notice that report.rs.txt has txt as its final extension, not rs. An extension helps programs and people recognize a file type, but it does not automatically convert the file's contents."
+        },
+        {
+          "ar": "قد يخفي Windows الامتدادات المعروفة في مستكشف الملفات. لذلك قد ترى notes بدلاً من notes.txt. يمكنك تفعيل File name extensions من قائمة View في File Explorer.",
+          "en": "Windows may hide known extensions in File Explorer. You might see notes instead of notes.txt. You can enable File name extensions from the View menu in File Explorer."
+        }
+      ],
+      "bullets": [
+        {
+          "ar": "main.rs ملف شيفرة Rust.",
+          "en": "main.rs is a Rust source file."
+        },
+        {
+          "ar": "Cargo.toml ملف إعدادات مشروع Cargo.",
+          "en": "Cargo.toml is a Cargo project configuration file."
+        },
+        {
+          "ar": "الامتداد هو الجزء بعد آخر نقطة في اسم الملف.",
+          "en": "The extension is the part after the final dot in a filename."
+        }
+      ],
+      "example": {
+        "command": "New-Item -ItemType File -Name \"notes.txt\"",
+        "explanation": {
+          "ar": "ينشئ ملفاً فارغاً اسمه notes.txt في المجلد الحالي. لا يكتب محتوى بداخله.",
+          "en": "Creates an empty file named notes.txt in the current directory. It does not write content into it."
+        }
+      }
+    },
+    {
+      "id": "create",
+      "title": {
+        "ar": "7. إنشاء مجلد وملف",
+        "en": "7. Create a directory and a file"
+      },
+      "paragraphs": [
+        {
+          "ar": "لإنشاء مجلد استخدم New-Item -ItemType Directory -Name \"RustPractice\". يوجد اختصار أبسط هو mkdir RustPractice.",
+          "en": "To create a directory, use New-Item -ItemType Directory -Name \"RustPractice\". A shorter command is mkdir RustPractice."
+        },
+        {
+          "ar": "بعدها ادخل إليه باستخدام cd RustPractice، ثم أنشئ ملفاً داخله باستخدام New-Item -ItemType File -Name \"notes.txt\".",
+          "en": "Then enter it with cd RustPractice, and create a file inside it with New-Item -ItemType File -Name \"notes.txt\"."
+        },
+        {
+          "ar": "في المحاكاة أدناه، نفّذ الأوامر واحدة تلو الأخرى. يمكنك كتابة الاختصار أو الأمر الكامل، ثم عرض المحتويات للتأكد من النتيجة.",
+          "en": "In the simulator below, run the commands one at a time. You can use the alias or the full command, then list the contents to verify the result."
+        }
+      ],
+      "bullets": [
+        {
+          "ar": "أنشئ المجلد أولاً.",
+          "en": "Create the directory first."
+        },
+        {
+          "ar": "ادخل إلى المجلد قبل إنشاء الملف.",
+          "en": "Enter the directory before creating the file."
+        },
+        {
+          "ar": "اعرض المحتويات للتأكد من مكان الملف.",
+          "en": "List the contents to verify where the file was created."
+        }
+      ],
+      "example": {
+        "command": "mkdir RustPractice",
+        "explanation": {
+          "ar": "ينشئ مجلداً فرعياً باسم RustPractice داخل المجلد الحالي.",
+          "en": "Creates a child directory named RustPractice inside the current directory."
+        }
+      }
+    }
+  ],
+  "simulator": {
+    "title": {
+      "ar": "طرفية PowerShell التدريبية",
+      "en": "PowerShell practice terminal"
+    },
+    "description": {
+      "ar": "هذه بيئة افتراضية آمنة. الأوامر تغيّر نظام ملفات تجريبياً داخل الصفحة فقط، ولا تصل إلى ملفات جهازك.",
+      "en": "This is a safe virtual environment. Commands modify only a simulated file system inside this page and never access your computer's files."
+    },
+    "prompt": "PS",
+    "challengeTitle": {
+      "ar": "المهمة العملية",
+      "en": "Practical challenge"
+    },
+    "challengeText": {
+      "ar": "أنشئ مجلداً باسم RustPractice داخل مجلد البداية، ادخل إليه، أنشئ ملفاً باسم notes.txt، ثم اعرض محتوياته وأثبت أن الملف موجود داخله.",
+      "en": "Create a directory named RustPractice inside the starting directory, enter it, create a file named notes.txt, then list its contents and verify the file is inside it."
+    },
+    "reset": {
+      "ar": "إعادة ضبط الطرفية",
+      "en": "Reset terminal"
+    },
+    "run": {
+      "ar": "تنفيذ الأمر",
+      "en": "Run command"
+    },
+    "placeholder": {
+      "ar": "اكتب أمراً مثل Get-Location ثم اضغط Enter",
+      "en": "Type a command such as Get-Location and press Enter"
+    },
+    "initialPath": "C:\\Users\\Learner",
+    "initialDirectories": [
+      "Desktop",
+      "Documents",
+      "Downloads"
+    ],
+    "completed": {
+      "ar": "اكتملت المهمة: مجلد RustPractice يحتوي notes.txt، وتم عرض محتوياته.",
+      "en": "Challenge complete: RustPractice contains notes.txt, and you listed its contents."
+    },
+    "incomplete": {
+      "ar": "لم تكتمل المهمة بعد. تحقق من أنك أنشأت المجلد والملف في المكان الصحيح ثم اعرض المحتويات.",
+      "en": "The challenge is not complete yet. Check that you created the directory and file in the right place, then list the contents."
+    },
+    "resetConfirm": {
+      "ar": "أُعيد ضبط نظام الملفات التجريبي.",
+      "en": "The simulated file system has been reset."
+    },
+    "unknown": {
+      "ar": "الأمر غير مدعوم في هذه المحاكاة. اكتب help لعرض الأوامر المتاحة.",
+      "en": "That command is not supported in this simulation. Type help to see available commands."
+    },
+    "help": {
+      "ar": "الأوامر المتاحة: Get-Location أو pwd، Get-ChildItem أو dir أو ls، cd أو Set-Location، mkdir، New-Item -ItemType File -Name \"notes.txt\"، clear.",
+      "en": "Available commands: Get-Location or pwd, Get-ChildItem or dir or ls, cd or Set-Location, mkdir, New-Item -ItemType File -Name \"notes.txt\", clear."
+    }
+  },
+  "challengeSteps": [
+    {
+      "ar": "ابدأ بمعرفة مكانك الحالي.",
+      "en": "Start by checking your current location."
+    },
+    {
+      "ar": "أنشئ مجلد RustPractice في المكان الحالي.",
+      "en": "Create a RustPractice directory in the current location."
+    },
+    {
+      "ar": "انتقل إلى المجلد الجديد.",
+      "en": "Move into the new directory."
+    },
+    {
+      "ar": "أنشئ ملف notes.txt داخله.",
+      "en": "Create a notes.txt file inside it."
+    },
+    {
+      "ar": "اعرض المحتويات وتأكد من ظهور الملف.",
+      "en": "List the contents and confirm the file appears."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "prompt": {
+        "ar": "ما الفرق الأدق بين Terminal وPowerShell؟",
+        "en": "What is the most accurate difference between Terminal and PowerShell?"
+      },
+      "options": [
+        {
+          "id": "a",
+          "text": {
+            "ar": "Terminal نافذة، وPowerShell هو الصدفة التي تفسر الأوامر.",
+            "en": "Terminal is a window, while PowerShell is the shell that interprets commands."
+          }
+        },
+        {
+          "id": "b",
+          "text": {
+            "ar": "كلاهما اسم لنظام الملفات نفسه.",
+            "en": "Both are names for the file system itself."
+          }
+        },
+        {
+          "id": "c",
+          "text": {
+            "ar": "PowerShell هو مستكشف ملفات رسومي.",
+            "en": "PowerShell is a graphical file explorer."
+          }
+        },
+        {
+          "id": "d",
+          "text": {
+            "ar": "Terminal هو مترجم Rust، وPowerShell هو Cargo.",
+            "en": "Terminal is the Rust compiler, and PowerShell is Cargo."
+          }
+        }
+      ],
+      "answer": "a",
+      "feedback": {
+        "ar": "Terminal يستضيف واجهة الأوامر، وPowerShell هو Shell الذي يفسر الأمر وينفذه.",
+        "en": "The terminal hosts the command interface, while PowerShell is the shell that interprets and executes commands."
+      },
+      "hint": {
+        "ar": "فكر في الفرق بين النافذة التي تكتب فيها والبرنامج الذي يفهم ما تكتبه.",
+        "en": "Think about the difference between the window where you type and the program that understands what you type."
+      }
+    },
+    {
+      "id": "q2",
+      "prompt": {
+        "ar": "أي أمر يعرض المجلد الحالي في PowerShell؟",
+        "en": "Which command displays the current directory in PowerShell?"
+      },
+      "options": [
+        {
+          "id": "a",
+          "text": {
+            "ar": "Get-ChildItem",
+            "en": "Get-ChildItem"
+          }
+        },
+        {
+          "id": "b",
+          "text": {
+            "ar": "New-Item",
+            "en": "New-Item"
+          }
+        },
+        {
+          "id": "c",
+          "text": {
+            "ar": "Get-Location",
+            "en": "Get-Location"
+          }
+        },
+        {
+          "id": "d",
+          "text": {
+            "ar": "Remove-Item",
+            "en": "Remove-Item"
+          }
+        }
+      ],
+      "answer": "c",
+      "feedback": {
+        "ar": "Get-Location يعرض المسار الحالي، وpwd اختصار شائع له.",
+        "en": "Get-Location displays the current path, and pwd is a common alias."
+      },
+      "hint": {
+        "ar": "اسم الأمر يشير إلى معرفة الموقع، لا إلى عرض العناصر أو إنشاءها.",
+        "en": "The command name refers to finding a location, not listing or creating items."
+      }
+    },
+    {
+      "id": "q3",
+      "prompt": {
+        "ar": "أنت داخل C:\\Users\\Learner\\Documents. إلى أين ينقلك cd ..؟",
+        "en": "You are in C:\\Users\\Learner\\Documents. Where does cd .. take you?"
+      },
+      "options": [
+        {
+          "id": "a",
+          "text": {
+            "ar": "إلى C:\\",
+            "en": "To C:\\"
+          }
+        },
+        {
+          "id": "b",
+          "text": {
+            "ar": "إلى C:\\Users\\Learner",
+            "en": "To C:\\Users\\Learner"
+          }
+        },
+        {
+          "id": "c",
+          "text": {
+            "ar": "إلى C:\\Users\\Learner\\Documents",
+            "en": "To C:\\Users\\Learner\\Documents"
+          }
+        },
+        {
+          "id": "d",
+          "text": {
+            "ar": "إلى C:\\Users",
+            "en": "To C:\\Users"
+          }
+        }
+      ],
+      "answer": "b",
+      "feedback": {
+        "ar": ".. تعني المجلد الأب المباشر، أي مستوى واحداً إلى الأعلى من Documents.",
+        "en": ".. means the immediate parent directory, one level above Documents."
+      },
+      "hint": {
+        "ar": "النقطتان لا تعنيان الرجوع إلى جذر القرص؛ بل خطوة واحدة إلى المجلد الأب.",
+        "en": "The two dots do not mean jumping to the drive root; they mean one step to the parent directory."
+      }
+    },
+    {
+      "id": "q4",
+      "prompt": {
+        "ar": "ما امتداد الملف report.rs.txt؟",
+        "en": "What is the extension of the file report.rs.txt?"
+      },
+      "options": [
+        {
+          "id": "a",
+          "text": {
+            "ar": "rs",
+            "en": "rs"
+          }
+        },
+        {
+          "id": "b",
+          "text": {
+            "ar": "report",
+            "en": "report"
+          }
+        },
+        {
+          "id": "c",
+          "text": {
+            "ar": "rs.txt بالكامل",
+            "en": "rs.txt as a whole"
+          }
+        },
+        {
+          "id": "d",
+          "text": {
+            "ar": "txt",
+            "en": "txt"
+          }
+        }
+      ],
+      "answer": "d",
+      "feedback": {
+        "ar": "الامتداد هو الجزء الذي يأتي بعد آخر نقطة؛ لذلك الامتداد هنا txt.",
+        "en": "The extension is the part after the final dot, so the extension here is txt."
+      },
+      "hint": {
+        "ar": "ابحث عن آخر نقطة في الاسم، وليس أول نقطة.",
+        "en": "Look for the final dot in the filename, not the first one."
+      }
+    },
+    {
+      "id": "q5",
+      "prompt": {
+        "ar": "أي مثال يحدد مكاناً دون الاعتماد على المجلد الحالي؟",
+        "en": "Which example identifies a location without depending on the current directory?"
+      },
+      "options": [
+        {
+          "id": "a",
+          "text": {
+            "ar": "C:\\Users\\Learner\\Documents",
+            "en": "C:\\Users\\Learner\\Documents"
+          }
+        },
+        {
+          "id": "b",
+          "text": {
+            "ar": "Documents\\Rust",
+            "en": "Documents\\Rust"
+          }
+        },
+        {
+          "id": "c",
+          "text": {
+            "ar": ".\\notes.txt",
+            "en": ".\\notes.txt"
+          }
+        },
+        {
+          "id": "d",
+          "text": {
+            "ar": "..\\Downloads",
+            "en": "..\\Downloads"
+          }
+        }
+      ],
+      "answer": "a",
+      "feedback": {
+        "ar": "المسار الذي يبدأ من جذر القرص مثل C:\\ هو مسار مطلق، ولا يتغير مع المجلد الحالي.",
+        "en": "A path beginning at the drive root, such as C:\\, is absolute and does not change with the current directory."
+      },
+      "hint": {
+        "ar": "ابحث عن مسار يبدأ بحرف القرص ثم النقطتين والشرطة العكسية.",
+        "en": "Look for a path that starts with a drive letter, a colon, and a backslash."
+      }
+    }
+  ]
+}
