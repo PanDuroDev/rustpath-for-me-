@@ -174,7 +174,7 @@ function renderStageCard(stage) {
     ? `<div class="topic-more" id="phase-more-${stage.id}" hidden>${rest.map(topic).join("")}</div>`
     : "";
   const toggle = rest.length
-    ? `<button class="phase-toggle" type="button" data-phase-toggle="phase-more-${stage.id}" aria-expanded="false" aria-controls="phase-more-${stage.id}" data-expand-label="عرض بقية الدروس (${rest.length})" data-collapse-label="تقليل الدروس">${icon("line-md:chevron-down")}<span class="phase-toggle-label">عرض بقية الدروس (${rest.length})</span></button>`
+    ? `<button class="phase-toggle" type="button" data-phase-toggle="phase-more-${stage.id}" aria-expanded="false" aria-controls="phase-more-${stage.id}" data-expand-label="عرض بقية الدروس (${rest.length})" data-collapse-label="تقليل الدروس">${icon("mingcute:down-fill")}<span class="phase-toggle-label">عرض بقية الدروس (${rest.length})</span></button>`
     : "";
   return `<article class="phase-card${current ? " phase-current" : ""}">
   <div class="phase-head">
