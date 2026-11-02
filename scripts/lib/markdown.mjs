@@ -4,6 +4,12 @@
 
 const ESCAPES = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" };
 
+const CALLOUTS = {
+  note: { key: "note", label: "ملاحظة", icon: "mingcute:information-fill" },
+  tip: { key: "tip", label: "تلميح", icon: "mingcute:bulb-fill" },
+  warning: { key: "warning", label: "تحذير", icon: "mingcute:alert-fill" },
+};
+
 export function escapeHtml(value) {
   return String(value ?? "").replace(/[&<>"']/g, (char) => ESCAPES[char]);
 }
@@ -166,6 +172,7 @@ export function renderInline(raw) {
   value = value.replace(/__([^_]+)__/g, "<strong>$1</strong>");
   value = value.replace(/(^|[^*])\*([^*\n]+)\*/g, "$1<em>$2</em>");
   value = value.replace(/~~([^~]+)~~/g, "<del>$1</del>");
+  value = value.replace(/==([^=]+)==/g, '<mark class="md-mark">$1</mark>');
   value = value.replace(/\u0000C(\d+)\u0000/g, (_, index) => codes[Number(index)]);
   return value;
 }
@@ -196,13 +203,95 @@ function splitRow(line) {
   return value.split("|").map((cell) => cell.trim());
 }
 
-function renderListItem(item) {
+function renderListItem(item, nested = "") {
   const task = item.match(/^\[([ xX])\]\s+(.*)$/);
   if (task) {
     const checked = task[1].toLowerCase() === "x";
-    return `<li class="task-item"><span class="task-box" aria-hidden="true">${checked ? "✓" : "☐"}</span><span>${renderInline(task[2])}</span></li>`;
+    return `<li class="task-item"><span class="task-box" aria-hidden="true">${checked ? "✓" : "☐"}</span><span>${renderInline(task[2])}</span>${nested}</li>`;
   }
-  return `<li>${renderInline(item)}</li>`;
+  return `<li>${renderInline(item)}${nested}</li>`;
+}
+
+function listMatch(line) {
+  const match = line.match(/^(\s*)([-*+]|\d+\.)\s+(.*)$/);
+  if (!match) return null;
+  return {
+    indent: match[1].replace(/\t/g, "  ").length,
+    ordered: /^\d/.test(match[2]),
+    number: /^\d/.test(match[2]) ? Number(match[2].slice(0, -1)) : 1,
+    text: match[3],
+  };
+}
+
+// Lists nest by indentation; one blank line between items is allowed.
+function renderList(lines, start) {
+  const first = listMatch(lines[start]);
+  const baseIndent = first.indent;
+  const ordered = first.ordered;
+  const items = [];
+  let i = start;
+
+  while (i < lines.length) {
+    const match = listMatch(lines[i]);
+    if (!match || match.indent !== baseIndent || match.ordered !== ordered) break;
+
+    let text = match.text;
+    let nested = "";
+    i += 1;
+
+    while (i < lines.length) {
+      const line = lines[i];
+      if (!line.trim()) {
+        let next = i + 1;
+        while (next < lines.length && !lines[next].trim()) next += 1;
+        const after = next < lines.length ? listMatch(lines[next]) : null;
+        if (after && after.indent >= baseIndent) {
+          i = next;
+          continue;
+        }
+        break;
+      }
+
+      const child = listMatch(line);
+      if (child && child.indent > baseIndent) {
+        const inner = renderList(lines, i);
+        nested += inner.html;
+        i = inner.next;
+        continue;
+      }
+
+      const indent = line.match(/^\s*/)[0].length;
+      if (child || isBlockStart(line) || indent <= baseIndent) break;
+
+      text += ` ${line.trim()}`;
+      i += 1;
+    }
+
+    items.push({ text, nested });
+  }
+
+  const tag = ordered ? "ol" : "ul";
+  const attrs = ordered && first.number !== 1 ? ` start="${first.number}"` : "";
+  return {
+    html: `<${tag}${attrs}>${items.map((item) => renderListItem(item.text, item.nested)).join("")}</${tag}>`,
+    next: i,
+  };
+}
+
+function alignClass(cell) {
+  const value = String(cell ?? "").trim();
+  if (/^:-+:$/.test(value)) return "align-center";
+  if (/^:-+$/.test(value)) return "align-start";
+  if (/^-+:$/.test(value)) return "align-end";
+  return "";
+}
+
+function renderCallout(info, inner) {
+  return `<aside class="callout callout-${info.key}"><p class="callout-title"><iconify-icon icon="${info.icon}" aria-hidden="true"></iconify-icon>${info.label}</p><div class="callout-body">${inner}</div></aside>`;
+}
+
+function renderDetails(title, inner) {
+  return `<details class="md-details"><summary class="md-details-summary"><iconify-icon icon="mingcute:down-fill" aria-hidden="true"></iconify-icon><span>${renderInline(title || "تفاصيل")}</span></summary><div class="md-details-body">${inner}</div></details>`;
 }
 
 function renderBlocks(lines, options = {}) {
@@ -219,13 +308,36 @@ function renderBlocks(lines, options = {}) {
       continue;
     }
 
+    const directive = line.trimStart().match(/^:::([A-Za-z][\w-]*)[ \t]*(.*)$/);
+    if (directive) {
+      const name = directive[1].toLowerCase();
+      const title = directive[2].trim();
+      const info = CALLOUTS[name];
+      if (!info && name !== "details") {
+        throw new Error("Only :::note, :::tip, :::warning and :::details are supported in general Markdown.");
+      }
+      const body = [];
+      i += 1;
+      while (i < lines.length && lines[i].trim() !== ":::") {
+        body.push(lines[i]);
+        i += 1;
+      }
+      if (i >= lines.length) throw new Error(`:::${directive[1]} is not closed with :::`);
+      i += 1;
+      const inner = renderBlocks(body, { headingPrefix });
+      headings.push(...inner.headings);
+      html.push(name === "details" ? renderDetails(title, inner.html) : renderCallout(info, inner.html));
+      continue;
+    }
+
     if (line.trimStart().startsWith(":::")) {
       throw new Error("Directives are only supported in lesson blocks, not inside general Markdown.");
     }
 
-    const fence = line.match(/^```\s*([\w+#.-]*)\s*$/);
+    const fence = line.match(/^```\s*([\w+#.-]*)\s*(?:\[([^\]]+)\]|title="([^"]*)")?\s*$/);
     if (fence) {
       const language = fence[1];
+      const title = (fence[2] || fence[3] || "").trim();
       const code = [];
       i += 1;
       while (i < lines.length && !/^```\s*$/.test(lines[i])) {
@@ -234,7 +346,7 @@ function renderBlocks(lines, options = {}) {
       }
       if (i < lines.length) i += 1;
       html.push(
-        `<div class="code-block"><div class="code-head"><span class="code-lang">${escapeHtml(language || "code")}</span><button class="copy-code" type="button" data-copy><iconify-icon class="copy-icon" icon="mingcute:copy-2-fill" aria-hidden="true"></iconify-icon><span class="copy-label">نسخ</span></button></div><pre dir="ltr"><code${language ? ` class="language-${escapeHtml(language)}"` : ""}>${escapeHtml(code.join("\n"))}</code></pre></div>`,
+        `<div class="code-block"><div class="code-head"><span class="code-lang">${escapeHtml(language || "code")}</span>${title ? `<span class="code-title" dir="ltr">${escapeHtml(title)}</span>` : ""}<button class="copy-code" type="button" data-copy><iconify-icon class="copy-icon" icon="mingcute:copy-2-fill" aria-hidden="true"></iconify-icon><span class="copy-label" aria-live="polite">نسخ</span></button></div><pre dir="ltr"><code${language ? ` class="language-${escapeHtml(language)}"` : ""}>${escapeHtml(code.join("\n"))}</code></pre></div>`,
       );
       continue;
     }
@@ -278,50 +390,25 @@ function renderBlocks(lines, options = {}) {
 
     if (isTableStart(lines, i)) {
       const head = splitRow(lines[i]);
+      const aligns = splitRow(lines[i + 1]).map(alignClass);
       i += 2;
       const rows = [];
       while (i < lines.length && lines[i].trim() && lines[i].includes("|")) {
         rows.push(splitRow(lines[i]));
         i += 1;
       }
+      const cell = (tag, text, index) =>
+        `<${tag}${aligns[index] ? ` class="${aligns[index]}"` : ""}>${renderInline(text)}</${tag}>`;
       html.push(
-        `<div class="table-wrap"><table><thead><tr>${head.map((cell) => `<th>${renderInline(cell)}</th>`).join("")}</tr></thead><tbody>${rows.map((row) => `<tr>${row.map((cell) => `<td>${renderInline(cell)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`,
+        `<div class="table-wrap"><table><thead><tr>${head.map((text, index) => cell("th", text, index)).join("")}</tr></thead><tbody>${rows.map((row) => `<tr>${row.map((text, index) => cell("td", text, index)).join("")}</tr>`).join("")}</tbody></table></div>`,
       );
       continue;
     }
 
-    if (/^\s*[-*+]\s+/.test(line)) {
-      const items = [];
-      while (i < lines.length) {
-        const match = lines[i].match(/^\s*[-*+]\s+(.*)$/);
-        if (!match) break;
-        let item = match[1];
-        i += 1;
-        while (i < lines.length && lines[i].trim() && !/^\s*[-*+]\s+/.test(lines[i]) && !isBlockStart(lines[i])) {
-          item += ` ${lines[i].trim()}`;
-          i += 1;
-        }
-        items.push(item);
-      }
-      html.push(`<ul>${items.map(renderListItem).join("")}</ul>`);
-      continue;
-    }
-
-    if (/^\s*\d+\.\s+/.test(line)) {
-      const first = Number(lines[i].match(/^\s*(\d+)\.\s+/)[1]);
-      const items = [];
-      while (i < lines.length) {
-        const match = lines[i].match(/^\s*(\d+)\.\s+(.*)$/);
-        if (!match) break;
-        let item = match[2];
-        i += 1;
-        while (i < lines.length && lines[i].trim() && !/^\s*\d+\.\s+/.test(lines[i]) && !isBlockStart(lines[i])) {
-          item += ` ${lines[i].trim()}`;
-          i += 1;
-        }
-        items.push(item);
-      }
-      html.push(`<ol${first !== 1 ? ` start="${first}"` : ""}>${items.map(renderListItem).join("")}</ol>`);
+    if (listMatch(line)) {
+      const list = renderList(lines, i);
+      html.push(list.html);
+      i = list.next;
       continue;
     }
 
@@ -329,10 +416,25 @@ function renderBlocks(lines, options = {}) {
     while (i < lines.length) {
       const current = lines[i];
       if (!current.trim() || isBlockStart(current) || isTableStart(lines, i)) break;
-      paragraph.push(current.trim());
+      paragraph.push(current.trimStart());
       i += 1;
     }
-    if (paragraph.length) html.push(`<p>${renderInline(paragraph.join(" "))}</p>`);
+    if (paragraph.length) {
+      const text = paragraph
+        .map((line) => (/ {2,}$|\\$/.test(line) ? `${line.replace(/ {2,}$|\\$/, "")}\u0000B\u0000` : line))
+        .join(" ")
+        .replace(/\u0000B\u0000 /g, "\u0000B\u0000");
+      const image = text.match(/^!\[([^\]]*)\]\(([^)\s]+)(?:\s+"([^"]*)")?\)$/);
+      const url = image ? safeUrl(image[2]) : "";
+      if (image && url) {
+        const caption = image[1] ? `<figcaption>${escapeHtml(image[1])}</figcaption>` : "";
+        html.push(
+          `<figure class="md-figure"><img src="${url}" alt="${image[1]}" loading="lazy" decoding="async"${image[3] ? ` title="${image[3]}"` : ""}>${caption}</figure>`,
+        );
+      } else {
+        html.push(`<p>${renderInline(text).replaceAll("\u0000B\u0000", "<br>")}</p>`);
+      }
+    }
   }
 
   return { html: html.join("\n"), headings };
@@ -548,7 +650,7 @@ export function renderLesson(source, options = {}) {
   };
 
   while (i < lines.length) {
-    const directive = lines[i].match(/^:::([A-Za-z][\w-]*)\s*$/);
+    const directive = lines[i].match(/^:::([A-Za-z][\w-]*)[ \t]*(.*)$/);
     if (!directive) {
       buffer.push(lines[i]);
       i += 1;
@@ -557,6 +659,7 @@ export function renderLesson(source, options = {}) {
 
     flush();
     const name = directive[1];
+    const arg = directive[2].trim();
     const startLine = i + 1;
     const body = [];
     i += 1;
@@ -571,6 +674,12 @@ export function renderLesson(source, options = {}) {
       i += 1;
     }
     if (!closed) throw new Error(`${file}:${startLine}: :::${name} is not closed with :::`);
+    const key = name.toLowerCase();
+    const callout = CALLOUTS[key];
+    if (callout || key === "details") {
+      blocks.push({ type: "directive", name, body: body.join("\n"), callout, details: key === "details", title: arg, line: startLine });
+      continue;
+    }
     const parsed = parseKeyValueLines(body, `${file}:${startLine}`);
     blocks.push({ type: "directive", name, parsed, line: startLine });
   }
@@ -578,6 +687,8 @@ export function renderLesson(source, options = {}) {
 
   const parsedBlocks = blocks.map((block) => {
     if (block.type !== "directive") return block;
+    if (block.details) return { ...block, type: "details" };
+    if (block.callout) return { ...block, type: "callout" };
     const type = normalizeType(block.name, block.parsed.fields);
     return { ...block, type };
   });
@@ -631,6 +742,20 @@ export function renderLesson(source, options = {}) {
 
     const { name, parsed, line } = block;
     const type = block.type;
+
+    if (type === "details") {
+      const rendered = renderMarkdown(block.body);
+      html.push(renderDetails(block.title, rendered.html));
+      headings.push(...rendered.headings);
+      continue;
+    }
+
+    if (type === "callout") {
+      const rendered = renderMarkdown(block.body);
+      html.push(renderCallout(block.callout, rendered.html));
+      headings.push(...rendered.headings);
+      continue;
+    }
 
     if (type === "quiz") {
       ensureKnownFields(name, type, parsed.fields, file, line);

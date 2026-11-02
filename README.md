@@ -38,6 +38,7 @@
 ```text
 content/
   README.md        دليل كتابة المحتوى
+  images/          الصور المستخدمة داخل الدروس
   stages/          ملفات المراحل
   lessons/         ملفات الدروس
 site/
@@ -47,7 +48,9 @@ scripts/
   lib/markdown.mjs تحليل Markdown والكتل
   lib/content.mjs  تحميل المحتوى والتحقق منه
   build.mjs        بناء موقع ثابت داخل _site
+  serve.mjs        معاينة محلية بلا اعتماديات
 tests/             اختبارات node:test
+package.json       أوامر البناء والاختبار والمعاينة
 .github/workflows/ بناء ونشر GitHub Pages
 ```
 
@@ -69,6 +72,14 @@ tests/             اختبارات node:test
 ## التطوير المحلي (اختياري)
 
 المشروع بلا اعتماديات npm. يحتاج فقط إلى Node.js 22 أو أحدث:
+
+```powershell
+npm run build     # بناء _site
+npm test          # 12 اختبارًا
+npm run preview   # بناء ثم معاينة على http://localhost:4173
+```
+
+تستطيع أيضًا تشغيل الخطوات مباشرة:
 
 ```powershell
 node scripts/build.mjs

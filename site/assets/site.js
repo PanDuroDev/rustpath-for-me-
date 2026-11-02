@@ -73,7 +73,8 @@
       else copyButton.textContent = "تم النسخ";
       if (copyIcon) copyIcon.setAttribute("icon", "line-md:clipboard-to-clipboard-check-transition");
       copyButton.dataset.copied = "true";
-      setTimeout(() => {
+      clearTimeout(copyButton.copyTimer);
+      copyButton.copyTimer = setTimeout(() => {
         if (label) label.textContent = "نسخ";
         else copyButton.textContent = "نسخ";
         if (copyIcon) copyIcon.setAttribute("icon", "mingcute:copy-2-fill");

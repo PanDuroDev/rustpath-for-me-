@@ -1,0 +1,9 @@
+{
+  "name": "rustpath",
+  "private": true,
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test": "node --test tests/markdown.test.mjs tests/build.test.mjs",
+    "preview": "node scripts/build.mjs && node scripts/serve.mjs"
+  }
+}
