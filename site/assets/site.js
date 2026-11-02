@@ -41,8 +41,10 @@
         selection.removeAllRanges();
       }
       copyButton.textContent = "تم النسخ";
+      copyButton.dataset.copied = "true";
       setTimeout(() => {
         copyButton.textContent = "نسخ";
+        delete copyButton.dataset.copied;
       }, 1500);
     });
   });
