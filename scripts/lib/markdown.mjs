@@ -510,7 +510,7 @@ function renderQuizHeader(group) {
 }
 
 function renderFeedback(explanation) {
-  return `<div class="quiz-feedback-item" hidden><strong class="feedback-label"></strong><span class="feedback-text">${explanation ? renderInline(explanation) : ""}</span></div>`;
+  return `<div class="quiz-feedback-item" role="status" hidden><strong class="feedback-label"></strong><span class="feedback-text">${explanation ? renderInline(explanation) : ""}</span></div>`;
 }
 
 function renderSingle(fields, options, file, line) {

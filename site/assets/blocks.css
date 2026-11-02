@@ -1286,3 +1286,16 @@
     padding: var(--s3) var(--s3) var(--s4);
   }
 }
+
+/* 404 page */
+.not-found-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s3);
+  margin-block-start: var(--s5);
+}
+
+.not-found-actions .secondary-action {
+  margin: 0;
+}

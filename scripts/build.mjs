@@ -381,6 +381,11 @@ ${sections}
   });
 }
 
+function notFoundPage() {
+  const main = `<header class="page-hero"><p class="eyebrow"><span class="eyebrow-line"></span> 404</p><h1>الصفحة غير موجودة</h1><p class="lead">الرابط الذي فتحته غير صحيح أو أن الصفحة نُقلت. يمكنك العودة إلى لوحة التعلّم أو مراجعة سجل تقدمك.</p><p class="not-found-actions"><a class="primary-link" href="index.html">العودة إلى لوحة التعلّم ${icon("mingcute:arrow-left-fill")}</a><a class="secondary-action" href="progress.html">سجل التقدم</a></p></header>`;
+  return renderPage({ title: "الصفحة غير موجودة", description: "هذا الرابط غير موجود في RustPath.", main, activeNav: "" });
+}
+
 export async function buildSite({ outDir = DEFAULT_OUT, contentDir = path.join(ROOT, "content"), siteDir = path.join(ROOT, "site") } = {}) {
   const { stages, lessons } = await loadContent(contentDir);
 
@@ -414,6 +419,7 @@ export async function buildSite({ outDir = DEFAULT_OUT, contentDir = path.join(R
 
   await writeFile(path.join(outDir, "index.html"), dashboardPage({ stages, lessons }));
   await writeFile(path.join(outDir, "progress.html"), progressPage({ stages, lessons }));
+  await writeFile(path.join(outDir, "404.html"), notFoundPage());
 
   for (const stage of stages) {
     await writeFile(path.join(outDir, "stages", `${stage.id}.html`), stagePage(stage, stages));

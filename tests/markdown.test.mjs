@@ -223,3 +223,20 @@ test("highlighted text and hard line breaks render", () => {
   assert.match(renderMarkdown("هذا ==نص مهم== عادي").html, /<mark class="md-mark">نص مهم<\/mark>/);
   assert.match(renderMarkdown("سطر أول  \nسطر ثانٍ").html, /<p>سطر أول<br>سطر ثانٍ<\/p>/);
 });
+
+test("quiz feedback is announced to screen readers", () => {
+  const result = renderLesson(`:::quiz
+id: g1
+title: اختبار
+:::
+
+:::single
+id: q1
+group: g1
+prompt: سؤال
+- [x] نعم
+- [ ] لا
+explanation: توضيح
+:::`);
+  assert.match(result.html, /class="quiz-feedback-item" role="status"/);
+});

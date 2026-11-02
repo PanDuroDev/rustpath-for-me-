@@ -104,6 +104,11 @@ draft: true
     assert.match(lesson, /src="\.\.\/images\/shot\.png"/);
     assert.equal(await readFile(path.join(outDir, "images", "shot.png"), "utf8"), "png");
 
+    const notFound = await readFile(path.join(outDir, "404.html"), "utf8");
+    assert.match(notFound, /الصفحة غير موجودة/);
+    assert.match(notFound, /class="not-found-actions"/);
+    assert.match(notFound, /href="index.html"/);
+
     const progress = await readFile(path.join(outDir, "progress.html"), "utf8");
     assert.match(progress, /سجل التقدم/);
   } finally {
