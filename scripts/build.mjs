@@ -50,7 +50,7 @@ function topbar(root, active = "") {
   const current = (name) => (active === name ? ' aria-current="page"' : "");
   return `<header class="topbar">
   <a class="brand" href="${root}index.html" aria-label="RustPath — الصفحة الرئيسية">
-    <span class="brand-mark" aria-hidden="true">R</span>
+    <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 64 64" focusable="false"><path d="M17 12h19c9.4 0 15 4.7 15 12 0 6.2-3.6 10.4-9.7 11.8L52 52H41L30.2 36H26v16h-9V12Zm9 8v8h9.4c3.9 0 6.2-1.4 6.2-4s-2.3-4-6.2-4H26Z" fill="currentColor"/></svg></span>
     <span class="brand-name">Rust<span>Path</span></span>
   </a>
   <nav class="top-actions" aria-label="التنقل الرئيسي">
