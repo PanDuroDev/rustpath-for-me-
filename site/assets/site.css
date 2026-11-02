@@ -863,8 +863,7 @@ button {
   align-items: center;
   flex-wrap: wrap;
   gap: var(--s2);
-  margin-inline: calc(var(--s2) * -1);
-  padding: 6px var(--s2);
+  padding-block: 6px;
   transition: background-color 0.18s ease;
 }
 
