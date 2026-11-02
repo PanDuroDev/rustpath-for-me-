@@ -764,7 +764,8 @@ button {
 .roadmap-list {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--s4);
+  align-items: start;
+  gap: var(--s5);
 }
 
 .phase-card {
@@ -792,8 +793,8 @@ button {
 }
 
 .phase-icon {
-  width: 42px;
-  height: 42px;
+  width: 40px;
+  height: 40px;
   border: 1px solid var(--border);
   background: var(--surface-2);
 }
@@ -815,7 +816,8 @@ button {
 
 .phase-title h3 {
   margin: var(--s1) 0 0;
-  font-size: 1rem;
+  font-size: 1.0625rem;
+  line-height: 1.6;
 }
 
 .phase-status {
@@ -825,9 +827,10 @@ button {
 }
 
 .phase-card > p {
-  margin: var(--s4) 0;
+  margin: var(--s3) 0;
   color: var(--text-2);
   font-size: 0.875rem;
+  line-height: 1.9;
 }
 
 .phase-expand {
@@ -848,14 +851,20 @@ button {
   border-block-start: 1px solid var(--border-soft);
 }
 
+.topic-more {
+  display: grid;
+  gap: var(--s2);
+}
+
 .topic-item {
   min-width: 0;
+  min-height: 36px;
   display: flex;
   align-items: center;
   flex-wrap: wrap;
   gap: var(--s2);
   margin-inline: calc(var(--s2) * -1);
-  padding: var(--s1) var(--s2);
+  padding: 6px var(--s2);
   transition: background-color 0.18s ease;
 }
 
@@ -864,11 +873,52 @@ button {
   flex: 1;
   color: var(--text);
   font-size: 0.875rem;
+  line-height: 1.7;
 }
 
 .topic-status {
   color: var(--text-2);
   font-size: 0.8125rem;
+  white-space: nowrap;
+}
+
+.phase-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--s2);
+  margin-block-start: var(--s4);
+}
+
+.phase-actions .lesson-open-link {
+  margin-block-start: 0;
+  margin-inline-start: auto;
+}
+
+.phase-toggle {
+  min-height: 36px;
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-2);
+  font-size: 0.8125rem;
+  cursor: pointer;
+  transition:
+    color 0.18s ease,
+    border-color 0.18s ease,
+    background-color 0.18s ease;
+}
+
+.phase-toggle:hover {
+  border-color: var(--text-3);
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+.phase-toggle[aria-expanded="true"] {
+  background: var(--surface-2);
+  color: var(--text);
 }
 
 /* 9. Footer, notices, and status messages */
@@ -1079,6 +1129,20 @@ button {
 
   .current-card {
     padding: var(--s5);
+  }
+
+  .phase-card {
+    padding: var(--s4);
+  }
+
+  .phase-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .phase-actions .lesson-open-link,
+  .phase-toggle {
+    width: 100%;
   }
 
   .current-main {

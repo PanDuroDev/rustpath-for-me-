@@ -62,6 +62,22 @@ explanation: لأن الاختبار يتحقق من ذلك.
 `,
   );
 
+  for (let id = 2; id <= 6; id += 1) {
+    await writeFile(
+      path.join(lessonsDir, `0${id}-demo-${id}.md`),
+      `---
+id: ${id}
+stage: 1
+slug: demo-${id}
+title: درس ${id}
+summary: ملخص ${id}.
+status: upcoming
+draft: true
+---
+`,
+    );
+  }
+
   try {
     await buildSite({ contentDir, outDir, siteDir: path.join(ROOT, "site") });
 
@@ -74,6 +90,8 @@ explanation: لأن الاختبار يتحقق من ذلك.
     const stage = await readFile(path.join(outDir, "stages", "1.html"), "utf8");
     assert.match(stage, /درس تجريبي/);
     assert.match(stage, /href="\.\.\/index.html#stages" aria-current="page"/);
+    assert.match(index, /data-phase-toggle="phase-more-1"/);
+    assert.match(index, /id="phase-more-1" hidden/);
 
     const lesson = await readFile(path.join(outDir, "lessons", "01-demo.html"), "utf8");
     assert.match(lesson, /data-lesson-slug="demo"/);

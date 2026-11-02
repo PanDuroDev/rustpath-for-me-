@@ -23,6 +23,17 @@
     });
   }
 
+  document.querySelectorAll("[data-phase-toggle]").forEach((toggle) => {
+    toggle.addEventListener("click", () => {
+      const target = document.getElementById(toggle.dataset.phaseToggle);
+      if (!target) return;
+      const expanded = toggle.getAttribute("aria-expanded") === "true";
+      target.hidden = expanded;
+      toggle.setAttribute("aria-expanded", String(!expanded));
+      toggle.textContent = expanded ? toggle.dataset.expandLabel : toggle.dataset.collapseLabel;
+    });
+  });
+
   document.querySelectorAll("[data-copy]").forEach((copyButton) => {
     copyButton.addEventListener("click", async () => {
       const block = copyButton.closest(".code-block");

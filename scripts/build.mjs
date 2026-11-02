@@ -160,12 +160,17 @@ function renderCurrent(lesson, lessons, stages) {
 function renderStageCard(stage) {
   const stats = stageStats(stage);
   const current = stage.lessons.some((lesson) => lesson.status === "active" && !lesson.draft);
-  const topics = stage.lessons
-    .map(
-      (lesson) =>
-        `<a class="topic-item" href="${lesson.url}" data-status="${statusData(lesson)}"><span class="topic-name">${pad(lesson.id)} — ${esc(lesson.title)}</span><span class="topic-status">${statusLabel(lesson)}</span></a>`,
-    )
-    .join("");
+  const topic = (lesson) =>
+    `<a class="topic-item" href="${lesson.url}" data-status="${statusData(lesson)}"><span class="topic-name">${pad(lesson.id)} — ${esc(lesson.title)}</span><span class="topic-status">${statusLabel(lesson)}</span></a>`;
+  const visible = stage.lessons.slice(0, 4);
+  const rest = stage.lessons.slice(4);
+  const topics = visible.map(topic).join("");
+  const more = rest.length
+    ? `<div class="topic-more" id="phase-more-${stage.id}" hidden>${rest.map(topic).join("")}</div>`
+    : "";
+  const toggle = rest.length
+    ? `<button class="phase-toggle" type="button" data-phase-toggle="phase-more-${stage.id}" aria-expanded="false" aria-controls="phase-more-${stage.id}" data-expand-label="عرض بقية الدروس (${rest.length})" data-collapse-label="تقليل الدروس">عرض بقية الدروس (${rest.length})</button>`
+    : "";
   return `<article class="phase-card${current ? " phase-current" : ""}">
   <div class="phase-head">
     <span class="phase-icon" aria-hidden="true">${pad(stage.id)}</span>
@@ -174,8 +179,11 @@ function renderStageCard(stage) {
   </div>
   <p>${esc(stage.summary)}</p>
   <div class="stage-progress"><div class="progress-track"><span style="width:${stats.percent}%"></span></div><span class="subtle-count">${stats.done}/${stats.total}</span></div>
-  <div class="topic-list">${topics}</div>
-  <a class="lesson-open-link" href="stages/${stage.id}.html">افتح المرحلة ←</a>
+  <div class="topic-list">${topics}${more}</div>
+  <div class="phase-actions">
+    ${toggle}
+    <a class="lesson-open-link" href="stages/${stage.id}.html">افتح المرحلة ←</a>
+  </div>
 </article>`;
 }
 
