@@ -11,14 +11,21 @@
   <meta property="og:locale" content="ar_AR">
   <meta name="twitter:card" content="summary">
   <title>RustPath — تعلّم Rust من الصفر</title>
-  <script>
+<script>
     (() => {
       let theme;
-      try { theme = localStorage.getItem("rustpath-theme"); } catch (_) {}
+      let language;
+      try {
+        theme = localStorage.getItem("rustpath-theme");
+        language = localStorage.getItem("rustpath-language");
+      } catch (_) {}
       if (theme !== "light" && theme !== "dark") {
         theme = window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
       }
+      if (language !== "en" && language !== "ar") language = "ar";
       document.documentElement.dataset.theme = theme;
+      document.documentElement.lang = language;
+      document.documentElement.dir = language === "en" ? "ltr" : "rtl";
       const meta = document.querySelector('meta[name="theme-color"]');
       if (meta) meta.content = theme === "light" ? "#ffffff" : "#090909";
     })();
@@ -143,7 +150,7 @@
   <footer class="site-footer shell">
     <a class="footer-brand" href="./"><i data-lucide="terminal" aria-hidden="true"></i> RustPath</a>
     <a href="./progress.html">عرض سجل التقدم <i data-lucide="arrow-up-left" aria-hidden="true"></i></a>
-    <a href="./LICENSE">ترخيص MIT</a>
+    <a href="https://github.com/PanDuroDev/rustpath-for-me-/blob/main/LICENSE" target="_blank" rel="noreferrer">ترخيص MIT</a>
     <span>منهج تعلّم مفتوح المصدر</span>
   </footer>
   <noscript><p class="noscript-note">يتطلب عرض لوحة المتابعة تفعيل JavaScript. يمكنك قراءة <a href="./LEARNING_PROGRESS.md">سجل التقدم</a> مباشرة.</p></noscript>

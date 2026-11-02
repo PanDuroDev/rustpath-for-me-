@@ -44,7 +44,7 @@
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 88px;
+  scroll-padding-top: var(--s8);
   background: var(--bg);
 }
 
@@ -155,7 +155,8 @@ button {
 
 .nav-link,
 .repo-link,
-.theme-toggle {
+.theme-toggle,
+.language-toggle {
   min-height: 40px;
   display: inline-flex;
   align-items: center;
@@ -182,7 +183,8 @@ button {
 }
 
 .repo-link,
-.theme-toggle {
+.theme-toggle,
+.language-toggle {
   border-color: var(--border);
   background: transparent;
   cursor: pointer;
@@ -947,7 +949,8 @@ button {
 
   .nav-link,
   .repo-link,
-  .theme-toggle {
+  .theme-toggle,
+  .language-toggle {
     min-width: 40px;
     padding-inline: var(--s2);
   }

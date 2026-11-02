@@ -19,7 +19,7 @@
 |---|---|---|---|
 | 1 | What is programming? | أكّد المتعلم صحة جميع الإجابات | Complete |
 | 2 | How does a computer work? | نتيجة الاختبار 4 / 4 | Complete |
-| 3 | Programming languages and Compiler | نتيجة الاختبار 4 / 4 | Complete |
+| 3 | Programming languages and compilers | نتيجة الاختبار 4 / 4 | Complete |
 
 ## In progress
 

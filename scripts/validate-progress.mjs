@@ -38,6 +38,9 @@ if (Array.isArray(progress.phases)) {
       fail("المرحلة " + (phase.id ?? "؟") + ": الحقل items يجب أن يكون مصفوفة.");
       continue;
     }
+    if (typeof phase.title_en !== "string" || !phase.title_en.trim() || typeof phase.summary_en !== "string" || !phase.summary_en.trim()) {
+      fail("المرحلة " + (phase.id ?? "؟") + ": title_en وsummary_en مطلوبان للواجهة الإنجليزية.");
+    }
     for (const item of phase.items) items.push(item);
   }
 }
@@ -53,6 +56,9 @@ items.forEach((item, index) => {
   }
   if (!validKinds.has(item.kind)) {
     fail("العنصر " + item.id + ": kind غير صالح (" + item.kind + ").");
+  }
+  if (typeof item.title_en !== "string" || !item.title_en.trim() || typeof item.desc_en !== "string" || !item.desc_en.trim()) {
+    fail("العنصر " + item.id + ": title_en وdesc_en مطلوبان للواجهة الإنجليزية.");
   }
   if (!validStatuses.has(item.status)) {
     fail("العنصر " + item.id + ": status غير صالح (" + item.status + ").");
@@ -70,17 +76,23 @@ items.forEach((item, index) => {
     if (typeof item.evidence !== "string" || item.evidence.trim() === "") {
       fail("العنصر " + item.id + ": الحالة done تتطلب evidence غير فارغ.");
     }
+    if (typeof item.evidence_en !== "string" || item.evidence_en.trim() === "") {
+      fail("العنصر " + item.id + ": الحالة done تتطلب evidence_en للواجهة الإنجليزية.");
+    }
   }
   if (item.status === "active") {
     activeCount += 1;
     if (typeof item.remaining !== "string" || item.remaining.trim() === "") {
       fail("العنصر " + item.id + ": الحالة active تتطلب remaining غير فارغ.");
     }
+    if (typeof item.remaining_en !== "string" || item.remaining_en.trim() === "") {
+      fail("العنصر " + item.id + ": الحالة active تتطلب remaining_en للواجهة الإنجليزية.");
+    }
   }
 });
 
-if (activeCount > 1) {
-  fail("يوجد " + activeCount + " عناصر active؛ يجب ألا يزيد العدد على عنصر واحد.");
+if (activeCount !== 1) {
+  fail("عدد العناصر active هو " + activeCount + "؛ يجب وجود عنصر واحد بالضبط.");
 }
 if (items.length !== 43) {
   fail("عدد العناصر " + items.length + "؛ المطلوب 43 عنصراً بالضبط.");
@@ -112,8 +124,28 @@ if (JSON.stringify(tableIds) !== JSON.stringify(doneIds)) {
 }
 for (const row of completedRows) {
   const item = doneItems.find((entry) => entry.id === row.id);
+  if (item && row.title !== item.title_en) {
+    fail("عنوان العنصر " + row.id + " في جدول Markdown لا يطابق title_en في progress.json.");
+  }
   if (item && row.evidence !== item.evidence) {
     fail("دليل العنصر " + row.id + " في جدول Markdown لا يطابق evidence في progress.json.");
+  }
+}
+
+const curriculumCheckboxes = [];
+for (const line of markdown.split(/\r?\n/)) {
+  const match = line.match(/^\s*- \[([ xX])\] (\d+)\. /);
+  if (match) curriculumCheckboxes.push({ id: Number(match[2]), checked: match[1].toLowerCase() === "x" });
+}
+if (curriculumCheckboxes.length !== items.length) {
+  fail("عدد عناصر checkboxes في Upcoming curriculum (" + curriculumCheckboxes.length + ") لا يطابق عدد عناصر JSON (" + items.length + ").");
+}
+for (const row of curriculumCheckboxes) {
+  const item = items.find((entry) => entry.id === row.id);
+  if (!item) {
+    fail("عنصر المنهج رقم " + row.id + " في checkboxes غير موجود في JSON.");
+  } else if (row.checked !== (item.status === "done")) {
+    fail("حالة checkbox للعنصر " + row.id + " لا تطابق status في progress.json.");
   }
 }
 

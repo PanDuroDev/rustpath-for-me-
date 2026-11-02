@@ -175,7 +175,7 @@
   padding: var(--s4);
   border: 1px solid var(--border);
   background: var(--surface-2);
-  text-align: left;
+  text-align: start;
 }
 
 .markdown-content pre code {
@@ -295,3 +295,6 @@
     flex-direction: column;
   }
 }
+
+/* Shared bilingual footer layout */
+.progress-footer.progress-shell { padding-block: var(--s5); }
