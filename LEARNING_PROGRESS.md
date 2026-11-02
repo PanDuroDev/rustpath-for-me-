@@ -9,7 +9,7 @@
 
 - **Phase:** 1 — Programming fundamentals
 - **Current lesson:** Lesson 4 — Terminal, files, folders, and paths
-- **Status:** In progress; explanation delivered, quiz/application not yet submitted
+- **Status:** In progress; in-page lesson and simulated PowerShell lab prepared; learner attempt not yet submitted
 - **Next lesson:** Phase 2, Lesson 5 — Verify Rust toolchain and understand rustc
 - **First Rust project:** Planned during Phase 2, immediately after the environment/Cargo introduction. Do not postpone until the whole language is taught.
 
@@ -25,7 +25,7 @@
 
 | # | Lesson | Work completed | Remaining |
 |---|---|---|---|
-| 4 | Terminal, files, folders, extensions, and paths | Full explanation delivered | Learner must complete the 5-question quiz and practical check |
+| 4 | Terminal, files, folders, extensions, and paths | In-page explanation and safe PowerShell simulator prepared | Learner must complete the simulator challenge and pass the 5-question quiz, then export the attempt report |
 
 ## Upcoming curriculum
 
@@ -120,4 +120,4 @@
 
 ## Progress dashboard
 
-The static dashboard in `docs/` reads the structured status from `docs/progress.json`. This page is a read-only view; progress is updated in the repository records and is not saved by browser interactions. `progress.json` is the source of truth for item status and evidence, and the Markdown record is checked against it automatically.
+The dashboard reads status from `docs/progress.json`. Lessons open in `docs/lesson.html` and their structured content lives in `lessons/`. Lesson attempts are saved locally in the browser and can be exported as evidence; this does not write to the repository or change official status. `progress.json` remains the source of truth, and the Markdown record is checked against it automatically.

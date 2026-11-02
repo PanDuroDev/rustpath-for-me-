@@ -46,10 +46,10 @@
           "title": "Terminal والملفات والمجلدات والمسارات",
           "desc": "تعلّم استخدام الطرفية والتنقل بين المجلدات وفهم الملفات والامتدادات والمسارات.",
           "status": "active",
-          "remaining": "اختبار من 5 أسئلة + تطبيق عملي",
+          "remaining": "أكمل المختبر التفاعلي داخل الصفحة واجتز اختبار الأسئلة الخمسة، ثم نزّل تقرير المحاولة.",
           "title_en": "Terminal, files, folders, and paths",
           "desc_en": "Learn to use the terminal, navigate folders, and understand files, extensions, and paths.",
-          "remaining_en": "A five-question quiz and a practical exercise"
+          "remaining_en": "Complete the in-page interactive lab and pass the five-question quiz, then download the attempt report."
         }
       ],
       "title_en": "Programming fundamentals",
