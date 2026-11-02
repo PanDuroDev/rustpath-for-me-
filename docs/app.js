@@ -294,12 +294,34 @@
     renderLessons();
     renderRoadmap(currentPhase.id);
   }
+  async function loadProgressData() {
+    const version = "20261102-1";
+    const sources = [
+      new URL("./progress.json?v=" + version, document.baseURI).href,
+      "https://raw.githubusercontent.com/PanDuroDev/rustpath-for-me-/main/docs/progress.json"
+    ];
+    const failures = [];
+
+    for (const source of sources) {
+      try {
+        const response = await fetch(source, { cache: "no-store" });
+        if (!response.ok) throw new Error(source + " returned HTTP " + response.status);
+        const data = await response.json();
+        if (!data || !Array.isArray(data.phases)) {
+          throw new Error(source + " did not return a valid progress document.");
+        }
+        return data;
+      } catch (error) {
+        failures.push(error && error.message ? error.message : String(error));
+      }
+    }
+
+    throw new Error("Could not load progress data. " + failures.join(" | "));
+  }
+
   async function start() {
     try {
-      const response = await fetch("./progress.json", { cache: "no-store" });
-      if (!response.ok) throw new Error("HTTP " + response.status);
-      progressData = await response.json();
-      if (!progressData || !Array.isArray(progressData.phases)) throw new Error("progress.json must contain a valid phases array.");
+      progressData = await loadProgressData();
       const items = allItems();
       const activeItems = items.filter((item) => item.status === "active");
       const isComplete = items.length > 0 && activeItems.length === 0 && items.every((item) => item.status === "done");
@@ -312,6 +334,7 @@
       bindGlobalExpand();
       renderAll();
     } catch (error) {
+      console.error("RustPath dashboard failed to initialize:", error);
       const alert = byId("load-error");
       alert.hidden = false;
       alert.append(document.createTextNode(" " + error.message));
