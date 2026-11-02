@@ -1,4 +1,4 @@
-import { cp, mkdir, rm, writeFile } from "node:fs/promises";
+import { access, cp, mkdir, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { escapeHtml, renderInline } from "./lib/markdown.mjs";
@@ -119,7 +119,7 @@ function renderPage({ root = "", title, description, main, mainClass = "shell", 
 <body>
   <a class="skip-link" href="#main">تخطَّ إلى المحتوى</a>
   ${topbar(root, activeNav)}
-  <main id="main" class="${mainClass}"${lessonPage ? ` data-lesson-page data-lesson-slug="${esc(lessonSlug)}"` : ""}>${main}</main>
+  <main id="main" class="${mainClass}"${lessonPage ? ` data-lesson-page data-lesson-slug="${esc(lessonSlug)}"` : ""}>${main.replaceAll('src="images/', `src="${root}images/`)}</main>
   ${footer(root, mainClass)}
   <script src="${root}assets/site.js" defer></script>
   ${lessonPage ? `<script src="${root}assets/lesson.js" defer></script>` : ""}
@@ -307,6 +307,9 @@ function lessonPage(lesson, lessons, stages) {
   const objectives = lesson.objectives.length
     ? `<section class="objectives-panel" aria-labelledby="objectives-title"><div><span class="panel-kicker">الأهداف</span><h2 id="objectives-title">ما ستتعلمه</h2></div><ul class="objectives-list">${lesson.objectives.map((objective) => `<li>${renderInline(objective)}</li>`).join("")}</ul></section>`
     : "";
+  const toc = lesson.headings.length >= 3
+    ? `<nav class="lesson-toc" aria-label="محتويات الدرس"><p class="toc-title">في هذه الصفحة</p><ul>${lesson.headings.map((heading) => `<li class="toc-level-${heading.level}"><a href="#${heading.id}">${esc(heading.text)}</a></li>`).join("")}</ul></nav>`
+    : "";
   const draftNotice = lesson.draft
     ? `<div class="draft-notice"><strong>هذا الدرس قيد الإعداد.</strong><p>الشرح والأمثلة والاختبار سيُضافون عبر ملف Markdown. يمكنك متابعة الدروس الجاهزة الآن، أو المساهمة في كتابة هذا الدرس من المستودع.</p></div>`
     : "";
@@ -320,8 +323,7 @@ function lessonPage(lesson, lessons, stages) {
     ? `<section class="lesson-finish" id="lesson-finish" hidden><div class="finish-copy"><span class="panel-kicker">إنجاز</span><h2>أكملت اختبارات هذا الدرس</h2><p>أجبت عن الأسئلة بنجاح. يمكنك مراجعة الشرح أو الانتقال إلى الدرس التالي.</p><p class="finish-status" data-finish-status></p></div><div class="finish-actions"><button class="secondary-action" type="button" data-quiz-reset>أعد تعيين الإجابات</button><a class="primary-link" href="${next ? `../${next.url}` : "../index.html"}">${next ? "الدرس التالي" : "العودة إلى لوحة التعلّم"} ${icon("mingcute:arrow-left-fill")}</a></div></section>`
     : "";
   const pager = `<nav class="journey-pager" aria-label="التنقل بين الدروس">${previous ? `<a class="secondary-action" href="../${previous.url}">${icon("mingcute:arrow-right-fill")} السابق: ${esc(previous.title)}</a>` : "<span></span>"}${next ? `<a class="lesson-open-link" href="../${next.url}">التالي: ${esc(next.title)} ${icon("mingcute:arrow-left-fill")}</a>` : `<a class="lesson-open-link" href="../index.html">العودة إلى لوحة التعلّم ${icon("mingcute:arrow-left-fill")}</a>`}</nav>`;
-  const main = `<div class="lesson-topline"><a class="back-link" href="../stages/${lesson.stage}.html">${icon("mingcute:arrow-right-fill")} ${esc(stage ? stage.title : "المرحلة")}</a><span class="lesson-live-status">${statusLabel(lesson)}</span></div>
-<header class="lesson-heading">
+  const main = `<div class="lesson-topline"><a class="back-link" href="../stages/${lesson.stage}.html">${icon("mingcute:arrow-right-fill")} ${esc(stage ? stage.title : "المرحلة")}</a><span class="lesson-live-status">${statusLabel(lesson)}</span></div><header class="lesson-heading">
   <span class="lesson-kicker">المرحلة ${lesson.stage} · الدرس ${pad(lesson.id)}</span>
   <h1>${esc(lesson.title)}</h1>
   <p class="lesson-intro">${esc(lesson.summary)}</p>
@@ -329,6 +331,7 @@ function lessonPage(lesson, lessons, stages) {
   ${quizProgress}
 </header>
 ${objectives}
+${toc}
 <section class="lesson-content-section" aria-labelledby="lesson-content">
   <div class="lesson-section-heading"><div><span class="panel-kicker">الشرح والأمثلة</span><h2 id="lesson-content">محتوى الدرس</h2></div><span class="quiet-label">${lesson.headings.length ? `${lesson.headings.length} أقسام` : "درس"}</span></div>
   ${draftNotice}
@@ -376,9 +379,30 @@ ${sections}
 export async function buildSite({ outDir = DEFAULT_OUT, contentDir = path.join(ROOT, "content"), siteDir = path.join(ROOT, "site") } = {}) {
   const { stages, lessons } = await loadContent(contentDir);
 
+  const imageRefs = new Set();
+  for (const item of [...stages, ...lessons]) {
+    for (const match of item.bodyHtml.matchAll(/src="images\/([^"]+)"/g)) imageRefs.add(match[1]);
+  }
+  const missingImages = [];
+  for (const name of imageRefs) {
+    try {
+      await access(path.join(contentDir, "images", name));
+    } catch (_) {
+      missingImages.push(`images/${name}`);
+    }
+  }
+  if (missingImages.length) {
+    throw new Error(`missing image files:\n${missingImages.join("\n")}`);
+  }
+
   await rm(outDir, { recursive: true, force: true });
   await mkdir(path.join(outDir, "stages"), { recursive: true });
   await mkdir(path.join(outDir, "lessons"), { recursive: true });
+  const imagesDir = path.join(contentDir, "images");
+  try {
+    await access(imagesDir);
+    await cp(imagesDir, path.join(outDir, "images"), { recursive: true });
+  } catch (_) {}
   await cp(path.join(siteDir, "assets"), path.join(outDir, "assets"), { recursive: true });
   await cp(path.join(siteDir, "favicon.svg"), path.join(outDir, "favicon.svg"));
   await writeFile(path.join(outDir, ".nojekyll"), "");

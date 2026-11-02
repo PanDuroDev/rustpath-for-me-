@@ -16,6 +16,8 @@ test("build generates dashboard, stage, lesson and progress pages from Markdown"
   const stagesDir = path.join(contentDir, "stages");
   await mkdir(lessonsDir, { recursive: true });
   await mkdir(stagesDir, { recursive: true });
+  await mkdir(path.join(contentDir, "images"), { recursive: true });
+  await writeFile(path.join(contentDir, "images", "shot.png"), "png");
 
   await writeFile(
     path.join(stagesDir, "1.md"),
@@ -41,6 +43,8 @@ objectives:
   - هدف أول
 ---
 ## الشرح
+
+![لقطة](images/shot.png)
 
 \`\`\`rust
 fn main() {}
@@ -97,9 +101,31 @@ draft: true
     assert.match(lesson, /data-lesson-slug="demo"/);
     assert.match(lesson, /data-quiz-group="demo"/);
     assert.match(lesson, /data-quiz-submit/);
+    assert.match(lesson, /src="\.\.\/images\/shot\.png"/);
+    assert.equal(await readFile(path.join(outDir, "images", "shot.png"), "utf8"), "png");
 
     const progress = await readFile(path.join(outDir, "progress.html"), "utf8");
     assert.match(progress, /سجل التقدم/);
+  } finally {
+    await rm(temp, { recursive: true, force: true });
+  }
+});
+
+test("build fails with the missing image name", async () => {
+  const temp = await mkdtemp(path.join(tmpdir(), "rustpath-img-"));
+  const contentDir = path.join(temp, "content");
+  await mkdir(path.join(contentDir, "lessons"), { recursive: true });
+  await mkdir(path.join(contentDir, "stages"), { recursive: true });
+  await writeFile(path.join(contentDir, "stages", "1.md"), "---\nid: 1\ntitle: مرحلة\nsummary: ملخص.\n---\n");
+  await writeFile(
+    path.join(contentDir, "lessons", "01-demo.md"),
+    "---\nid: 1\nstage: 1\nslug: demo\ntitle: درس\nsummary: ملخص.\nstatus: active\n---\n![x](images/gone.png)\n",
+  );
+  try {
+    await assert.rejects(
+      () => buildSite({ contentDir, outDir: path.join(temp, "out"), siteDir: path.join(ROOT, "site") }),
+      /images\/gone\.png/,
+    );
   } finally {
     await rm(temp, { recursive: true, force: true });
   }

@@ -180,3 +180,32 @@ id: g1
     /must appear before/,
   );
 });
+
+test("nested lists, table alignment, code titles and figure captions render", () => {
+  const { html } = renderMarkdown(`- one
+  - two
+- three
+
+| a | b |
+| :--- | ---: |
+| 1 | 2 |
+
+\`\`\`rust [main.rs]
+fn main() {}
+\`\`\`
+
+![demo](images/demo.png)`);
+  assert.match(html, /<li>one<ul><li>two<\/li><\/ul><\/li>/);
+  assert.match(html, /<th class="align-start">a<\/th><th class="align-end">b<\/th>/);
+  assert.match(html, /<span class="code-title" dir="ltr">main\.rs<\/span>/);
+  assert.match(html, /<figure class="md-figure"><img src="images\/demo\.png"/);
+  assert.match(html, /<figcaption>demo<\/figcaption>/);
+});
+
+test("callouts render in markdown and inside lessons, unknown names fail", () => {
+  const md = ":::warning\nbe careful\n:::\n";
+  assert.match(renderMarkdown(md).html, /<aside class="callout callout-warning">/);
+  assert.match(renderMarkdown(md).html, /mingcute:alert-fill/);
+  assert.match(renderLesson(md).html, /callout-warning/);
+  assert.throws(() => renderMarkdown(":::danger\nx\n:::"), /Only :::note, :::tip and :::warning/);
+});
