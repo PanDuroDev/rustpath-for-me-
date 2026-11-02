@@ -30,13 +30,17 @@ node scripts/validate-progress.mjs
 
 ## المعاينة المحلية
 
-شغّل خادم ملفات ثابتاً من مجلد الموقع:
+جهّز مجلد معاينة مطابقاً لأثر النشر ثم شغّل خادم ملفات ثابتاً:
 
 ```sh
-python3 -m http.server -d docs
+mkdir -p _site _site/lessons
+cp -R docs/. _site/
+cp LEARNING_PROGRESS.md _site/LEARNING_PROGRESS.md
+cp -R lessons/. _site/lessons/
+python3 -m http.server -d _site
 ```
 
-ثم افتح `http://localhost:8000`. لا يوجد تثبيت حزم أو خطوة بناء. صفحة سجل التقدم تقرأ نسخة `LEARNING_PROGRESS.md` المرفقة مع النشر، وتلجأ إلى ملف GitHub الخام عند عدم توفر النسخة المحلية.
+ثم افتح `http://localhost:8000`. لا يوجد تثبيت حزم أو أداة بناء. هذه الخطوات تنسخ محتوى الدروس إلى مسار الموقع حتى تعمل صفحة التعلّم محلياً كما تعمل على GitHub Pages.
 
 ## النشر
 

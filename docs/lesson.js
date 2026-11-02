@@ -47,6 +47,7 @@ if(verb==="new-item"||verb==="ni"){
 return{output:t("unknown"),error:true};
 }
 function renderTerminal(){
+renderChallenge();
 const host=$("terminal-history");host.replaceChildren();
 state.history.forEach(item=>{const row=make("div","terminal-entry"),cmd=make("div","terminal-command",item.command);cmd.dataset.path=item.path;row.append(cmd);if(item.output)row.append(make("pre","terminal-output"+(item.error?" terminal-error":""),item.output));host.append(row);});
 host.scrollTop=host.scrollHeight;$("terminal-welcome").textContent=t("terminalWelcome");
@@ -59,7 +60,22 @@ const host=$("lesson-sections");host.replaceChildren();lesson.sections.forEach(s
 if(section.bullets?.length){const ul=make("ul");section.bullets.forEach(x=>ul.append(make("li","",tr(x))));card.append(ul);}
 const ex=make("div","lesson-example");ex.append(make("span","lesson-example-label",lang==="ar"?"مثال":"Example"));const pre=make("pre"),code=make("code","",section.example.command);pre.append(code);ex.append(pre,make("p","",tr(section.example.explanation)));card.append(ex);host.append(card);});
 }
-function renderChallenge(){ $("challenge-steps").replaceChildren();lesson.challengeSteps.forEach(x=>$("challenge-steps").append(make("li","",tr(x))));$("challenge-title").textContent=tr(lesson.simulator.challengeTitle);$("challenge-text").textContent=tr(lesson.simulator.challengeText);$("simulator-title").textContent=tr(lesson.simulator.title);$("simulator-description").textContent=tr(lesson.simulator.description);$("terminal-input").placeholder=t("placeholder");}
+function challengeStepsDone(){
+const folder=state.fs.children.RustPractice;
+return[
+state.history.some(entry=>/^(get-location|pwd)$/i.test(entry.command.trim().split(/\\s+/)[0])),
+Boolean(folder&&folder.type==="directory"),
+state.currentPath.join("\\")==="RustPractice",
+Boolean(folder?.children["notes.txt"]?.type==="file"),
+challengeDone()
+];
+}
+function renderChallenge(){
+const host=$("challenge-steps");host.replaceChildren();
+const done=challengeStepsDone();
+lesson.challengeSteps.forEach((step,index)=>{const item=make("li",done[index]?"is-complete":"",tr(step));item.dataset.completed=String(done[index]);host.append(item);});
+$("challenge-title").textContent=tr(lesson.simulator.challengeTitle);$("challenge-text").textContent=tr(lesson.simulator.challengeText);$("simulator-title").textContent=tr(lesson.simulator.title);$("simulator-description").textContent=tr(lesson.simulator.description);$("terminal-input").placeholder=t("placeholder");
+}
 function renderQuiz(){
 const host=$("quiz-questions");host.replaceChildren();lesson.quiz.forEach((q,i)=>{const fs=make("fieldset","quiz-question");fs.append(make("legend","",(i+1)+". "+tr(q.prompt)));const choices=make("div","quiz-options");
 q.options.forEach(option=>{const label=make("label","quiz-option"),input=document.createElement("input");input.type="radio";input.name=q.id;input.value=option.id;input.checked=state.answers[q.id]===option.id;input.addEventListener("change",()=>{state.answers[q.id]=option.id;state.quiz=null;state.passed=false;$("quiz-feedback").hidden=true;$("quiz-feedback").replaceChildren();document.querySelectorAll(".quiz-feedback-item").forEach(item=>item.remove());$("quiz-progress").textContent=Object.keys(state.answers).length+" / "+lesson.quiz.length;$("finish-status").textContent=t("notFinished");save();});label.append(input,make("span","",tr(option.text)));choices.append(label);});
@@ -91,6 +107,8 @@ $("quiz-form").addEventListener("submit",submitQuiz);$("export-report").addEvent
 async function start(){
 try{
 const urls=["./lessons/lesson-04-terminal-and-paths.json?v=20261102-2","https://raw.githubusercontent.com/PanDuroDev/rustpath-for-me-/main/lessons/lesson-04-terminal-and-paths.json"];
+const requested=new URLSearchParams(window.location.search).get("lesson");
+if(requested&&requested!=="4")throw Error("This lesson is not available in the current learning stage.");
 let errors=[];for(const url of urls){try{const r=await fetch(url,{cache:"no-store"});if(!r.ok)throw Error("HTTP "+r.status);lesson=await r.json();break;}catch(e){errors.push(e.message||String(e));}}
 if(!lesson)throw Error(errors.join(" | "));if(lesson.id!==4||lesson.quiz?.length!==5)throw Error("Invalid lesson data.");
 restore();$("lesson-title").textContent=tr(lesson.title);$("lesson-intro").textContent=tr(lesson.intro);renderObjectives();renderSections();renderChallenge();renderQuiz();renderTerminal();
