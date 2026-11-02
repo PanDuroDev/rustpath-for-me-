@@ -42,16 +42,17 @@ function quizCount(lesson) {
   return lesson.questions.filter((question) => question.graded).length;
 }
 
-function topbar(root) {
+function topbar(root, active = "") {
+  const current = (name) => (active === name ? ' aria-current="page"' : "");
   return `<header class="topbar">
   <a class="brand" href="${root}index.html" aria-label="RustPath — الصفحة الرئيسية">
     <span class="brand-mark" aria-hidden="true">R</span>
     <span class="brand-name">Rust<span>Path</span></span>
   </a>
   <nav class="top-actions" aria-label="التنقل الرئيسي">
-    <a class="nav-link" href="${root}index.html">لوحة التعلّم</a>
-    <a class="nav-link" href="${root}index.html#stages">المراحل</a>
-    <a class="nav-link" href="${root}progress.html">سجل التقدم</a>
+    <a class="nav-link" href="${root}index.html"${current("home")}>لوحة التعلّم</a>
+    <a class="nav-link" href="${root}index.html#stages"${current("stages")}>المراحل</a>
+    <a class="nav-link" href="${root}progress.html"${current("progress")}>سجل التقدم</a>
     <a class="repo-link" href="${REPO}" target="_blank" rel="noreferrer">المستودع ↗</a>
     <button class="theme-toggle" id="theme-toggle" type="button" aria-label="التبديل إلى الوضع الفاتح">الوضع الفاتح</button>
   </nav>
@@ -59,17 +60,30 @@ function topbar(root) {
 }
 
 function footer(root, mainClass) {
-  const classes = mainClass === "learning-shell" ? "site-footer learning-footer" : "site-footer shell";
+  const year = new Date().getFullYear();
+  const classes = mainClass === "learning-shell" ? "site-footer shell learning-footer" : "site-footer shell";
   return `<footer class="${classes}">
-  <a class="footer-brand" href="${root}index.html">RustPath</a>
-  <a href="${root}index.html#stages">المراحل</a>
-  <a href="${root}progress.html">سجل التقدم</a>
-  <a href="${REPO}/blob/main/LICENSE" target="_blank" rel="noreferrer">ترخيص MIT</a>
-  <span>منهج تعلّم مفتوح المصدر</span>
+  <div class="footer-top">
+    <div class="footer-about">
+      <a class="footer-brand" href="${root}index.html">RustPath</a>
+      <p>مسار عربي مفتوح لتعلّم Rust من الأساسيات إلى المشاريع، بدروس تُبنى من Markdown.</p>
+    </div>
+    <nav class="footer-links" aria-label="روابط التذييل">
+      <a href="${root}index.html">لوحة التعلّم</a>
+      <a href="${root}index.html#stages">المراحل</a>
+      <a href="${root}progress.html">سجل التقدم</a>
+      <a href="${REPO}" target="_blank" rel="noreferrer">المستودع ↗</a>
+      <a href="${REPO}/blob/main/LICENSE" target="_blank" rel="noreferrer">ترخيص MIT</a>
+    </nav>
+  </div>
+  <div class="footer-bottom">
+    <span>© ${year} RustPath</span>
+    <span>مبني من Markdown · GitHub Pages</span>
+  </div>
 </footer>`;
 }
 
-function renderPage({ root = "", title, description, main, mainClass = "shell", lessonPage = false, lessonSlug = "", lessonCss = false }) {
+function renderPage({ root = "", title, description, main, mainClass = "shell", activeNav = "", lessonPage = false, lessonSlug = "", lessonCss = false }) {
   const themeBoot = `<script>
 (() => {
   try {
@@ -99,7 +113,7 @@ function renderPage({ root = "", title, description, main, mainClass = "shell", 
 </head>
 <body>
   <a class="skip-link" href="#main">تخطَّ إلى المحتوى</a>
-  ${topbar(root)}
+  ${topbar(root, activeNav)}
   <main id="main" class="${mainClass}"${lessonPage ? ` data-lesson-page data-lesson-slug="${esc(lessonSlug)}"` : ""}>${main}</main>
   ${footer(root, mainClass)}
   <script src="${root}assets/site.js" defer></script>
@@ -176,6 +190,7 @@ function dashboardPage({ stages, lessons }) {
     <h1>تعلّم Rust <span>خطوة بخطوة.</span></h1>
     <p class="lead">${lead}</p>
     <a class="primary-link" href="${current ? current.url : "#stages"}">${current ? `تابع من الدرس ${pad(current.id)}` : "استعرض المراحل"} ←</a>
+    <p class="hero-meta"><span>${stages.length} مراحل</span><span>${stats.total} درسًا</span><span>تمارين تفاعلية</span></p>
   </div>
   <div class="hero-art" aria-hidden="true">
     <span class="orbit orbit-one"></span><span class="orbit orbit-two"></span>
@@ -215,6 +230,7 @@ function dashboardPage({ stages, lessons }) {
     title: "لوحة التعلّم",
     description: lead,
     main,
+    activeNav: "home",
   });
 }
 
@@ -245,6 +261,7 @@ ${stage.bodyHtml ? `<section class="lesson-content-section"><div class="lesson-p
     title: `المرحلة ${stage.id}: ${stage.title}`,
     description: stage.summary,
     main,
+    activeNav: "stages",
     lessonCss: true,
   });
 }
@@ -313,6 +330,7 @@ ${pager}`;
     description: lesson.summary,
     main,
     mainClass: "learning-shell",
+    activeNav: "stages",
     lessonPage: true,
     lessonSlug: lesson.slug,
     lessonCss: true,
@@ -338,6 +356,7 @@ ${sections}
     title: "سجل التقدم",
     description: "حالة الدروس والمراحل في مسار RustPath.",
     main,
+    activeNav: "progress",
   });
 }
 

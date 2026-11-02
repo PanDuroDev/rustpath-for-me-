@@ -68,9 +68,12 @@ explanation: لأن الاختبار يتحقق من ذلك.
     const index = await readFile(path.join(outDir, "index.html"), "utf8");
     assert.match(index, /درس تجريبي/);
     assert.match(index, /المرحلة 1/);
+    assert.match(index, /class="nav-link" href="index.html" aria-current="page"/);
+    assert.match(index, /class="footer-top"/);
 
     const stage = await readFile(path.join(outDir, "stages", "1.html"), "utf8");
     assert.match(stage, /درس تجريبي/);
+    assert.match(stage, /href="\.\.\/index.html#stages" aria-current="page"/);
 
     const lesson = await readFile(path.join(outDir, "lessons", "01-demo.html"), "utf8");
     assert.match(lesson, /data-lesson-slug="demo"/);
