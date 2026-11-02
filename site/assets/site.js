@@ -2,7 +2,10 @@
   const root = document.documentElement;
   const button = document.getElementById("theme-toggle");
   const labels = { dark: "الوضع الفاتح", light: "الوضع الداكن" };
-  const icons = { dark: "line-md:moon-to-sunny-outline-transition", light: "line-md:sunny-outline-to-moon-transition" };
+  // Static icons avoid replaying the Line MD animation on every page load.
+  const icons = { dark: "mingcute:sun-fill", light: "mingcute:moon-fill" };
+  const animatedIcons = { dark: "line-md:sunny-outline-to-moon-transition", light: "line-md:moon-to-sunny-outline-transition" };
+  let iconTimer;
 
   const syncTheme = () => {
     const theme = root.dataset.theme === "light" ? "light" : "dark";
@@ -25,6 +28,11 @@
         localStorage.setItem("rustpath-theme", next);
       } catch (_) {}
       syncTheme();
+      const icon = button.querySelector(".theme-icon");
+      if (!icon) return;
+      icon.setAttribute("icon", animatedIcons[next]);
+      clearTimeout(iconTimer);
+      iconTimer = setTimeout(() => icon.setAttribute("icon", icons[next]), 700);
     });
   }
 

@@ -58,7 +58,7 @@ function topbar(root, active = "") {
     <a class="nav-link" href="${root}index.html#stages"${current("stages")}>${icon("mingcute:layers-fill")}<span>المراحل</span></a>
     <a class="nav-link" href="${root}progress.html"${current("progress")}>${icon("mingcute:chart-bar-fill")}<span>سجل التقدم</span></a>
     <a class="repo-link" href="${REPO}" target="_blank" rel="noreferrer">${icon("mingcute:github-fill")}<span>المستودع</span></a>
-    <button class="theme-toggle" id="theme-toggle" type="button" aria-label="التبديل إلى الوضع الفاتح">${icon("line-md:moon-to-sunny-outline-transition", "theme-icon")}<span class="theme-label">الوضع الفاتح</span></button>
+    <button class="theme-toggle" id="theme-toggle" type="button" aria-label="التبديل إلى الوضع الفاتح">${icon("mingcute:sun-fill", "theme-icon")}<span class="theme-label">الوضع الفاتح</span></button>
   </nav>
 </header>`;
 }
@@ -151,7 +151,7 @@ function renderCurrent(lesson, lessons, stages) {
       <h3>${esc(lesson.title)}</h3>
       <p>${esc(lesson.summary)}</p>
       <p class="current-meta">${lesson.minutes ? `${lesson.minutes} دقيقة` : "درس قصير"}${count ? ` · ${count} أسئلة` : ""}</p>
-      <a class="lesson-open-link" href="${lesson.url}">افتح الدرس ←</a>
+      <a class="lesson-open-link" href="${lesson.url}">افتح الدرس ${icon("mingcute:arrow-left-fill")}</a>
     </div>
   </div>
   <div class="progress-panel">
@@ -187,7 +187,7 @@ function renderStageCard(stage) {
   <div class="topic-list">${topics}${more}</div>
   <div class="phase-actions">
     ${toggle}
-    <a class="lesson-open-link" href="stages/${stage.id}.html">افتح المرحلة ←</a>
+    <a class="lesson-open-link" href="stages/${stage.id}.html">افتح المرحلة ${icon("mingcute:arrow-left-fill")}</a>
   </div>
 </article>`;
 }
@@ -202,7 +202,7 @@ function dashboardPage({ stages, lessons }) {
     <p class="eyebrow"><span class="eyebrow-line"></span> مسار تعلّم Rust بالعربية</p>
     <h1>تعلّم Rust <span>خطوة بخطوة.</span></h1>
     <p class="lead">${lead}</p>
-    <a class="primary-link" href="${current ? current.url : "#stages"}">${current ? `تابع من الدرس ${pad(current.id)}` : "استعرض المراحل"} ←</a>
+    <a class="primary-link" href="${current ? current.url : "#stages"}">${current ? `تابع من الدرس ${pad(current.id)}` : "استعرض المراحل"} ${icon("mingcute:arrow-left-fill")}</a>
     <p class="hero-meta"><span>${stages.length} مراحل</span><span>${stats.total} درسًا</span><span>تمارين تفاعلية</span></p>
   </div>
   <div class="hero-art" aria-hidden="true">
@@ -236,7 +236,7 @@ function dashboardPage({ stages, lessons }) {
 <section class="page-section" aria-label="كيف يعمل الموقع">
   <div class="principles">
     <span class="principle-icon" aria-hidden="true">${icon("mingcute:bulb-fill")}</span>
-    <div><h2>صفحات تُبنى من Markdown</h2><p>أضف الدرس كملف نصي في مجلد <code dir="ltr">content/lessons</code>، واكتب الشرح ثم كتلة <code dir="ltr">:::quiz</code>. يتولى GitHub Actions بناء الصفحة ونشرها. <a href="${REPO}/blob/main/content/README.md" target="_blank" rel="noreferrer">دليل إضافة الدروس ↗</a></p></div>
+    <div><h2>صفحات تُبنى من Markdown</h2><p>أضف الدرس كملف نصي في مجلد <code dir="ltr">content/lessons</code>، واكتب الشرح ثم كتلة <code dir="ltr">:::quiz</code>. يتولى GitHub Actions بناء الصفحة ونشرها. <a href="${REPO}/blob/main/content/README.md" target="_blank" rel="noreferrer">دليل إضافة الدروس ${icon("mingcute:external-link-fill")}</a></p></div>
   </div>
 </section>`;
   return renderPage({
@@ -253,7 +253,7 @@ function stagePage(stage, stages) {
   const previous = stages[index - 1];
   const next = stages[index + 1];
   const rows = stage.lessons.map((lesson) => renderLessonRow(lesson, "../")).join("\n");
-  const main = `<div class="lesson-topline"><a class="back-link" href="../index.html">← لوحة التعلّم</a><span class="lesson-live-status">${stageStatus(stage)}</span></div>
+  const main = `<div class="lesson-topline"><a class="back-link" href="../index.html">${icon("mingcute:arrow-right-fill")} لوحة التعلّم</a><span class="lesson-live-status">${stageStatus(stage)}</span></div>
 <header class="lesson-heading">
   <span class="lesson-kicker">مرحلة ${stage.id} من ${stages.length}</span>
   <h1>${esc(stage.title)}</h1>
@@ -317,10 +317,10 @@ function lessonPage(lesson, lessons, stages) {
     ? `<div class="quiz-actions" data-quiz-actions><button class="primary-link" type="button" data-quiz-submit>تحقق من الإجابات</button><button class="secondary-action" type="button" data-quiz-reset>أعد تعيين الدرس</button></div><div class="quiz-feedback" data-quiz-summary hidden></div>`
     : "";
   const finish = hasQuizzes
-    ? `<section class="lesson-finish" id="lesson-finish" hidden><div class="finish-copy"><span class="panel-kicker">إنجاز</span><h2>أكملت اختبارات هذا الدرس</h2><p>أجبت عن الأسئلة بنجاح. يمكنك مراجعة الشرح أو الانتقال إلى الدرس التالي.</p><p class="finish-status" data-finish-status></p></div><div class="finish-actions"><button class="secondary-action" type="button" data-quiz-reset>أعد تعيين الإجابات</button><a class="primary-link" href="${next ? `../${next.url}` : "../index.html"}">${next ? "الدرس التالي ←" : "العودة إلى لوحة التعلّم ←"}</a></div></section>`
+    ? `<section class="lesson-finish" id="lesson-finish" hidden><div class="finish-copy"><span class="panel-kicker">إنجاز</span><h2>أكملت اختبارات هذا الدرس</h2><p>أجبت عن الأسئلة بنجاح. يمكنك مراجعة الشرح أو الانتقال إلى الدرس التالي.</p><p class="finish-status" data-finish-status></p></div><div class="finish-actions"><button class="secondary-action" type="button" data-quiz-reset>أعد تعيين الإجابات</button><a class="primary-link" href="${next ? `../${next.url}` : "../index.html"}">${next ? "الدرس التالي" : "العودة إلى لوحة التعلّم"} ${icon("mingcute:arrow-left-fill")}</a></div></section>`
     : "";
-  const pager = `<nav class="journey-pager" aria-label="التنقل بين الدروس">${previous ? `<a class="secondary-action" href="../${previous.url}">السابق: ${esc(previous.title)}</a>` : "<span></span>"}${next ? `<a class="lesson-open-link" href="../${next.url}">التالي: ${esc(next.title)}</a>` : `<a class="lesson-open-link" href="../index.html">العودة إلى لوحة التعلّم</a>`}</nav>`;
-  const main = `<div class="lesson-topline"><a class="back-link" href="../stages/${lesson.stage}.html">← ${esc(stage ? stage.title : "المرحلة")}</a><span class="lesson-live-status">${statusLabel(lesson)}</span></div>
+  const pager = `<nav class="journey-pager" aria-label="التنقل بين الدروس">${previous ? `<a class="secondary-action" href="../${previous.url}">${icon("mingcute:arrow-right-fill")} السابق: ${esc(previous.title)}</a>` : "<span></span>"}${next ? `<a class="lesson-open-link" href="../${next.url}">التالي: ${esc(next.title)} ${icon("mingcute:arrow-left-fill")}</a>` : `<a class="lesson-open-link" href="../index.html">العودة إلى لوحة التعلّم ${icon("mingcute:arrow-left-fill")}</a>`}</nav>`;
+  const main = `<div class="lesson-topline"><a class="back-link" href="../stages/${lesson.stage}.html">${icon("mingcute:arrow-right-fill")} ${esc(stage ? stage.title : "المرحلة")}</a><span class="lesson-live-status">${statusLabel(lesson)}</span></div>
 <header class="lesson-heading">
   <span class="lesson-kicker">المرحلة ${lesson.stage} · الدرس ${pad(lesson.id)}</span>
   <h1>${esc(lesson.title)}</h1>

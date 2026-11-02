@@ -1073,6 +1073,27 @@ iconify-icon {
   font-size: 1.125rem;
 }
 
+.primary-link iconify-icon,
+.lesson-open-link iconify-icon,
+.secondary-action iconify-icon,
+.back-link iconify-icon,
+.principles a iconify-icon {
+  font-size: 1rem;
+}
+
+.lesson-open-link,
+.secondary-action,
+.back-link,
+.principles a {
+  gap: var(--s2);
+}
+
+.back-link,
+.principles a {
+  display: inline-flex;
+  align-items: center;
+}
+
 .phase-toggle {
   display: inline-flex;
   align-items: center;
