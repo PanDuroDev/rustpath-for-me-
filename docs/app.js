@@ -59,6 +59,7 @@
   }
   function renderCurrent(activeItem, currentPhase) {
     const card = byId("current-card");
+    card.classList.remove("is-complete");
     card.replaceChildren();
     const main = element("div", "current-main");
     const number = element("div", "lesson-number", String(activeItem.id).padStart(2, "0"));
@@ -96,6 +97,21 @@
     card.append(main, panel);
     byId("current-status").textContent = statusText(activeItem.status);
   }
+  function renderCompleted() {
+    const card = byId("current-card");
+    card.classList.add("is-complete");
+    card.replaceChildren();
+
+    const main = element("div", "current-main");
+    const copy = element("div", "current-copy");
+    copy.append(element("span", "phase-label", t("phaseDone")));
+    copy.append(element("h3", "", t("allComplete")));
+    copy.append(element("p", "", t("noUpcoming")));
+    main.append(icon("check-circle-2", "lesson-icon"), copy);
+    card.append(main);
+    byId("current-status").textContent = t("done");
+  }
+
   function renderNextStep() {
     const next = allItems().find((item) => item.status === "upcoming");
     if (!next) {
@@ -119,6 +135,7 @@
         selectedFilter = "all";
         renderTabs();
         renderLessons();
+        host.querySelector('[data-phase-id="' + phase.id + '"]')?.focus();
       });
       host.append(button);
     });
@@ -138,6 +155,7 @@
       button.addEventListener("click", () => {
         selectedFilter = filter.id;
         renderLessons();
+        host.querySelector('[data-filter="' + filter.id + '"]')?.focus();
       });
       host.append(button);
     });
@@ -233,6 +251,7 @@
         toggle.setAttribute("aria-label", (open ? t("hideTopics") : t("showTopics")) + " · " + phaseName + phase.id);
         updateExpandLabel();
       });
+      heading.append(toggle);
       card.append(heading, summary, details);
       host.append(card);
     });
@@ -260,12 +279,16 @@
   }
   function renderAll() {
     if (!progressData) return;
-    const currentPhase = progressData.phases.find((phase) => phase.items.some((item) => item.status === "active"));
+    const items = allItems();
+    const isComplete = items.length > 0 && items.every((item) => item.status === "done");
+    const currentPhase = progressData.phases.find((phase) => phase.items.some((item) => item.status === "active"))
+      || (isComplete ? progressData.phases[progressData.phases.length - 1] : null);
     const activeItem = currentPhase?.items.find((item) => item.status === "active");
-    if (!currentPhase || !activeItem) return;
+    if (!currentPhase) return;
     if (!progressData.phases.some((phase) => phase.id === selectedPhaseId)) selectedPhaseId = currentPhase.id;
     renderStats(currentPhase);
-    renderCurrent(activeItem, currentPhase);
+    if (activeItem) renderCurrent(activeItem, currentPhase);
+    else renderCompleted();
     renderNextStep();
     renderTabs();
     renderLessons();
@@ -277,8 +300,13 @@
       if (!response.ok) throw new Error("HTTP " + response.status);
       progressData = await response.json();
       if (!progressData || !Array.isArray(progressData.phases)) throw new Error("progress.json must contain a valid phases array.");
-      const currentPhase = progressData.phases.find((phase) => phase.items.some((item) => item.status === "active"));
-      if (!currentPhase || !currentPhase.items.some((item) => item.status === "active")) throw new Error("No active curriculum item was found.");
+      const items = allItems();
+      const activeItems = items.filter((item) => item.status === "active");
+      const isComplete = items.length > 0 && activeItems.length === 0 && items.every((item) => item.status === "done");
+      if (activeItems.length !== 1 && !isComplete) throw new Error("The curriculum must have exactly one active item unless every item is complete.");
+      const currentPhase = progressData.phases.find((phase) => phase.items.some((item) => item.status === "active"))
+        || (isComplete ? progressData.phases[progressData.phases.length - 1] : null);
+      if (!currentPhase) throw new Error("No current or completed curriculum phase was found.");
       selectedPhaseId = currentPhase.id;
       expandedPhaseIds.add(currentPhase.id);
       bindGlobalExpand();

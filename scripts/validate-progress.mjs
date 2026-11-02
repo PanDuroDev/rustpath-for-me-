@@ -91,37 +91,52 @@ items.forEach((item, index) => {
   }
 });
 
-if (activeCount !== 1) {
-  fail("عدد العناصر active هو " + activeCount + "؛ يجب وجود عنصر واحد بالضبط.");
+const completedCurriculum = items.length > 0 && activeCount === 0 && doneItems.length === items.length;
+if (activeCount !== 1 && !completedCurriculum) {
+  fail("يجب وجود عنصر active واحد بالضبط، أو أن تكون جميع عناصر المنهج done.");
 }
 if (items.length !== 43) {
   fail("عدد العناصر " + items.length + "؛ المطلوب 43 عنصراً بالضبط.");
 }
 
-const nextLessonMatch = markdown.match(/^\s*- \*\*Next lesson:\*\* Phase \d+, Lesson (\d+) — (.+)$/m);
-if (!nextLessonMatch) {
-  fail('لم يُعثر على سطر Next lesson بصيغة Phase N, Lesson N — title.');
+if (completedCurriculum) {
+  if (!/^\s*- \*\*Next lesson:\*\* None — curriculum completed\s*$/m.test(markdown)) {
+    fail('عند اكتمال المنهج، يجب أن يكون Next lesson: None — curriculum completed.');
+  }
 } else {
-  const nextId = Number(nextLessonMatch[1]);
-  const nextItem = items.find((item) => item.id === nextId);
-  if (!nextItem || nextItem.status !== "upcoming") {
-    fail("الدرس التالي في Markdown لا يشير إلى عنصر upcoming صالح في JSON.");
-  } else if (nextLessonMatch[2].trim() !== nextItem.title_en) {
-    fail("عنوان Next lesson في Markdown لا يطابق title_en للعنصر " + nextId + " في JSON.");
+  const nextLessonMatch = markdown.match(/^\s*- \*\*Next lesson:\*\* Phase \d+, Lesson (\d+) — (.+)$/m);
+  if (!nextLessonMatch) {
+    fail('لم يُعثر على سطر Next lesson بصيغة Phase N, Lesson N — title.');
+  } else {
+    const nextId = Number(nextLessonMatch[1]);
+    const nextItem = items.find((item) => item.id === nextId);
+    if (!nextItem || nextItem.status !== "upcoming") {
+      fail("الدرس التالي في Markdown لا يشير إلى عنصر upcoming صالح في JSON.");
+    } else if (nextLessonMatch[2].trim() !== nextItem.title_en) {
+      fail("عنوان Next lesson في Markdown لا يطابق title_en للعنصر " + nextId + " في JSON.");
+    }
   }
 }
 
-const currentMatch = markdown.match(/^\s*- \*\*Current lesson:\*\* Lesson (\d+)\b/m);
-if (!currentMatch) {
-  fail('لم يُعثر على سطر "- **Current lesson:** Lesson N" في LEARNING_PROGRESS.md.');
+
+if (completedCurriculum) {
+  if (!/^\s*- \*\*Current lesson:\*\* Curriculum completed\s*$/m.test(markdown)) {
+    fail('عند اكتمال المنهج، يجب أن يكون Current lesson: Curriculum completed.');
+  }
 } else {
-  const currentId = Number(currentMatch[1]);
-  const activeItem = items.find((item) => item.status === "active");
-  if (!activeItem || activeItem.id !== currentId) {
-    fail("رقم الدرس الحالي في Markdown هو " + currentId + " ولا يطابق العنصر active في JSON" +
-      (activeItem ? " (" + activeItem.id + ")" : " (لا يوجد عنصر active)") + ".");
+  const currentMatch = markdown.match(/^\s*- \*\*Current lesson:\*\* Lesson (\d+)\b/m);
+  if (!currentMatch) {
+    fail('لم يُعثر على سطر "- **Current lesson:** Lesson N" في LEARNING_PROGRESS.md.');
+  } else {
+    const currentId = Number(currentMatch[1]);
+    const activeItem = items.find((item) => item.status === "active");
+    if (!activeItem || activeItem.id !== currentId) {
+      fail("رقم الدرس الحالي في Markdown هو " + currentId + " ولا يطابق العنصر active في JSON" +
+        (activeItem ? " (" + activeItem.id + ")" : " (لا يوجد عنصر active)") + ".");
+    }
   }
 }
+
 
 const completedRows = [];
 for (const line of markdown.split(/\r?\n/)) {
@@ -188,4 +203,5 @@ if (errors.length) {
 }
 
 console.log("نجح التحقق: " + items.length + " عنصراً، " + doneItems.length +
-  " مكتملة، عنصر واحد قيد التنفيذ، والتواريخ والأدلة متطابقة.");
+  " مكتملة، " + (completedCurriculum ? "المنهج مكتمل" : "عنصر واحد قيد التنفيذ") +
+  "، والتواريخ والأدلة متطابقة.");

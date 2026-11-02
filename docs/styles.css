@@ -436,6 +436,10 @@ button {
   background: var(--surface);
 }
 
+.current-card.is-complete {
+  grid-template-columns: minmax(0, 1fr);
+}
+
 .current-main {
   min-width: 0;
   display: flex;
@@ -726,6 +730,7 @@ button {
 
 .phase-head {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: var(--s3);
   min-width: 0;
