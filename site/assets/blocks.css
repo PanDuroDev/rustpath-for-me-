@@ -175,6 +175,22 @@
   color: var(--text);
 }
 
+.lesson-prose p {
+  text-wrap: pretty;
+}
+
+.md-mark {
+  padding: 0 0.2em;
+  background: #f2cf5b;
+  color: #151515;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+:root[data-theme="light"] .md-mark {
+  background: #ffe08a;
+}
+
 .lesson-prose blockquote {
   margin: var(--s4) 0;
   padding: var(--s3) var(--s4);

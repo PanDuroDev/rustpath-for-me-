@@ -172,6 +172,7 @@ export function renderInline(raw) {
   value = value.replace(/__([^_]+)__/g, "<strong>$1</strong>");
   value = value.replace(/(^|[^*])\*([^*\n]+)\*/g, "$1<em>$2</em>");
   value = value.replace(/~~([^~]+)~~/g, "<del>$1</del>");
+  value = value.replace(/==([^=]+)==/g, '<mark class="md-mark">$1</mark>');
   value = value.replace(/\u0000C(\d+)\u0000/g, (_, index) => codes[Number(index)]);
   return value;
 }
@@ -409,11 +410,14 @@ function renderBlocks(lines, options = {}) {
     while (i < lines.length) {
       const current = lines[i];
       if (!current.trim() || isBlockStart(current) || isTableStart(lines, i)) break;
-      paragraph.push(current.trim());
+      paragraph.push(current.trimStart());
       i += 1;
     }
     if (paragraph.length) {
-      const text = paragraph.join(" ");
+      const text = paragraph
+        .map((line) => (/ {2,}$|\\$/.test(line) ? `${line.replace(/ {2,}$|\\$/, "")}\u0000B\u0000` : line))
+        .join(" ")
+        .replace(/\u0000B\u0000 /g, "\u0000B\u0000");
       const image = text.match(/^!\[([^\]]*)\]\(([^)\s]+)(?:\s+"([^"]*)")?\)$/);
       const url = image ? safeUrl(image[2]) : "";
       if (image && url) {
@@ -422,7 +426,7 @@ function renderBlocks(lines, options = {}) {
           `<figure class="md-figure"><img src="${url}" alt="${image[1]}" loading="lazy" decoding="async"${image[3] ? ` title="${image[3]}"` : ""}>${caption}</figure>`,
         );
       } else {
-        html.push(`<p>${renderInline(text)}</p>`);
+        html.push(`<p>${renderInline(text).replaceAll("\u0000B\u0000", "<br>")}</p>`);
       }
     }
   }

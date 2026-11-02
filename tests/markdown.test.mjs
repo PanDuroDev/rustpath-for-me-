@@ -209,3 +209,8 @@ test("callouts render in markdown and inside lessons, unknown names fail", () =>
   assert.match(renderLesson(md).html, /callout-warning/);
   assert.throws(() => renderMarkdown(":::danger\nx\n:::"), /Only :::note, :::tip and :::warning/);
 });
+
+test("highlighted text and hard line breaks render", () => {
+  assert.match(renderMarkdown("هذا ==نص مهم== عادي").html, /<mark class="md-mark">نص مهم<\/mark>/);
+  assert.match(renderMarkdown("سطر أول  \nسطر ثانٍ").html, /<p>سطر أول<br>سطر ثانٍ<\/p>/);
+});
