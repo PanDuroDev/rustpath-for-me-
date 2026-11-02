@@ -42,6 +42,10 @@ function quizCount(lesson) {
   return lesson.questions.filter((question) => question.graded).length;
 }
 
+function icon(name, className = "") {
+  return `<iconify-icon${className ? ` class="${className}"` : ""} icon="${name}" aria-hidden="true"></iconify-icon>`;
+}
+
 function topbar(root, active = "") {
   const current = (name) => (active === name ? ' aria-current="page"' : "");
   return `<header class="topbar">
@@ -50,11 +54,11 @@ function topbar(root, active = "") {
     <span class="brand-name">Rust<span>Path</span></span>
   </a>
   <nav class="top-actions" aria-label="التنقل الرئيسي">
-    <a class="nav-link" href="${root}index.html"${current("home")}>لوحة التعلّم</a>
-    <a class="nav-link" href="${root}index.html#stages"${current("stages")}>المراحل</a>
-    <a class="nav-link" href="${root}progress.html"${current("progress")}>سجل التقدم</a>
-    <a class="repo-link" href="${REPO}" target="_blank" rel="noreferrer">المستودع ↗</a>
-    <button class="theme-toggle" id="theme-toggle" type="button" aria-label="التبديل إلى الوضع الفاتح">الوضع الفاتح</button>
+    <a class="nav-link" href="${root}index.html"${current("home")}>${icon("mingcute:home-4-fill")}<span>لوحة التعلّم</span></a>
+    <a class="nav-link" href="${root}index.html#stages"${current("stages")}>${icon("mingcute:layers-fill")}<span>المراحل</span></a>
+    <a class="nav-link" href="${root}progress.html"${current("progress")}>${icon("mingcute:chart-bar-fill")}<span>سجل التقدم</span></a>
+    <a class="repo-link" href="${REPO}" target="_blank" rel="noreferrer">${icon("mingcute:github-fill")}<span>المستودع</span></a>
+    <button class="theme-toggle" id="theme-toggle" type="button" aria-label="التبديل إلى الوضع الفاتح">${icon("line-md:moon-to-sunny-outline-transition", "theme-icon")}<span class="theme-label">الوضع الفاتح</span></button>
   </nav>
 </header>`;
 }
@@ -69,11 +73,11 @@ function footer(root, mainClass) {
       <p>مسار عربي مفتوح لتعلّم Rust من الأساسيات إلى المشاريع، بدروس تُبنى من Markdown.</p>
     </div>
     <nav class="footer-links" aria-label="روابط التذييل">
-      <a href="${root}index.html">لوحة التعلّم</a>
-      <a href="${root}index.html#stages">المراحل</a>
-      <a href="${root}progress.html">سجل التقدم</a>
-      <a href="${REPO}" target="_blank" rel="noreferrer">المستودع ↗</a>
-      <a href="${REPO}/blob/main/LICENSE" target="_blank" rel="noreferrer">ترخيص MIT</a>
+      <a href="${root}index.html">${icon("mingcute:home-4-fill")} لوحة التعلّم</a>
+      <a href="${root}index.html#stages">${icon("mingcute:layers-fill")} المراحل</a>
+      <a href="${root}progress.html">${icon("mingcute:chart-bar-fill")} سجل التقدم</a>
+      <a href="${REPO}" target="_blank" rel="noreferrer">${icon("mingcute:github-fill")} المستودع</a>
+      <a href="${REPO}/blob/main/LICENSE" target="_blank" rel="noreferrer">${icon("mingcute:document-fill")} ترخيص MIT</a>
     </nav>
   </div>
   <div class="footer-bottom">
@@ -110,6 +114,7 @@ function renderPage({ root = "", title, description, main, mainClass = "shell", 
   <link rel="stylesheet" href="${root}assets/site.css">
   ${lessonCss ? `<link rel="stylesheet" href="${root}assets/lesson.css">` : ""}
   <link rel="stylesheet" href="${root}assets/blocks.css">
+  <script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">تخطَّ إلى المحتوى</a>
@@ -124,15 +129,15 @@ function renderPage({ root = "", title, description, main, mainClass = "shell", 
 
 function renderStats(stats, stages) {
   return `<div class="stats">
-  <div class="stat-card"><span class="stat-icon" aria-hidden="true">✓</span><div><span class="stat-label">الدروس المكتملة</span><strong>${stats.done}<small> / ${stats.total}</small></strong></div></div>
-  <div class="stat-card"><span class="stat-icon" aria-hidden="true">▤</span><div><span class="stat-label">الدروس المتاحة</span><strong>${stats.available}<small> درسًا</small></strong></div></div>
-  <div class="stat-card"><span class="stat-icon" aria-hidden="true">◈</span><div><span class="stat-label">المراحل</span><strong>${stages.length}<small> مراحل</small></strong></div></div>
+  <div class="stat-card"><span class="stat-icon" aria-hidden="true">${icon("mingcute:check-circle-fill")}</span><div><span class="stat-label">الدروس المكتملة</span><strong>${stats.done}<small> / ${stats.total}</small></strong></div></div>
+  <div class="stat-card"><span class="stat-icon" aria-hidden="true">${icon("mingcute:book-2-fill")}</span><div><span class="stat-label">الدروس المتاحة</span><strong>${stats.available}<small> درسًا</small></strong></div></div>
+  <div class="stat-card"><span class="stat-icon" aria-hidden="true">${icon("mingcute:layers-fill")}</span><div><span class="stat-label">المراحل</span><strong>${stages.length}<small> مراحل</small></strong></div></div>
 </div>`;
 }
 
 function renderCurrent(lesson, lessons, stages) {
   if (!lesson) {
-    return `<div class="next-step-card"><span class="next-step-icon" aria-hidden="true">✓</span><div class="next-step-copy"><span>لا يوجد درس نشط</span><h3>كل الدروس المتاحة مكتملة</h3><p>يمكنك مراجعة المراحل أو البدء في إضافة الدروس القادمة عبر Markdown.</p></div><a class="lesson-open-link" href="index.html#stages">استعرض المراحل</a></div>`;
+    return `<div class="next-step-card"><span class="next-step-icon" aria-hidden="true">${icon("mingcute:check-circle-fill")}</span><div class="next-step-copy"><span>لا يوجد درس نشط</span><h3>كل الدروس المتاحة مكتملة</h3><p>يمكنك مراجعة المراحل أو البدء في إضافة الدروس القادمة عبر Markdown.</p></div><a class="lesson-open-link" href="index.html#stages">استعرض المراحل</a></div>`;
   }
   const stage = stages.find((item) => item.id === lesson.stage);
   const stats = officialStats(lessons);
@@ -169,7 +174,7 @@ function renderStageCard(stage) {
     ? `<div class="topic-more" id="phase-more-${stage.id}" hidden>${rest.map(topic).join("")}</div>`
     : "";
   const toggle = rest.length
-    ? `<button class="phase-toggle" type="button" data-phase-toggle="phase-more-${stage.id}" aria-expanded="false" aria-controls="phase-more-${stage.id}" data-expand-label="عرض بقية الدروس (${rest.length})" data-collapse-label="تقليل الدروس">عرض بقية الدروس (${rest.length})</button>`
+    ? `<button class="phase-toggle" type="button" data-phase-toggle="phase-more-${stage.id}" aria-expanded="false" aria-controls="phase-more-${stage.id}" data-expand-label="عرض بقية الدروس (${rest.length})" data-collapse-label="تقليل الدروس">${icon("line-md:chevron-down")}<span class="phase-toggle-label">عرض بقية الدروس (${rest.length})</span></button>`
     : "";
   return `<article class="phase-card${current ? " phase-current" : ""}">
   <div class="phase-head">
@@ -230,7 +235,7 @@ function dashboardPage({ stages, lessons }) {
 
 <section class="page-section" aria-label="كيف يعمل الموقع">
   <div class="principles">
-    <span class="principle-icon" aria-hidden="true">✦</span>
+    <span class="principle-icon" aria-hidden="true">${icon("mingcute:bulb-fill")}</span>
     <div><h2>صفحات تُبنى من Markdown</h2><p>أضف الدرس كملف نصي في مجلد <code dir="ltr">content/lessons</code>، واكتب الشرح ثم كتلة <code dir="ltr">:::quiz</code>. يتولى GitHub Actions بناء الصفحة ونشرها. <a href="${REPO}/blob/main/content/README.md" target="_blank" rel="noreferrer">دليل إضافة الدروس ↗</a></p></div>
   </div>
 </section>`;
@@ -281,7 +286,7 @@ function renderLessonRow(lesson, root, details = false) {
   const remaining = details && lesson.remaining ? `<small>المتبقي: ${esc(lesson.remaining)}</small>` : "";
   return `<a class="lesson" href="${root}${lesson.url}" data-status="${statusData(lesson)}">
   <span class="lesson-index">${pad(lesson.id)}</span>
-  <span class="lesson-icon" aria-hidden="true">${lesson.kind === "project" ? "▣" : "▸"}</span>
+  <span class="lesson-icon" aria-hidden="true">${icon(lesson.kind === "project" ? "mingcute:rocket-fill" : lesson.draft ? "mingcute:document-fill" : "mingcute:code-fill")}</span>
   <div class="lesson-copy">
     <div class="lesson-title-row"><h3>${esc(lesson.title)}</h3>${lesson.kind === "project" ? '<span class="kind-badge">مشروع</span>' : ""}${lesson.draft ? '<span class="kind-badge">مسودة</span>' : ""}</div>
     <p>${esc(lesson.summary)}</p>
@@ -359,7 +364,7 @@ function progressPage({ stages, lessons }) {
   const main = `<header class="page-hero"><p class="eyebrow"><span class="eyebrow-line"></span> المتابعة</p><h1>سجل التقدم</h1><p class="lead">هذه هي الحالة الرسمية للدروس كما هي مكتوبة في ملفات المحتوى. تقدمك في اختبارات كل درس يُحفظ في متصفحك فقط.</p></header>
 <section class="page-section" aria-label="إحصاءات التقدم">${renderStats(stats, stages)}</section>
 ${sections}
-<section class="page-section"><div class="principles"><span class="principle-icon" aria-hidden="true">↻</span><div><h2>كيف تتحدث هذه الصفحة؟</h2><p>عدّل حالة الدرس في أعلى ملف Markdown ثم ارفع التغيير إلى GitHub. سيعيد GitHub Actions بناء الموقع تلقائيًا. لا تحتاج إلى تشغيل أي أمر على جهازك.</p></div></div></section>`;
+<section class="page-section"><div class="principles"><span class="principle-icon" aria-hidden="true">${icon("mingcute:refresh-2-fill")}</span><div><h2>كيف تتحدث هذه الصفحة؟</h2><p>عدّل حالة الدرس في أعلى ملف Markdown ثم ارفع التغيير إلى GitHub. سيعيد GitHub Actions بناء الموقع تلقائيًا. لا تحتاج إلى تشغيل أي أمر على جهازك.</p></div></div></section>`;
   return renderPage({
     title: "سجل التقدم",
     description: "حالة الدروس والمراحل في مسار RustPath.",

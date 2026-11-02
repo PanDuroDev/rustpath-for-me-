@@ -1048,7 +1048,62 @@ button {
   display: none !important;
 }
 
-/* 10. Responsive layouts */
+/* 10. Icons */
+iconify-icon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  flex: none;
+  vertical-align: -0.125em;
+}
+
+.nav-link iconify-icon,
+.repo-link iconify-icon,
+.theme-toggle iconify-icon {
+  font-size: 1.0625rem;
+}
+
+.stat-icon iconify-icon,
+.principle-icon iconify-icon,
+.next-step-icon iconify-icon {
+  font-size: 1.25rem;
+}
+
+.lesson-icon iconify-icon {
+  font-size: 1.125rem;
+}
+
+.phase-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s2);
+}
+
+.phase-toggle iconify-icon {
+  font-size: 1rem;
+  transition: transform 0.2s ease;
+}
+
+.phase-toggle[aria-expanded="true"] iconify-icon {
+  transform: rotate(180deg);
+}
+
+.copy-code {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.site-footer .footer-links a {
+  gap: var(--s1);
+}
+
+.site-footer iconify-icon {
+  color: var(--text-3);
+}
+
+/* 11. Responsive layouts */
 @media (max-width: 860px) {
   .hero {
     min-height: 0;
@@ -1190,7 +1245,7 @@ button {
   }
 }
 
-/* 11. Reduced motion */
+/* 12. Reduced motion */
 @media (hover: hover) {
   .stat-card:hover {
     border-color: var(--border);

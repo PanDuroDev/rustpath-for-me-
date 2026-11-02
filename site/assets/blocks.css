@@ -868,15 +868,20 @@
   display: none;
 }
 
-.quiz-hint summary::after {
-  content: "+";
+.quiz-hint summary .hint-icon {
+  color: var(--text-3);
+}
+
+.quiz-hint summary .hint-chevron {
+  margin-inline-start: auto;
   color: var(--text-3);
   font-size: 1rem;
   line-height: 1;
+  transition: transform 0.2s ease;
 }
 
-.quiz-hint[open] summary::after {
-  content: "−";
+.quiz-hint[open] summary .hint-chevron {
+  transform: rotate(180deg);
 }
 
 .quiz-hint summary:hover {

@@ -234,7 +234,7 @@ function renderBlocks(lines, options = {}) {
       }
       if (i < lines.length) i += 1;
       html.push(
-        `<div class="code-block"><div class="code-head"><span class="code-lang">${escapeHtml(language || "code")}</span><button class="copy-code" type="button" data-copy>نسخ</button></div><pre dir="ltr"><code${language ? ` class="language-${escapeHtml(language)}"` : ""}>${escapeHtml(code.join("\n"))}</code></pre></div>`,
+        `<div class="code-block"><div class="code-head"><span class="code-lang">${escapeHtml(language || "code")}</span><button class="copy-code" type="button" data-copy><iconify-icon class="copy-icon" icon="mingcute:copy-2-fill" aria-hidden="true"></iconify-icon><span class="copy-label">نسخ</span></button></div><pre dir="ltr"><code${language ? ` class="language-${escapeHtml(language)}"` : ""}>${escapeHtml(code.join("\n"))}</code></pre></div>`,
       );
       continue;
     }
@@ -426,7 +426,7 @@ function renderSingle(fields, options, file, line) {
     )
     .join("");
   return {
-    html: `<fieldset class="quiz-question" data-qid="${escapeHtml(id)}" data-type="single" data-group="${escapeHtml(group)}" data-graded="true"><legend>${renderInline(prompt)}</legend><div class="quiz-options">${optionsHtml}</div>${hint ? `<details class="quiz-hint"><summary>تلميح</summary><p>${renderInline(hint)}</p></details>` : ""}${renderFeedback(fields.explanation)}</fieldset>`,
+    html: `<fieldset class="quiz-question" data-qid="${escapeHtml(id)}" data-type="single" data-group="${escapeHtml(group)}" data-graded="true"><legend>${renderInline(prompt)}</legend><div class="quiz-options">${optionsHtml}</div>${hint ? `<details class="quiz-hint"><summary><iconify-icon class="hint-icon" icon="mingcute:bulb-fill" aria-hidden="true"></iconify-icon>تلميح<iconify-icon class="hint-chevron" icon="line-md:chevron-down" aria-hidden="true"></iconify-icon></summary><p>${renderInline(hint)}</p></details>` : ""}${renderFeedback(fields.explanation)}</fieldset>`,
     meta: { id, type: "single", group, graded: true, line },
   };
 }
@@ -447,7 +447,7 @@ function renderMultiple(fields, options, file, line) {
     )
     .join("");
   return {
-    html: `<fieldset class="quiz-question" data-qid="${escapeHtml(id)}" data-type="multiple" data-group="${escapeHtml(group)}" data-graded="true"><legend>${renderInline(prompt)}</legend><div class="quiz-options">${optionsHtml}</div>${hint ? `<details class="quiz-hint"><summary>تلميح</summary><p>${renderInline(hint)}</p></details>` : ""}${renderFeedback(fields.explanation)}</fieldset>`,
+    html: `<fieldset class="quiz-question" data-qid="${escapeHtml(id)}" data-type="multiple" data-group="${escapeHtml(group)}" data-graded="true"><legend>${renderInline(prompt)}</legend><div class="quiz-options">${optionsHtml}</div>${hint ? `<details class="quiz-hint"><summary><iconify-icon class="hint-icon" icon="mingcute:bulb-fill" aria-hidden="true"></iconify-icon>تلميح<iconify-icon class="hint-chevron" icon="line-md:chevron-down" aria-hidden="true"></iconify-icon></summary><p>${renderInline(hint)}</p></details>` : ""}${renderFeedback(fields.explanation)}</fieldset>`,
     meta: { id, type: "multiple", group, graded: true, line },
   };
 }
@@ -471,7 +471,7 @@ function renderTrueFalse(fields, file, line) {
     )
     .join("");
   return {
-    html: `<fieldset class="quiz-question" data-qid="${escapeHtml(id)}" data-type="truefalse" data-group="${escapeHtml(group)}" data-graded="true"><legend>${renderInline(prompt)}</legend><div class="quiz-options">${optionsHtml}</div>${hint ? `<details class="quiz-hint"><summary>تلميح</summary><p>${renderInline(hint)}</p></details>` : ""}${renderFeedback(fields.explanation)}</fieldset>`,
+    html: `<fieldset class="quiz-question" data-qid="${escapeHtml(id)}" data-type="truefalse" data-group="${escapeHtml(group)}" data-graded="true"><legend>${renderInline(prompt)}</legend><div class="quiz-options">${optionsHtml}</div>${hint ? `<details class="quiz-hint"><summary><iconify-icon class="hint-icon" icon="mingcute:bulb-fill" aria-hidden="true"></iconify-icon>تلميح<iconify-icon class="hint-chevron" icon="line-md:chevron-down" aria-hidden="true"></iconify-icon></summary><p>${renderInline(hint)}</p></details>` : ""}${renderFeedback(fields.explanation)}</fieldset>`,
     meta: { id, type: "truefalse", group, graded: true, line },
   };
 }
@@ -486,7 +486,7 @@ function renderShort(fields, file, line) {
   const caseSensitive = fields.case_sensitive === true;
   const answersJson = escapeHtml(JSON.stringify(answers));
   return {
-    html: `<fieldset class="quiz-question" data-qid="${escapeHtml(id)}" data-type="short" data-group="${escapeHtml(group)}" data-graded="true"><legend>${renderInline(prompt)}</legend><input class="short-input" type="text" autocomplete="off" placeholder="${escapeHtml(placeholder)}" data-answers="${answersJson}" data-case-sensitive="${caseSensitive}">${hint ? `<details class="quiz-hint"><summary>تلميح</summary><p>${renderInline(hint)}</p></details>` : ""}${renderFeedback(fields.explanation)}</fieldset>`,
+    html: `<fieldset class="quiz-question" data-qid="${escapeHtml(id)}" data-type="short" data-group="${escapeHtml(group)}" data-graded="true"><legend>${renderInline(prompt)}</legend><input class="short-input" type="text" autocomplete="off" placeholder="${escapeHtml(placeholder)}" data-answers="${answersJson}" data-case-sensitive="${caseSensitive}">${hint ? `<details class="quiz-hint"><summary><iconify-icon class="hint-icon" icon="mingcute:bulb-fill" aria-hidden="true"></iconify-icon>تلميح<iconify-icon class="hint-chevron" icon="line-md:chevron-down" aria-hidden="true"></iconify-icon></summary><p>${renderInline(hint)}</p></details>` : ""}${renderFeedback(fields.explanation)}</fieldset>`,
     meta: { id, type: "short", group, graded: true, line },
   };
 }
@@ -501,7 +501,7 @@ function renderLong(fields, options, file, line) {
   const checksHtml = checks.length
     ? `<div class="self-checks"><p class="model-label">راجع إجابتك:</p>${checks.map((check) => `<label class="check-item"><input type="checkbox" data-check><span>${renderInline(check)}</span></label>`).join("")}</div>`
     : "";
-  const hint = fields.hint ? `<details class="quiz-hint"><summary>تلميح</summary><p>${renderInline(fields.hint)}</p></details>` : "";
+  const hint = fields.hint ? `<details class="quiz-hint"><summary><iconify-icon class="hint-icon" icon="mingcute:bulb-fill" aria-hidden="true"></iconify-icon>تلميح<iconify-icon class="hint-chevron" icon="line-md:chevron-down" aria-hidden="true"></iconify-icon></summary><p>${renderInline(fields.hint)}</p></details>` : "";
   return {
     html: `<fieldset class="quiz-question" data-qid="${escapeHtml(id)}" data-type="long" data-group="${escapeHtml(group)}" data-graded="false"><legend>${renderInline(prompt)}</legend><textarea class="long-input" rows="${rows}" placeholder="اكتب إجابتك هنا..."></textarea>${hint}<div class="long-actions"><button class="quiz-submit" type="button" data-reveal>اعرض الإجابة النموذجية</button></div><div class="model-answer" hidden>${model ? `<p class="model-label">إجابة نموذجية</p>${renderMarkdown(model).html}` : ""}${checksHtml}</div></fieldset>`,
     meta: { id, type: "long", group, graded: false, line },

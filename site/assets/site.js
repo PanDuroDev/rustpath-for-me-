@@ -2,11 +2,16 @@
   const root = document.documentElement;
   const button = document.getElementById("theme-toggle");
   const labels = { dark: "الوضع الفاتح", light: "الوضع الداكن" };
+  const icons = { dark: "line-md:moon-to-sunny-outline-transition", light: "line-md:sunny-outline-to-moon-transition" };
 
   const syncTheme = () => {
     const theme = root.dataset.theme === "light" ? "light" : "dark";
     if (!button) return;
-    button.textContent = labels[theme];
+    const label = button.querySelector(".theme-label");
+    const icon = button.querySelector(".theme-icon");
+    if (label) label.textContent = labels[theme];
+    else button.textContent = labels[theme];
+    if (icon) icon.setAttribute("icon", icons[theme]);
     button.setAttribute("aria-label", labels[theme]);
   };
 
@@ -30,7 +35,10 @@
       const expanded = toggle.getAttribute("aria-expanded") === "true";
       target.hidden = expanded;
       toggle.setAttribute("aria-expanded", String(!expanded));
-      toggle.textContent = expanded ? toggle.dataset.expandLabel : toggle.dataset.collapseLabel;
+      const label = toggle.querySelector(".phase-toggle-label");
+      const text = expanded ? toggle.dataset.expandLabel : toggle.dataset.collapseLabel;
+      if (label) label.textContent = text;
+      else toggle.textContent = text;
     });
   });
 
@@ -51,10 +59,16 @@
         document.execCommand("copy");
         selection.removeAllRanges();
       }
-      copyButton.textContent = "تم النسخ";
+      const label = copyButton.querySelector(".copy-label");
+      const copyIcon = copyButton.querySelector(".copy-icon");
+      if (label) label.textContent = "تم النسخ";
+      else copyButton.textContent = "تم النسخ";
+      if (copyIcon) copyIcon.setAttribute("icon", "line-md:clipboard-to-clipboard-check-transition");
       copyButton.dataset.copied = "true";
       setTimeout(() => {
-        copyButton.textContent = "نسخ";
+        if (label) label.textContent = "نسخ";
+        else copyButton.textContent = "نسخ";
+        if (copyIcon) copyIcon.setAttribute("icon", "mingcute:copy-2-fill");
         delete copyButton.dataset.copied;
       }, 1500);
     });
