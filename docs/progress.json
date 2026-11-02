@@ -67,7 +67,7 @@
           "title": "التحقق من Rust وفهم rustc",
           "desc": "تحقق من تثبيت Rust والقناة المستخدمة وافهم دور المترجم rustc.",
           "status": "upcoming",
-          "title_en": "Verify the Rust toolchain and understand rustc",
+          "title_en": "Verify Rust toolchain and understand rustc",
           "desc_en": "Verify the Rust installation and toolchain, and understand the role of the rustc compiler."
         },
         {
@@ -85,7 +85,7 @@
           "title": "بنية المشروع والبناء والتشغيل",
           "desc": "افهم Cargo.toml وmain.rs واستخدم أوامر cargo build وcargo run وcargo check.",
           "status": "upcoming",
-          "title_en": "Project structure, building, and running",
+          "title_en": "Project structure, building, and running (Cargo.toml, main.rs, cargo build/run/check)",
           "desc_en": "Understand Cargo.toml and main.rs, then use cargo build, cargo run, and cargo check."
         },
         {
@@ -103,7 +103,7 @@
           "title": "Git وGitHub الأساسي",
           "desc": "تدرّب على init وadd وcommit وpush وأنشئ ملف .gitignore مناسباً.",
           "status": "upcoming",
-          "title_en": "Git and GitHub basics",
+          "title_en": "Git and GitHub basics (init, add, commit, push, .gitignore)",
           "desc_en": "Practice init, add, commit, and push, and create a suitable .gitignore file."
         }
       ],
@@ -185,7 +185,7 @@
           "title": "النصوص والإدخال",
           "desc": "اقرأ إدخال المستخدم وتعامل مع النصوص في صورة مبسطة تمهيداً للتعمق لاحقاً.",
           "status": "upcoming",
-          "title_en": "Strings and input",
+          "title_en": "Strings and input (simplified introduction; deeper treatment in Lesson 21)",
           "desc_en": "Read user input and handle text in a simplified introduction before the deeper treatment later."
         },
         {
@@ -194,7 +194,7 @@
           "title": "مشروع: آلة حاسبة في الطرفية",
           "desc": "ابنِ آلة حاسبة تقرأ المدخلات وتنفذ العمليات الأساسية وتعرض النتائج في الطرفية.",
           "status": "upcoming",
-          "title_en": "Project: terminal calculator",
+          "title_en": "Project: Terminal calculator",
           "desc_en": "Build a terminal calculator that reads input, performs basic operations, and displays results."
         }
       ],
@@ -222,7 +222,7 @@
           "title": "Borrowing و References",
           "desc": "استخدم المراجع والاستعارة بقواعدها وافهم الفرق بين المراجع القابلة وغير القابلة للتغيير.",
           "status": "upcoming",
-          "title_en": "Borrowing and references",
+          "title_en": "Borrowing and References",
           "desc_en": "Use references safely and understand mutable and immutable borrowing rules."
         },
         {
@@ -231,7 +231,7 @@
           "title": "Slices والنصوص بعمق",
           "desc": "افهم الشرائح والفرق العملي بين String و&str وكيفية التعامل مع النصوص.",
           "status": "upcoming",
-          "title_en": "Slices and strings in depth",
+          "title_en": "Slices and strings in depth (String vs &str)",
           "desc_en": "Understand slices and the practical difference between String and &str."
         },
         {
@@ -285,7 +285,7 @@
           "title": "الاختبارات",
           "desc": "اكتب اختبارات وحدات وشغّلها باستخدام cargo test للتحقق من السلوك.",
           "status": "upcoming",
-          "title_en": "Testing",
+          "title_en": "Testing (cargo test)",
           "desc_en": "Write unit tests and run them with cargo test to verify program behavior."
         },
         {
@@ -294,7 +294,7 @@
           "title": "مشروع: مدير مهام في الطرفية",
           "desc": "أنشئ مدير مهام يحتفظ بقائمة داخل الذاكرة ويتيح إضافة المهام وعرضها وتحديثها وحذفها أثناء تشغيل البرنامج.",
           "status": "upcoming",
-          "title_en": "Project: terminal task manager",
+          "title_en": "Project: Terminal task manager",
           "desc_en": "Build a task manager that keeps an in-memory task list and can add, list, update, and delete tasks during the program run."
         }
       ],
@@ -313,7 +313,7 @@
           "title": "Modules و Crates",
           "desc": "قسّم الشيفرة إلى وحدات وافهم نطاقات الرؤية وتنظيم الحزم والصناديق.",
           "status": "upcoming",
-          "title_en": "Modules and crates",
+          "title_en": "Modules and Crates",
           "desc_en": "Split code into modules and understand visibility, package organization, and crates."
         },
         {
@@ -358,7 +358,7 @@
           "title": "Traits و Generics",
           "desc": "اكتب واجهات مشتركة وكوداً عاماً يعيد استخدام السلوك والأنواع.",
           "status": "upcoming",
-          "title_en": "Traits and generics",
+          "title_en": "Traits and Generics",
           "desc_en": "Write shared interfaces and generic code that reuses behavior across types."
         },
         {
@@ -376,7 +376,7 @@
           "title": "Iterators و Closures",
           "desc": "عالج التسلسلات باستخدام المكررات واكتب Closures لتمرير السلوك.",
           "status": "upcoming",
-          "title_en": "Iterators and closures",
+          "title_en": "Iterators and Closures",
           "desc_en": "Process sequences with iterators and use closures to pass behavior."
         },
         {
@@ -385,7 +385,7 @@
           "title": "Smart Pointers",
           "desc": "تعرّف Box وRc وArc وRefCell واستخدم المؤشرات الذكية عند الحاجة.",
           "status": "upcoming",
-          "title_en": "Smart pointers",
+          "title_en": "Smart Pointers",
           "desc_en": "Explore Box, Rc, Arc, and RefCell and learn when smart pointers are useful."
         },
         {
@@ -431,7 +431,7 @@
           "title": "مشروع: HTTP Client",
           "desc": "طوّر عميلاً يرسل طلبات HTTP ويتعامل مع الاستجابات والحالات والأخطاء.",
           "status": "upcoming",
-          "title_en": "Project: HTTP client",
+          "title_en": "Project: HTTP Client",
           "desc_en": "Develop a client that sends HTTP requests and handles responses, status codes, and errors."
         },
         {

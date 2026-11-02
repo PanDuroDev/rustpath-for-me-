@@ -98,6 +98,21 @@
     else setLastTextNode(selector, value);
   }
 
+  function updateThemeControl() {
+    if (!themeButton) return;
+    const isLight = root.dataset.theme === "light";
+    const icon = document.createElement("i");
+    icon.dataset.lucide = isLight ? "moon" : "sun";
+    icon.setAttribute("aria-hidden", "true");
+    const label = document.createElement("span");
+    label.className = "theme-label";
+    label.textContent = t(isLight ? "dark" : "light");
+    themeButton.replaceChildren(icon, label);
+    themeButton.setAttribute("aria-label", t(isLight ? "dark" : "light"));
+    themeButton.title = t(isLight ? "dark" : "light");
+    if (window.lucide && typeof window.lucide.createIcons === "function") window.lucide.createIcons();
+  }
+
   function applyStaticText() {
     const home = !isProgressPage;
     document.title = t(home ? "pageHomeTitle" : "pageProgressTitle");
@@ -112,18 +127,7 @@
     const brand = document.querySelector(".brand");
     if (brand) brand.setAttribute("aria-label", language === "en" ? "RustPath home page" : "RustPath الصفحة الرئيسية");
 
-    if (themeButton) {
-      const isLight = root.dataset.theme === "light";
-      const icon = document.createElement("i");
-      icon.dataset.lucide = isLight ? "moon" : "sun";
-      icon.setAttribute("aria-hidden", "true");
-      const label = document.createElement("span");
-      label.className = "theme-label";
-      label.textContent = t(isLight ? "dark" : "light");
-      themeButton.replaceChildren(icon, label);
-      themeButton.setAttribute("aria-label", t(isLight ? "dark" : "light"));
-      themeButton.title = t(isLight ? "dark" : "light");
-    }
+    updateThemeControl();
     if (languageButton) {
       languageButton.textContent = t("languageButton");
       languageButton.setAttribute("aria-label", t("languageAction"));
@@ -223,7 +227,7 @@
     if (persist) {
       try { localStorage.setItem("rustpath-theme", root.dataset.theme); } catch (_) {}
     }
-    applyStaticText();
+    updateThemeControl();
   }
 
   try {

@@ -32,7 +32,7 @@
 ### Phase 1 — Programming fundamentals
 - [x] 1. What is programming?
 - [x] 2. How does a computer work?
-- [x] 3. Programming languages and Compiler
+- [x] 3. Programming languages and compilers
 - [ ] 4. Terminal, files, folders, and paths
 
 ### Phase 2 — Rust environment and first project
@@ -91,7 +91,7 @@
 
 ## Repository layout
 
-- `docs/` — Static Arabic learning dashboard and progress record page.
+- `docs/` — Static Arabic and English learning dashboard and progress record page.
 - `docs/progress.json` — Single structured source for curriculum progress and evidence.
 - `LEARNING_PROGRESS.md` — Human-readable progress record and teaching notes.
 - `lessons/` — Individual lesson documents.

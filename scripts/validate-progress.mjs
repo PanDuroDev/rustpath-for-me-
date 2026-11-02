@@ -98,6 +98,19 @@ if (items.length !== 43) {
   fail("عدد العناصر " + items.length + "؛ المطلوب 43 عنصراً بالضبط.");
 }
 
+const nextLessonMatch = markdown.match(/^\s*- \*\*Next lesson:\*\* Phase \d+, Lesson (\d+) — (.+)$/m);
+if (!nextLessonMatch) {
+  fail('لم يُعثر على سطر Next lesson بصيغة Phase N, Lesson N — title.');
+} else {
+  const nextId = Number(nextLessonMatch[1]);
+  const nextItem = items.find((item) => item.id === nextId);
+  if (!nextItem || nextItem.status !== "upcoming") {
+    fail("الدرس التالي في Markdown لا يشير إلى عنصر upcoming صالح في JSON.");
+  } else if (nextLessonMatch[2].trim() !== nextItem.title_en) {
+    fail("عنوان Next lesson في Markdown لا يطابق title_en للعنصر " + nextId + " في JSON.");
+  }
+}
+
 const currentMatch = markdown.match(/^\s*- \*\*Current lesson:\*\* Lesson (\d+)\b/m);
 if (!currentMatch) {
   fail('لم يُعثر على سطر "- **Current lesson:** Lesson N" في LEARNING_PROGRESS.md.');
@@ -148,8 +161,13 @@ curriculumCheckboxes.forEach((row, index) => {
   const item = items.find((entry) => entry.id === row.id);
   if (!item) {
     fail("عنصر المنهج رقم " + row.id + " في checkboxes غير موجود في JSON.");
-  } else if (row.checked !== (item.status === "done")) {
-    fail("حالة checkbox للعنصر " + row.id + " لا تطابق status في progress.json.");
+  } else {
+    if (row.title !== item.title_en) {
+      fail("عنوان checkbox للعنصر " + row.id + " لا يطابق title_en في progress.json.");
+    }
+    if (row.checked !== (item.status === "done")) {
+      fail("حالة checkbox للعنصر " + row.id + " لا تطابق status في progress.json.");
+    }
   }
 });
 
