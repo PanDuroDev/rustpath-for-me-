@@ -147,7 +147,7 @@ for (const row of completedRows) {
 
 const curriculumCheckboxes = [];
 for (const line of markdown.split(/\r?\n/)) {
-  const match = line.match(/^\s*- \[([ xX])\] (\d+)\. /);
+  const match = line.match(/^\s*- \[([ xX])\] (\d+)\. (.+)$/);
   if (match) curriculumCheckboxes.push({ id: Number(match[2]), checked: match[1].toLowerCase() === "x", title: match[3].trim() });
 }
 if (curriculumCheckboxes.length !== items.length) {
