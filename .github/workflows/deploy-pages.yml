@@ -6,36 +6,57 @@ on:
       - main
     paths:
       - "docs/**"
+      - "LEARNING_PROGRESS.md"
+      - "scripts/**"
+      - ".github/workflows/deploy-pages.yml"
+  pull_request:
+    paths:
+      - "docs/**"
+      - "LEARNING_PROGRESS.md"
+      - "scripts/**"
       - ".github/workflows/deploy-pages.yml"
   workflow_dispatch:
-
-permissions:
-  contents: read
-  pages: write
-  id-token: write
 
 concurrency:
   group: github-pages
   cancel-in-progress: true
 
 jobs:
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  validate:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Validate progress data
+        run: node scripts/validate-progress.mjs
 
+  deploy:
+    if: github.event_name != 'pull_request'
+    needs: validate
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
-
-      - name: Upload dashboard
+      - name: Prepare site
+        run: |
+          mkdir -p _site
+          cp -R docs/. _site/
+          cp LEARNING_PROGRESS.md _site/LEARNING_PROGRESS.md
+      - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./docs
-
+          path: ./_site
       - name: Deploy
         id: deployment
         uses: actions/deploy-pages@v4

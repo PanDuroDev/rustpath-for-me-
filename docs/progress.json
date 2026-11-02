@@ -1,0 +1,96 @@
+{
+  "updated": "2026-11-02",
+  "phases": [
+    {
+      "id": 1,
+      "title": "أساسيات البرمجة",
+      "summary": "تأسيس فهم واضح للبرمجة ومكوّنات الكمبيوتر وأدوات التعامل مع الملفات قبل تعلّم Rust.",
+      "icon": "graduation-cap",
+      "items": [
+        { "id": 1, "kind": "lesson", "title": "ما هي البرمجة؟", "desc": "تعرّف معنى البرمجة وكيف تتحول المشكلة إلى تعليمات ينفذها الكمبيوتر.", "status": "done", "evidence": "أكّد المتعلم صحة جميع الإجابات" },
+        { "id": 2, "kind": "lesson", "title": "كيف يعمل الكمبيوتر؟", "desc": "افهم أدوار المعالج والذاكرة والتخزين واللوحة الأم أثناء تشغيل البرامج.", "status": "done", "evidence": "نتيجة الاختبار 4 / 4" },
+        { "id": 3, "kind": "lesson", "title": "لغات البرمجة و Compiler", "desc": "تعرّف لغات البرمجة والـ Binary والفرق بين المترجم والمفسّر.", "status": "done", "evidence": "نتيجة الاختبار 4 / 4" },
+        { "id": 4, "kind": "lesson", "title": "Terminal والملفات والمجلدات والمسارات", "desc": "تعلّم استخدام الطرفية والتنقل بين المجلدات وفهم الملفات والامتدادات والمسارات.", "status": "active", "remaining": "اختبار من 5 أسئلة + تطبيق عملي" }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "بيئة Rust وأول مشروع",
+      "summary": "تجهيز أدوات Rust وفهم Cargo وبنية المشروع حتى إنشاء أول برنامج وتشغيله.",
+      "icon": "wrench",
+      "items": [
+        { "id": 5, "kind": "lesson", "title": "التحقق من Rust وفهم rustc", "desc": "تحقق من تثبيت Rust والقناة المستخدمة وافهم دور المترجم rustc.", "status": "upcoming" },
+        { "id": 6, "kind": "lesson", "title": "Cargo وإنشاء أول مشروع", "desc": "تعرّف مدير المشاريع والحزم Cargo وأنشئ مشروع Rust جديداً.", "status": "upcoming" },
+        { "id": 7, "kind": "lesson", "title": "بنية المشروع والبناء والتشغيل", "desc": "افهم Cargo.toml وmain.rs واستخدم أوامر cargo build وcargo run وcargo check.", "status": "upcoming" },
+        { "id": 8, "kind": "lesson", "title": "قراءة أخطاء المترجم", "desc": "اقرأ رسائل أخطاء Rust وحدد موضع المشكلة وسببها وطريقة فهم اقتراحات المترجم.", "status": "upcoming" },
+        { "id": 9, "kind": "lesson", "title": "Git وGitHub الأساسي", "desc": "تدرّب على init وadd وcommit وpush وأنشئ ملف .gitignore مناسباً.", "status": "upcoming" }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "أساسيات لغة Rust",
+      "summary": "تعلم بناء برامج Rust صغيرة باستخدام المتغيرات والأنواع والتحكم في تدفق التنفيذ والدوال.",
+      "icon": "code-2",
+      "items": [
+        { "id": 10, "kind": "lesson", "title": "الطباعة والتعليقات", "desc": "استخدم println! وprint! واكتب تعليقات توضّح غرض الكود.", "status": "upcoming" },
+        { "id": 11, "kind": "lesson", "title": "المتغيرات والثوابت", "desc": "أنشئ متغيرات وثوابت وافهم mut وقواعد تغيير القيم.", "status": "upcoming" },
+        { "id": 12, "kind": "lesson", "title": "أنواع البيانات", "desc": "ميّز بين الأنواع العددية والمنطقية والمحرفية والنصية والمجموعات الأساسية.", "status": "upcoming" },
+        { "id": 13, "kind": "lesson", "title": "العمليات والمشغّلات", "desc": "استخدم العمليات الحسابية والمنطقية وعمليات المقارنة والإسناد.", "status": "upcoming" },
+        { "id": 14, "kind": "lesson", "title": "الشروط", "desc": "تحكم في مسار البرنامج باستخدام if وelse والتعبيرات الشرطية.", "status": "upcoming" },
+        { "id": 15, "kind": "lesson", "title": "الحلقات", "desc": "كرّر التعليمات باستخدام loop وwhile وfor وتعلّم break وcontinue.", "status": "upcoming" },
+        { "id": 16, "kind": "lesson", "title": "الدوال", "desc": "عرّف الدوال واستقبل المعاملات وأعد القيم وافهم نطاق المتغيرات.", "status": "upcoming" },
+        { "id": 17, "kind": "lesson", "title": "النصوص والإدخال", "desc": "اقرأ إدخال المستخدم وتعامل مع النصوص في صورة مبسطة تمهيداً للتعمق لاحقاً.", "status": "upcoming" },
+        { "id": 18, "kind": "project", "title": "مشروع: آلة حاسبة في الطرفية", "desc": "ابنِ آلة حاسبة تقرأ المدخلات وتنفذ العمليات الأساسية وتعرض النتائج في الطرفية.", "status": "upcoming" }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "مفاهيم Rust الأساسية",
+      "summary": "تعمّق في قواعد الملكية والاستعارة وبُنى البيانات والأخطاء والاختبارات لبناء برامج موثوقة.",
+      "icon": "shield-check",
+      "items": [
+        { "id": 19, "kind": "lesson", "title": "Ownership", "desc": "افهم نظام الملكية وكيف تتحكم Rust في عمر القيم ومواضع إسقاطها.", "status": "upcoming" },
+        { "id": 20, "kind": "lesson", "title": "Borrowing و References", "desc": "استخدم المراجع والاستعارة بقواعدها وافهم الفرق بين المراجع القابلة وغير القابلة للتغيير.", "status": "upcoming" },
+        { "id": 21, "kind": "lesson", "title": "Slices والنصوص بعمق", "desc": "افهم الشرائح والفرق العملي بين String و&str وكيفية التعامل مع النصوص.", "status": "upcoming" },
+        { "id": 22, "kind": "lesson", "title": "Structs", "desc": "نمذج البيانات المترابطة باستخدام البُنى والحقول والدوال المرتبطة بها.", "status": "upcoming" },
+        { "id": 23, "kind": "lesson", "title": "Enums و match", "desc": "مثّل الحالات المختلفة باستخدام Enums وطابقها بوضوح عبر match.", "status": "upcoming" },
+        { "id": 24, "kind": "lesson", "title": "Option و Result", "desc": "تعامل مع غياب القيم والنتائج التي قد تفشل دون الاعتماد على قيم null.", "status": "upcoming" },
+        { "id": 25, "kind": "lesson", "title": "معالجة الأخطاء", "desc": "ميّز الأخطاء القابلة للاسترداد وغير القابلة للاسترداد واختر طريقة معالجتها.", "status": "upcoming" },
+        { "id": 26, "kind": "lesson", "title": "Collections", "desc": "خزّن مجموعات متغيرة الحجم واستخدم Vec وHashMap وString في الحالات المناسبة.", "status": "upcoming" },
+        { "id": 27, "kind": "lesson", "title": "الاختبارات", "desc": "اكتب اختبارات وحدات وشغّلها باستخدام cargo test للتحقق من السلوك.", "status": "upcoming" },
+        { "id": 28, "kind": "project", "title": "مشروع: مدير مهام في الطرفية", "desc": "أنشئ مدير مهام يحفظ المهام ويتيح إضافتها وعرضها وتحديثها وحذفها.", "status": "upcoming" }
+      ]
+    },
+    {
+      "id": 5,
+      "title": "مفاهيم متقدمة وأدوات",
+      "summary": "توسيع القدرة على تنظيم المشاريع واستخدام المكتبات وأدوات الجودة والتزامن والبرمجة غير المتزامنة.",
+      "icon": "network",
+      "items": [
+        { "id": 29, "kind": "lesson", "title": "Modules و Crates", "desc": "قسّم الشيفرة إلى وحدات وافهم نطاقات الرؤية وتنظيم الحزم والصناديق.", "status": "upcoming" },
+        { "id": 30, "kind": "lesson", "title": "المكتبات الخارجية وقراءة docs.rs", "desc": "أضف اعتماداً خارجياً وافهم توثيق المكتبات وصفحات API على docs.rs.", "status": "upcoming" },
+        { "id": 31, "kind": "lesson", "title": "rustfmt و clippy", "desc": "نسّق الشيفرة تلقائياً واستخدم Clippy لاكتشاف الأنماط والمشكلات الشائعة.", "status": "upcoming" },
+        { "id": 32, "kind": "lesson", "title": "التعامل مع الملفات", "desc": "اقرأ الملفات واكتبها وتعامل مع المسارات وأخطاء الإدخال والإخراج.", "status": "upcoming" },
+        { "id": 33, "kind": "lesson", "title": "JSON و serde", "desc": "حوّل البيانات بين JSON وبُنى Rust باستخدام مكتبة serde.", "status": "upcoming" },
+        { "id": 34, "kind": "lesson", "title": "Traits و Generics", "desc": "اكتب واجهات مشتركة وكوداً عاماً يعيد استخدام السلوك والأنواع.", "status": "upcoming" },
+        { "id": 35, "kind": "lesson", "title": "Lifetimes", "desc": "افهم تعليقات الأعمار وكيف ترتبط صلاحية المراجع ببياناتها.", "status": "upcoming" },
+        { "id": 36, "kind": "lesson", "title": "Iterators و Closures", "desc": "عالج التسلسلات باستخدام المكررات واكتب Closures لتمرير السلوك.", "status": "upcoming" },
+        { "id": 37, "kind": "lesson", "title": "Smart Pointers", "desc": "تعرّف Box وRc وArc وRefCell واستخدم المؤشرات الذكية عند الحاجة.", "status": "upcoming" },
+        { "id": 38, "kind": "lesson", "title": "Concurrency", "desc": "نفّذ أعمالاً متزامنة باستخدام الخيوط وقنوات الاتصال وأدوات المزامنة.", "status": "upcoming" },
+        { "id": 39, "kind": "lesson", "title": "Async Rust", "desc": "افهم Future وasync وawait وطريقة تشغيل المهام غير المتزامنة.", "status": "upcoming" },
+        { "id": 40, "kind": "project", "title": "مشروع: أداة ملفات CLI", "desc": "ابنِ أداة سطر أوامر للبحث في الملفات وتنظيمها وتنفيذ عمليات عليها.", "status": "upcoming" }
+      ]
+    },
+    {
+      "id": 6,
+      "title": "مشاريع عملية",
+      "summary": "تطبيق المفاهيم المتراكمة في مشاريع تتعامل مع HTTP وواجهات API ثم مشروع ختامي متكامل.",
+      "icon": "rocket",
+      "items": [
+        { "id": 41, "kind": "project", "title": "مشروع: HTTP Client", "desc": "طوّر عميلاً يرسل طلبات HTTP ويتعامل مع الاستجابات والحالات والأخطاء.", "status": "upcoming" },
+        { "id": 42, "kind": "project", "title": "مشروع: تطبيق يستهلك API", "desc": "أنشئ تطبيقاً يستهلك واجهة API ويحوّل بياناتها إلى وظائف مفيدة للمستخدم.", "status": "upcoming" },
+        { "id": 43, "kind": "project", "title": "المشروع الختامي", "desc": "خطّط وابنِ مشروع Rust متكاملاً يجمع المهارات التي اكتسبتها خلال المنهج.", "status": "upcoming" }
+      ]
+    }
+  ]
+}

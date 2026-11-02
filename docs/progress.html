@@ -1,57 +1,80 @@
 <!doctype html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" data-theme="dark">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#080808">
-  <meta name="description" content="سجل التقدم المعتمد في منهج RustPath.">
+  <meta name="theme-color" content="#090909">
+  <meta name="description" content="سجل التقدم المعتمد في منهج RustPath، مع عرض واضح لحالة الدروس والمشاريع.">
+  <meta property="og:title" content="سجل التقدم — RustPath">
+  <meta property="og:description" content="السجل المقروء لتقدم تعلّم Rust والخطة التعليمية.">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="ar_AR">
+  <meta name="twitter:card" content="summary">
   <title>سجل التقدم — RustPath</title>
+  <script>
+    (() => {
+      let theme;
+      try { theme = localStorage.getItem("rustpath-theme"); } catch (_) {}
+      if (theme !== "light" && theme !== "dark") {
+        theme = window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+      }
+      document.documentElement.dataset.theme = theme;
+      const meta = document.querySelector('meta[name="theme-color"]');
+      if (meta) meta.content = theme === "light" ? "#ffffff" : "#090909";
+    })();
+  </script>
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./styles.css">
   <link rel="stylesheet" href="./progress.css">
+  <script src="./common.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.468.0/dist/umd/lucide.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked@15.0.7/marked.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.6/dist/purify.min.js" defer></script>
+  <script src="./progress.js" defer></script>
 </head>
 <body>
+  <a class="skip-link" href="#main-content">انتقل إلى المحتوى</a>
   <header class="topbar">
     <a class="brand" href="./" aria-label="RustPath الصفحة الرئيسية">
-      <span class="brand-mark"><i data-lucide="terminal" aria-hidden="true"></i></span>
+      <span class="brand-mark" aria-hidden="true"><i data-lucide="terminal"></i></span>
       <span class="brand-name">Rust<span>Path</span></span>
     </a>
     <nav class="top-actions" aria-label="روابط رئيسية">
-      <button class="theme-toggle" id="theme-toggle" type="button"><i data-lucide="sun" aria-hidden="true"></i><span class="theme-label">الوضع الفاتح</span></button>
-      <a class="nav-link" href="./"><i data-lucide="layout-dashboard" aria-hidden="true"></i><span>لوحة التعلم</span></a>
-      <a class="repo-link" href="https://github.com/PanDuroDev/rustpath-for-me-/blob/main/LEARNING_PROGRESS.md" target="_blank" rel="noreferrer"><i data-lucide="github" aria-hidden="true"></i><span>ملف Markdown</span><i data-lucide="arrow-up-right" class="external-icon" aria-hidden="true"></i></a>
+      <button class="theme-toggle" id="theme-toggle" type="button" aria-label="التبديل إلى الوضع الفاتح" title="التبديل إلى الوضع الفاتح"><i data-lucide="sun" aria-hidden="true"></i><span class="theme-label">الوضع الفاتح</span></button>
+      <a class="nav-link" href="./"><i data-lucide="layout-dashboard" aria-hidden="true"></i><span>لوحة التعلّم</span></a>
+      <a class="repo-link" href="https://github.com/PanDuroDev/rustpath-for-me-/blob/main/LEARNING_PROGRESS.md" target="_blank" rel="noreferrer"><i data-lucide="github" aria-hidden="true"></i><span>ملف Markdown</span></a>
     </nav>
   </header>
-  <main class="progress-shell">
+  <main class="progress-shell" id="main-content">
     <div class="progress-page-head">
       <div>
         <div class="eyebrow"><span class="eyebrow-line"></span> سجل المنهج المعتمد</div>
         <h1>سجل <span>التقدم</span></h1>
-        <p>نسخة مقروءة من ملف LEARNING_PROGRESS.md الموجود في المستودع. يتم تحميل المحتوى مباشرة من GitHub.</p>
+        <p>نسخة مقروءة من ملف LEARNING_PROGRESS.md الموجود في المستودع، مع تاريخ التحديث المسجل داخل الملف نفسه.</p>
       </div>
       <div class="progress-page-actions">
-        <button id="reload-progress" class="secondary-action" type="button"><i data-lucide="refresh-cw"></i> تحديث</button>
-        <a class="secondary-action" href="https://raw.githubusercontent.com/PanDuroDev/rustpath-for-me-/main/LEARNING_PROGRESS.md" target="_blank" rel="noreferrer"><i data-lucide="file-down"></i> Markdown الخام</a>
+        <button id="reload-progress" class="secondary-action" type="button"><i data-lucide="refresh-cw" aria-hidden="true"></i> تحديث</button>
+        <a class="secondary-action" href="https://raw.githubusercontent.com/PanDuroDev/rustpath-for-me-/main/LEARNING_PROGRESS.md" target="_blank" rel="noreferrer"><i data-lucide="file-down" aria-hidden="true"></i> Markdown الخام</a>
       </div>
     </div>
     <section class="source-status" aria-live="polite">
-      <span class="source-dot" id="source-dot"></span>
+      <span class="source-dot" id="source-dot" aria-hidden="true"></span>
       <span id="source-message">جارٍ تحميل سجل التقدم…</span>
       <span id="source-updated"></span>
     </section>
     <article id="markdown-content" class="markdown-content" aria-label="محتوى سجل التقدم">
-      <div class="loading-state"><span class="loading-spinner"></span><p>جارٍ جلب الملف من GitHub…</p></div>
+      <p class="loading-state">جارٍ تحميل السجل…</p>
     </article>
+    <div id="progress-error" class="progress-error" role="alert" hidden>
+      تعذر تحميل سجل التقدم من النسخة المنشورة أو من GitHub. يمكنك فتح <a href="https://github.com/PanDuroDev/rustpath-for-me-/blob/main/LEARNING_PROGRESS.md" target="_blank" rel="noreferrer">الملف مباشرة على GitHub</a>.
+    </div>
     <footer class="progress-footer">
-      <a href="./"><i data-lucide="arrow-right"></i> العودة إلى لوحة التعلم</a>
+      <a href="./"><i data-lucide="arrow-right" aria-hidden="true"></i> العودة إلى لوحة التعلّم</a>
       <span>المصدر: PanDuroDev/rustpath-for-me-</span>
     </footer>
   </main>
-  <script src="https://cdn.jsdelivr.net/npm/lucide@0.468.0/dist/umd/lucide.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/marked@15.0.7/marked.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.6/dist/purify.min.js"></script>
-  <script src="./progress.js"></script>
 </body>
 </html>
