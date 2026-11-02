@@ -1,3 +1,6 @@
+# Generated site preview
+_site/
+
 # Rust build artifacts
 target/
 **/target/
