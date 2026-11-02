@@ -217,34 +217,53 @@
 
 /* Code fences */
 .code-block {
-  margin: var(--s4) 0 var(--s5);
+  margin: var(--s5) 0;
   border: 1px solid var(--border);
-  background: var(--surface-2);
-  overflow: hidden;
+  background: var(--bg);
 }
 
 .code-head {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: var(--s3);
-  min-height: 38px;
-  padding-inline: var(--s3);
-  border-block-end: 1px solid var(--border-soft);
-}
-
-.code-lang {
-  color: var(--text-3);
-  font: 0.75rem ui-monospace, Consolas, monospace;
-  text-transform: uppercase;
+  min-height: 44px;
+  padding: 6px var(--s4);
+  border-block-end: 1px solid var(--border);
+  background: var(--surface);
   direction: ltr;
 }
 
-.copy-code {
-  min-height: 32px;
-  padding: 4px 12px;
+.code-lang {
+  flex: none;
+  padding: 2px 8px;
   border: 1px solid var(--border);
-  background: transparent;
+  background: var(--bg);
+  color: var(--text-2);
+  font: 0.6875rem/1.6 ui-monospace, Consolas, monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.code-title {
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: var(--text-2);
+  font: 0.8125rem ui-monospace, Consolas, monospace;
+  text-align: start;
+}
+
+.copy-code {
+  flex: none;
+  min-height: 30px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border: 1px solid var(--border);
+  background: var(--bg);
   color: var(--text-2);
   font-size: 0.75rem;
   cursor: pointer;
@@ -258,30 +277,39 @@
 .copy-code:hover {
   color: var(--text);
   border-color: var(--text-3);
-  background: var(--surface);
+  background: var(--surface-2);
 }
 
 .copy-code:active {
   transform: translateY(1px);
 }
 
+.copy-code:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 2px;
+}
+
 .copy-code[data-copied="true"] {
   border-color: var(--text);
-  background: var(--surface-2);
-  color: var(--text);
+  background: var(--text);
+  color: var(--bg);
 }
 
 .code-block pre {
   margin: 0;
-  padding: var(--s4);
+  padding: var(--s4) var(--s4) var(--s5);
+  max-height: 520px;
   overflow: auto;
   direction: ltr;
   text-align: left;
+  background: var(--bg);
 }
 
 .code-block code {
   color: var(--text);
-  font: 0.875rem/1.75 Consolas, ui-monospace, monospace;
+  font: 0.8125rem/1.8 Consolas, ui-monospace, monospace;
+  font-variant-ligatures: none;
+  tab-size: 4;
 }
 
 /* Tables */
@@ -1038,11 +1066,6 @@
   text-align: end;
 }
 
-.code-title {
-  color: var(--text-2);
-  font: 0.75rem ui-monospace, monospace;
-}
-
 .callout {
   margin: var(--s5) 0;
   padding: var(--s4) var(--s5);
@@ -1123,5 +1146,13 @@
   .callout,
   .lesson-toc {
     padding: var(--s3) var(--s4);
+  }
+
+  .code-head {
+    padding-inline: var(--s3);
+  }
+
+  .code-block pre {
+    padding: var(--s3) var(--s3) var(--s4);
   }
 }
