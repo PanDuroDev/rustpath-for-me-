@@ -1,0 +1,19 @@
+# Rust build artifacts
+target/
+**/target/
+
+# Operating systems
+.DS_Store
+Thumbs.db
+
+# Editors and IDEs
+.vscode/
+.idea/
+.fleet/
+.zed/
+.history/
+*.swp
+*.swo
+
+# JavaScript package directories (not used by the static site)
+node_modules/
