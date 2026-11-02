@@ -4,7 +4,7 @@ stage: 1
 slug: what-is-programming
 title: ما هي البرمجة؟
 summary: تعرّف معنى البرمجة وكيف تتحول المشكلة إلى تعليمات ينفذها الكمبيوتر.
-status: done
+status: upcoming
 kind: lesson
 minutes: 20
 objectives:

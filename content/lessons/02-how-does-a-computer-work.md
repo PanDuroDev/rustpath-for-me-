@@ -4,7 +4,7 @@ stage: 1
 slug: how-does-a-computer-work
 title: كيف يعمل الكمبيوتر؟
 summary: افهم أدوار المعالج والذاكرة والتخزين واللوحة الأم أثناء تشغيل البرامج.
-status: done
+status: upcoming
 kind: lesson
 minutes: 20
 objectives:

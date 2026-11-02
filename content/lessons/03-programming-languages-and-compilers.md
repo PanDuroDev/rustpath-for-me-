@@ -4,7 +4,7 @@ stage: 1
 slug: programming-languages-and-compilers
 title: لغات البرمجة و Compiler
 summary: تعرّف لغات البرمجة والـ Binary والفرق بين المترجم والمفسّر.
-status: done
+status: upcoming
 kind: lesson
 minutes: 20
 objectives:

@@ -17,7 +17,7 @@ function statusLabel(lesson) {
   if (lesson.draft) return "قيد الإعداد";
   if (lesson.status === "done") return "مكتمل";
   if (lesson.status === "active") return "قيد التعلّم";
-  return "قادم";
+  return "لم يبدأ";
 }
 
 function statusData(lesson) {
@@ -25,11 +25,12 @@ function statusData(lesson) {
 }
 
 function stageStatus(stage) {
-  if (!stage.lessons.length) return "قادمة";
+  if (!stage.lessons.length) return "لم تبدأ";
   if (stage.lessons.every((lesson) => lesson.status === "done" && !lesson.draft)) return "مكتملة";
   if (stage.lessons.some((lesson) => lesson.status === "active" && !lesson.draft)) return "قيد التعلّم";
   if (stage.lessons.every((lesson) => lesson.draft)) return "قيد الإعداد";
-  return "قادمة";
+  if (stage.lessons.some((lesson) => lesson.status === "done" && !lesson.draft)) return "قيد التعلّم";
+  return "لم تبدأ";
 }
 
 function stageStats(stage) {

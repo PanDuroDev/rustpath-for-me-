@@ -4,7 +4,7 @@ stage: 1
 slug: terminal-and-paths
 title: Terminal والملفات والمجلدات والمسارات
 summary: تعلّم استخدام الطرفية والتنقل بين المجلدات وفهم الملفات والامتدادات والمسارات.
-status: active
+status: upcoming
 kind: lesson
 minutes: 30
 objectives:
@@ -168,7 +168,7 @@ rows: 6
 :::quiz
 id: terminal-check
 title: اختبر فهمك
-description: خمسة أسئلة قصيرة تتأكد من فهمك للطرفية والمسارات.
+description: خمسة أسئلة قصيرة وسؤال كتابي تتأكد من فهمك للطرفية والمسارات.
 pass: 70
 :::
 
