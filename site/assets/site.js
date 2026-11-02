@@ -182,4 +182,157 @@
       if (localStorage.getItem(`rustpath:done:${row.dataset.slug}`)) row.classList.add("is-done-local");
     } catch (_) {}
   });
+
+  // In-browser PowerShell simulation for lesson examples (no backend, no install).
+  const shell = (() => {
+    const home = ["C:", "Users", "Learner"];
+    const entries = new Map([
+      [home.join("\\"), "dir"],
+      [[...home, "Project Files"].join("\\"), "dir"],
+      [[...home, "main.rs"].join("\\"), "file"],
+    ]);
+    let cwd = [...home];
+    const here = () => cwd.join("\\");
+    const children = () =>
+      [...entries.keys()]
+        .filter((item) => item.startsWith(`${here()}\\`) && !item.slice(here().length + 1).includes("\\"))
+        .map((item) => item.split("\\").pop() + (entries.get(item) === "dir" ? "\\" : ""));
+    const resolve = (raw) => {
+      const clean = raw.replace(/^["']|["']$/g, "");
+      const next = /^[A-Za-z]:|^[\\/]/.test(clean) ? [] : [...cwd];
+      for (const part of clean.split(/[\\/]+/).filter(Boolean)) {
+        if (part === "..") next.pop();
+        else if (part !== ".") next.push(part);
+      }
+      return next;
+    };
+    const pathOf = (...names) => [...names].join("\\");
+
+    const run = (script) => {
+      const out = [];
+      for (const raw of script.split(/\r?\n/)) {
+        const line = raw.trim();
+        if (!line || line.startsWith("#")) continue;
+        const [name, ...rest] = line.split(/\s+/);
+        const arg = rest.join(" ");
+        switch (name.toLowerCase()) {
+          case "get-location":
+            out.push(here());
+            break;
+          case "set-location":
+          case "cd":
+          case "sl": {
+            const target = resolve(arg);
+            if (entries.get(target.join("\\")) === "dir") cwd = target;
+            else if (arg.startsWith("..")) { /* sandbox root: stay put */ }
+            else out.push(`Set-Location: لا يوجد مسار بهذا الاسم: ${arg}`);
+            break;
+          }
+          case "get-childitem":
+          case "ls":
+          case "dir": {
+            const items = children();
+            if (items.length) out.push(items.join("\n"));
+            break;
+          }
+          case "mkdir":
+          case "md": {
+            if (!arg) {
+              out.push("mkdir: يجب تحديد اسم المجلد.");
+              break;
+            }
+            entries.set(pathOf(...cwd, arg), "dir");
+            out.push(`    Directory: ${here()}\n\nMode  Name\n----  ----\nd---- ${arg}`);
+            break;
+          }
+          case "new-item": {
+            const found = arg.match(/-Name\s+("?)([^"\s]+)\1/i);
+            const fileName = found ? found[2] : "";
+            if (!fileName) {
+              out.push("New-Item: يجب تحديد -Name.");
+              break;
+            }
+            entries.set(pathOf(...cwd, fileName), "file");
+            out.push(`    Directory: ${here()}\n\nMode  Name\n----  ----\n-a--- ${fileName}`);
+            break;
+          }
+          case "rustc": {
+            const file = arg.split(/\s+/)[0];
+            if (!file || entries.get(pathOf(...cwd, file)) !== "file") {
+              out.push(`error: couldn't read ${file || "main.rs"}: No such file or directory`);
+              break;
+            }
+            entries.set(pathOf(...cwd, file.replace(/\.rs$/, "") + ".exe"), "file");
+            break;
+          }
+          case "write-output":
+          case "echo":
+            out.push(arg);
+            break;
+          default:
+            if (/^\.\\[\w.-]+\.exe$/.test(name) && entries.get(pathOf(...cwd, name.slice(2))) === "file") {
+              out.push("Hello, world!");
+            } else {
+              out.push(`الأمر غير مدعوم في المحاكاة: ${name}`);
+            }
+        }
+      }
+      return out.join("\n").trim();
+    };
+
+    return { run };
+  })();
+
+  const runRust = async (code) => {
+    const response = await fetch("https://play.rust-lang.org/execute", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        channel: "stable",
+        mode: "debug",
+        edition: "2021",
+        crateType: "bin",
+        tests: false,
+        code,
+        backtrace: false,
+      }),
+    });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const result = await response.json();
+    if (!result.success) return { ok: false, text: (result.stderr || "").trim() || "فشل التنفيذ." };
+    return { ok: true, text: (result.stdout || "").trim() };
+  };
+
+  document.querySelectorAll("[data-run]").forEach((button) => {
+    button.addEventListener("click", async () => {
+      const block = button.closest(".code-block");
+      const code = block.querySelector("pre code").textContent;
+      const label = button.querySelector(".run-label");
+      const original = label.textContent;
+      let output = block.querySelector(".code-output");
+      if (!output) {
+        output = document.createElement("div");
+        output.className = "code-output";
+        output.setAttribute("role", "status");
+        output.innerHTML = '<pre dir="ltr"></pre>';
+        block.append(output);
+      }
+      const pre = output.querySelector("pre");
+      label.textContent = "جارٍ التنفيذ…";
+      button.disabled = true;
+      output.dataset.state = "pending";
+      pre.textContent = "…";
+      try {
+        const result = block.dataset.runner === "rust" ? await runRust(code) : { ok: true, text: shell.run(code) };
+        pre.textContent = result.text || "(لا يوجد ناتج)";
+        output.dataset.state = result.ok ? "ok" : "error";
+      } catch (_) {
+        pre.textContent = "تعذر تنفيذ الكود. تحقق من الاتصال ثم حاول مرة أخرى.";
+        output.dataset.state = "error";
+      } finally {
+        label.textContent = original;
+        button.disabled = false;
+      }
+    });
+  });
 })();

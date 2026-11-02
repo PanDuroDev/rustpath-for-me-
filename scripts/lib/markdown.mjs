@@ -345,8 +345,12 @@ function renderBlocks(lines, options = {}) {
         i += 1;
       }
       if (i < lines.length) i += 1;
+      const runner = language === "rust" ? "rust" : language === "powershell" ? "powershell" : "";
+      const runButton = runner
+        ? `<button class="run-code" type="button" data-run><iconify-icon class="run-icon" icon="mingcute:play-fill" aria-hidden="true"></iconify-icon><span class="run-label">${runner === "rust" ? "تشغيل" : "تشغيل المحاكاة"}</span></button>`
+        : "";
       html.push(
-        `<div class="code-block"><div class="code-head"><span class="code-lang">${escapeHtml(language || "code")}</span>${title ? `<span class="code-title" dir="ltr">${escapeHtml(title)}</span>` : ""}<button class="copy-code" type="button" data-copy><iconify-icon class="copy-icon" icon="mingcute:copy-2-fill" aria-hidden="true"></iconify-icon><span class="copy-label" aria-live="polite">نسخ</span></button></div><pre dir="ltr"><code${language ? ` class="language-${escapeHtml(language)}"` : ""}>${escapeHtml(code.join("\n"))}</code></pre></div>`,
+        `<div class="code-block"${runner ? ` data-runner="${runner}"` : ""}><div class="code-head"><span class="code-lang">${escapeHtml(language || "code")}</span>${title ? `<span class="code-title" dir="ltr">${escapeHtml(title)}</span>` : ""}${runButton}<button class="copy-code" type="button" data-copy><iconify-icon class="copy-icon" icon="mingcute:copy-2-fill" aria-hidden="true"></iconify-icon><span class="copy-label" aria-live="polite">نسخ</span></button></div><pre dir="ltr"><code${language ? ` class="language-${escapeHtml(language)}"` : ""}>${escapeHtml(code.join("\n"))}</code></pre></div>`,
       );
       continue;
     }

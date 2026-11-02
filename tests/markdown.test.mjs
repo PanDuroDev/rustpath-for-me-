@@ -240,3 +240,9 @@ explanation: توضيح
 :::`);
   assert.match(result.html, /class="quiz-feedback-item" role="status"/);
 });
+
+test("runnable code fences get a run control", () => {
+  assert.match(renderMarkdown("```rust\nfn main() {}\n```").html, /data-runner="rust"/);
+  assert.match(renderMarkdown("```powershell\nGet-Location\n```").html, /data-runner="powershell"/);
+  assert.doesNotMatch(renderMarkdown("```bash\necho hi\n```").html, /data-runner/);
+});
