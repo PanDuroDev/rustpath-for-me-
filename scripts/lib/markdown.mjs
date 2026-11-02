@@ -345,7 +345,7 @@ function renderBlocks(lines, options = {}) {
         i += 1;
       }
       if (i < lines.length) i += 1;
-      const runner = language === "rust" ? "rust" : language === "powershell" ? "powershell" : "";
+      const runner = language === "rust" ? "rust" : "";
       const runButton = runner
         ? `<button class="run-code" type="button" data-run><iconify-icon class="run-icon" icon="mingcute:play-fill" aria-hidden="true"></iconify-icon><span class="run-label">${runner === "rust" ? "تشغيل" : "تشغيل المحاكاة"}</span></button>`
         : "";
