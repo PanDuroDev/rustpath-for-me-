@@ -74,7 +74,7 @@ button {
   min-height: 40px;
 }
 
-:where(a, button, [tabindex="0"]):focus-visible {
+:where(a, button, summary, [tabindex="0"]):focus-visible {
   outline: 2px solid var(--text);
   outline-offset: 3px;
 }
