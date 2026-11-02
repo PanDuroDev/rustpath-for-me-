@@ -54,11 +54,6 @@ host.scrollTop=host.scrollHeight;$("terminal-welcome").textContent=t("terminalWe
 const s=$("challenge-status");s.textContent=challengeDone()?tr(lesson.simulator.completed):tr(lesson.simulator.incomplete);s.dataset.state=challengeDone()?"complete":"pending";
 }
 function sendCommand(raw){const result=runCommand(raw);if(result.clear)state.history=[];else state.history.push({command:raw,output:result.output||"",error:Boolean(result.error),path:state.currentPath.join("\\")||"."});renderTerminal();updateCompletion();save();$("terminal-input").focus();}
-function replayTerminalHistory(){
-const commands=state.history.map(entry=>entry.command);
-const fresh=initial();state.fs=fresh.fs;state.currentPath=[];state.history=[];state.lastListedPath=null;
-commands.forEach(command=>{const result=runCommand(command);if(result.clear){state.history=[];return;}state.history.push({command,output:result.output||"",error:Boolean(result.error),path:state.currentPath.join("\\\\")||"."});});
-}
 function renderObjectives(){const host=$("objectives-list");host.replaceChildren();lesson.objectives.forEach(x=>host.append(make("li","",tr(x))));}
 function renderSections(){
 const host=$("lesson-sections");host.replaceChildren();lesson.sections.forEach(section=>{const card=make("article","lesson-card");card.append(make("h3","",tr(section.title)));section.paragraphs.forEach(p=>card.append(make("p","",tr(p))));
@@ -95,7 +90,7 @@ let score=0;lesson.quiz.forEach(q=>{if(state.answers[q.id]===q.answer)score++;})
 function applyLanguage(next,persist=false){
 lang=next==="en"?"en":"ar";root.lang=lang;root.dir=lang==="en"?"ltr":"rtl";document.querySelectorAll("[data-i18n]").forEach(n=>{const k=n.dataset.i18n;if(ui[lang][k])n.textContent=ui[lang][k];});
 $("language-toggle").textContent=lang==="ar"?"English":"العربية";$("theme-toggle").textContent=root.dataset.theme==="light"?(lang==="ar"?"الوضع الداكن":"Dark mode"):(lang==="ar"?"الوضع الفاتح":"Light mode");
-if(lesson&&state){$("lesson-title").textContent=tr(lesson.title);$("lesson-intro").textContent=tr(lesson.intro);renderObjectives();renderSections();replayTerminalHistory();renderChallenge();renderQuiz();renderTerminal();updateCompletion();save();}
+if(lesson&&state){$("lesson-title").textContent=tr(lesson.title);$("lesson-intro").textContent=tr(lesson.intro);renderObjectives();renderSections();renderChallenge();renderQuiz();renderTerminal();updateCompletion();}
 if(persist)try{localStorage.setItem("rustpath-language",lang);}catch(_){}
 }
 function applyTheme(next,persist=false){root.dataset.theme=next==="light"?"light":"dark";const meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.content=root.dataset.theme==="light"?"#fff":"#090909";$("theme-toggle").textContent=root.dataset.theme==="light"?(lang==="ar"?"الوضع الداكن":"Dark mode"):(lang==="ar"?"الوضع الفاتح":"Light mode");if(persist)try{localStorage.setItem("rustpath-theme",root.dataset.theme);}catch(_){}}
