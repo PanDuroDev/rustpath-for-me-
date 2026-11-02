@@ -839,6 +839,21 @@
     width: 100%;
     text-align: center;
   }
+
+  .quiz-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .quiz-actions .primary-link,
+  .quiz-actions .secondary-action {
+    width: 100%;
+    text-align: center;
+  }
+
+  .lesson-topline {
+    flex-wrap: wrap;
+  }
 }
 
 @media (max-width: 600px) {
@@ -1276,6 +1291,12 @@
   .callout,
   .lesson-toc {
     padding: var(--s3) var(--s4);
+  }
+
+  .search-results a {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: var(--s1);
   }
 
   .code-head {
