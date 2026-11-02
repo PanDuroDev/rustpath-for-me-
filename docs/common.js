@@ -11,7 +11,7 @@
   const strings = {
     ar: {
       skip:"انتقل إلى المحتوى",nav:"روابط رئيسية",light:"الوضع الفاتح",dark:"الوضع الداكن",
-      dashboard:"لوحة التعلّم",progress:"سجل التقدم",roadmap:"خطة التعلّم",repository:"المستودع",
+      dashboard:"لوحة التعلّم",progress:"سجل التقدم",roadmap:"خطة التعلّم",learning:"مساحة التعلّم",openLesson:"ابدأ التعلّم داخل الصفحة",repository:"المستودع",
       heroEyebrow:"منهج تعلّم من الصفر",heroTitleOne:"اكتب أقل تخميناً.",heroTitleTwo:"وافهم أكثر.",
       heroLead:"رحلة منظّمة لتعلّم Rust، تبدأ من فهم البرمجة نفسها وتنتهي ببناء مشاريع حقيقية. لا قفز فوق الأساسيات، ولا يُعتبر الدرس مكتملاً قبل إثبات فهمه.",
       continue:"تابع من حيث توقفت",loadError:"تعذر تحميل خطة التقدم من progress.json. تحقق من اتصالك ثم أعد تحميل الصفحة، أو افتح",
@@ -44,7 +44,7 @@
     },
     en: {
       skip:"Skip to content",nav:"Main navigation",light:"Light mode",dark:"Dark mode",
-      dashboard:"Dashboard",progress:"Progress log",roadmap:"Learning plan",repository:"Repository",
+      dashboard:"Dashboard",progress:"Progress log",roadmap:"Learning plan",learning:"Learning space",openLesson:"Open the in-page lesson",repository:"Repository",
       heroEyebrow:"A beginner-friendly learning path",heroTitleOne:"Guess less.",heroTitleTwo:"Understand more.",
       heroLead:"A structured journey through Rust, starting with programming fundamentals and ending with practical projects. No skipped foundations, and no lesson is complete without demonstrated understanding.",
       continue:"Continue where you left off",loadError:"The learning plan could not be loaded from progress.json. Check your connection and reload the page, or open",
@@ -139,6 +139,7 @@
       setSpanText(".repo-link", t("repository"));
       if (navLinks[0]) setSpanText(".top-actions .nav-link:nth-of-type(1)", t("progress"));
       if (navLinks[1]) setSpanText(".top-actions .nav-link:nth-of-type(2)", t("roadmap"));
+      if (navLinks[2]) setSpanText(".top-actions .nav-link:nth-of-type(3)", t("learning"));
       setLastTextNode(".hero .eyebrow", t("heroEyebrow"));
       const heading = document.querySelector(".hero h1");
       if (heading) {

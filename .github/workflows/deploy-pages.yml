@@ -6,12 +6,14 @@ on:
       - main
     paths:
       - "docs/**"
+      - "lessons/**"
       - "LEARNING_PROGRESS.md"
       - "scripts/**"
       - ".github/workflows/deploy-pages.yml"
   pull_request:
     paths:
       - "docs/**"
+      - "lessons/**"
       - "LEARNING_PROGRESS.md"
       - "scripts/**"
       - ".github/workflows/deploy-pages.yml"
@@ -34,9 +36,13 @@ jobs:
           node --check docs/app.js
           node --check docs/common.js
           node --check docs/progress.js
+          node --check docs/lesson.js
           node --check scripts/validate-progress.mjs
+          node --check scripts/validate-lessons.mjs
       - name: Validate progress data
         run: node scripts/validate-progress.mjs
+      - name: Validate interactive lesson
+        run: node scripts/validate-lessons.mjs
 
   deploy:
     if: github.event_name != 'pull_request'
@@ -56,9 +62,10 @@ jobs:
         uses: actions/configure-pages@v5
       - name: Prepare site
         run: |
-          mkdir -p _site
+          mkdir -p _site _site/lessons
           cp -R docs/. _site/
           cp LEARNING_PROGRESS.md _site/LEARNING_PROGRESS.md
+          cp -R lessons/. _site/lessons/
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:

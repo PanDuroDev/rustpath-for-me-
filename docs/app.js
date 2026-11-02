@@ -73,6 +73,9 @@
     copy.append(element("p", "", localize(activeItem, "desc")));
     const remaining = localize(activeItem, "remaining");
     if (remaining) copy.append(element("p", "current-meta", t("remaining") + ": " + remaining));
+    const lessonLink = element("a", "lesson-open-link", t("openLesson"));
+    lessonLink.href = "./lesson.html?lesson=" + activeItem.id;
+    copy.append(lessonLink);
     main.append(number, copy);
 
     const panel = element("div", "progress-panel");

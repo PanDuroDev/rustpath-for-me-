@@ -1029,3 +1029,8 @@ button {
     transition-duration: 0.01ms !important;
   }
 }
+
+
+/* In-page learning entry point */
+.lesson-open-link{min-height:42px;display:inline-flex;align-items:center;justify-content:center;width:fit-content;margin-block-start:14px;padding:8px 14px;border:1px solid var(--accent);background:var(--accent);color:var(--accent-contrast);font-size:.875rem;font-weight:700}
+.lesson-open-link:hover{opacity:.86}
