@@ -205,7 +205,6 @@
       title.append(element("h3", "", localize(phase, "title")));
       const statusCode = phase.items.every((item) => item.status === "done") ? "done" : phase.items.some((item) => item.status === "active") ? "active" : "upcoming";
       heading.append(title, element("span", "phase-status phase-" + statusCode, phaseStatus(phase)));
-      if (phase.id === currentPhaseId && expandedPhaseIds.size === 0) expandedPhaseIds.add(currentPhaseId);
       const expanded = expandedPhaseIds.has(phase.id);
       const controlId = "phase-items-" + phase.id;
       const toggle = element("button", "phase-expand", expanded ? t("hideTopics") : t("showTopics"));
@@ -281,6 +280,7 @@
       const currentPhase = progressData.phases.find((phase) => phase.items.some((item) => item.status === "active"));
       if (!currentPhase || !currentPhase.items.some((item) => item.status === "active")) throw new Error("No active curriculum item was found.");
       selectedPhaseId = currentPhase.id;
+      expandedPhaseIds.add(currentPhase.id);
       bindGlobalExpand();
       renderAll();
     } catch (error) {

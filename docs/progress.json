@@ -292,10 +292,10 @@
           "id": 28,
           "kind": "project",
           "title": "مشروع: مدير مهام في الطرفية",
-          "desc": "أنشئ مدير مهام يحفظ المهام ويتيح إضافتها وعرضها وتحديثها وحذفها.",
+          "desc": "أنشئ مدير مهام يحتفظ بقائمة داخل الذاكرة ويتيح إضافة المهام وعرضها وتحديثها وحذفها أثناء تشغيل البرنامج.",
           "status": "upcoming",
           "title_en": "Project: terminal task manager",
-          "desc_en": "Build a task manager that can add, list, update, and delete saved tasks."
+          "desc_en": "Build a task manager that keeps an in-memory task list and can add, list, update, and delete tasks during the program run."
         }
       ],
       "title_en": "Core Rust concepts",

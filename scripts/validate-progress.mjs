@@ -140,14 +140,18 @@ for (const line of markdown.split(/\r?\n/)) {
 if (curriculumCheckboxes.length !== items.length) {
   fail("عدد عناصر checkboxes في Upcoming curriculum (" + curriculumCheckboxes.length + ") لا يطابق عدد عناصر JSON (" + items.length + ").");
 }
-for (const row of curriculumCheckboxes) {
+curriculumCheckboxes.forEach((row, index) => {
+  const expectedId = index + 1;
+  if (row.id !== expectedId) {
+    fail("ترتيب checkboxes غير متسلسل: المتوقع العنصر " + expectedId + " لكن وُجد " + row.id + ".");
+  }
   const item = items.find((entry) => entry.id === row.id);
   if (!item) {
     fail("عنصر المنهج رقم " + row.id + " في checkboxes غير موجود في JSON.");
   } else if (row.checked !== (item.status === "done")) {
     fail("حالة checkbox للعنصر " + row.id + " لا تطابق status في progress.json.");
   }
-}
+});
 
 if (typeof progress.updated !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(progress.updated)) {
   fail("الحقل updated في progress.json مفقود أو ليس بصيغة YYYY-MM-DD.");
