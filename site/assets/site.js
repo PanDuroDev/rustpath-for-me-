@@ -81,4 +81,32 @@
       }, 1500);
     });
   });
+
+  if ("IntersectionObserver" in window && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    const targets = document.querySelectorAll(
+      ".stat-card, .current-card, .phase-card, .topic-item, .lesson, .lesson-prose > *, .principles, .journey-pager, .site-footer .footer-top, .site-footer .footer-bottom",
+    );
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add("is-visible");
+          observer.unobserve(entry.target);
+        });
+      },
+      { rootMargin: "0px 0px -8% 0px", threshold: 0.08 },
+    );
+    targets.forEach((element) => {
+      const index = [...element.parentElement.children].indexOf(element);
+      element.classList.add("reveal");
+      element.style.setProperty("--reveal-delay", `${Math.min(index, 4) * 60}ms`);
+      observer.observe(element);
+    });
+    // Fallback so above-the-fold content never stays hidden if the observer is late.
+    setTimeout(() => {
+      targets.forEach((element) => {
+        if (element.getBoundingClientRect().top < innerHeight) element.classList.add("is-visible");
+      });
+    }, 600);
+  }
 })();

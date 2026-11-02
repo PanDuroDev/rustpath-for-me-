@@ -1124,7 +1124,49 @@ iconify-icon {
   color: var(--text-3);
 }
 
-/* 11. Responsive layouts */
+/* 11. Entrance and scroll reveal */
+.reveal {
+  opacity: 0;
+  translate: 0 18px;
+  transition:
+    opacity 0.5s ease,
+    translate 0.5s ease;
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  translate: 0 0;
+}
+
+@keyframes page-rise {
+  from {
+    opacity: 0;
+    translate: 0 14px;
+  }
+}
+
+.hero-copy,
+.page-hero,
+.lesson-heading {
+  animation: page-rise 0.5s ease both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    translate: none;
+    transition: none;
+  }
+
+  .hero-copy,
+  .page-hero,
+  .lesson-heading {
+    animation: none;
+  }
+}
+
+/* 12. Responsive layouts */
 @media (max-width: 860px) {
   .hero {
     min-height: 0;
