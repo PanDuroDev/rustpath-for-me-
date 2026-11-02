@@ -131,6 +131,10 @@
     if (progressLabel) progressLabel.textContent = `${passed} / ${groups.length}`;
     if (progressFill) progressFill.style.width = `${groups.length ? (passed / groups.length) * 100 : 0}%`;
     const allPassed = groups.length > 0 && passed === groups.length;
+    try {
+      if (allPassed) localStorage.setItem(`rustpath:done:${slug}`, "1");
+      else localStorage.removeItem(`rustpath:done:${slug}`);
+    } catch (_) {}
     if (finish) finish.hidden = !allPassed;
     if (allPassed && finish) {
       const score = graded.filter((question) => state.results[question.dataset.qid] === "correct").length;
@@ -304,6 +308,7 @@
       if (!window.confirm("هل تريد مسح إجاباتك وملاحظاتك لهذا الدرس؟")) return;
       try {
         localStorage.removeItem(STORE);
+        localStorage.removeItem(`rustpath:done:${slug}`);
       } catch (_) {}
       window.location.reload();
     });

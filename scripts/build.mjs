@@ -172,7 +172,7 @@ function renderStageCard(stage) {
   const stats = stageStats(stage);
   const current = stage.lessons.some((lesson) => lesson.status === "active" && !lesson.draft);
   const topic = (lesson) =>
-    `<a class="topic-item" href="${lesson.url}" data-status="${statusData(lesson)}"><span class="topic-name">${pad(lesson.id)} — ${esc(lesson.title)}</span><span class="topic-status">${statusLabel(lesson)}</span></a>`;
+    `<a class="topic-item" href="${lesson.url}" data-slug="${lesson.slug}" data-status="${statusData(lesson)}"><span class="topic-name">${pad(lesson.id)} — ${esc(lesson.title)}</span><span class="topic-status">${statusLabel(lesson)}</span></a>`;
   const visible = stage.lessons.slice(0, 4);
   const rest = stage.lessons.slice(4);
   const topics = visible.map(topic).join("");
@@ -295,7 +295,7 @@ function renderLessonRow(lesson, root, details = false) {
   const meta = [lesson.minutes ? `${lesson.minutes} دقيقة` : "", count ? `${count} أسئلة` : ""].filter(Boolean).join(" · ");
   const evidence = details && lesson.evidence ? `<small class="lesson-evidence">الدليل: ${esc(lesson.evidence)}</small>` : "";
   const remaining = details && lesson.remaining ? `<small>المتبقي: ${esc(lesson.remaining)}</small>` : "";
-  return `<a class="lesson" href="${root}${lesson.url}" data-status="${statusData(lesson)}">
+  return `<a class="lesson" href="${root}${lesson.url}" data-slug="${lesson.slug}" data-status="${statusData(lesson)}">
   <span class="lesson-index">${pad(lesson.id)}</span>
   <span class="lesson-icon" aria-hidden="true">${icon(lesson.kind === "project" ? "mingcute:rocket-fill" : lesson.draft ? "mingcute:document-fill" : "mingcute:code-fill")}</span>
   <div class="lesson-copy">

@@ -784,6 +784,14 @@
   text-underline-offset: 3px;
 }
 
+/* Local quiz completion marker (independent from the official lesson status) */
+.is-done-local .lesson-title-row h3::after,
+.is-done-local .topic-name::after {
+  content: " ✓";
+  color: var(--text-2);
+  font-size: 0.875em;
+}
+
 .journey-pager {
   display: flex;
   align-items: center;

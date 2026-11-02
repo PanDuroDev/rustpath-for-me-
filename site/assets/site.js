@@ -176,4 +176,10 @@
       }, 250);
     }, { passive: true });
   }
+
+  document.querySelectorAll("[data-slug]").forEach((row) => {
+    try {
+      if (localStorage.getItem(`rustpath:done:${row.dataset.slug}`)) row.classList.add("is-done-local");
+    } catch (_) {}
+  });
 })();

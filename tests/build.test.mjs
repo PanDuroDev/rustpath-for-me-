@@ -99,6 +99,7 @@ draft: true
     assert.match(stage, /href="\.\.\/index.html#stages" aria-current="page"/);
     assert.match(index, /data-phase-toggle="phase-more-1"/);
     assert.match(index, /id="phase-more-1" hidden/);
+    assert.match(index, /data-slug="demo"/);
 
     const lesson = await readFile(path.join(outDir, "lessons", "01-demo.html"), "utf8");
     assert.match(lesson, /data-lesson-slug="demo"/);
