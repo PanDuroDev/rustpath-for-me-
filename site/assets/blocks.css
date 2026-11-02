@@ -424,7 +424,7 @@
   background: var(--bg);
   color: var(--text);
   font: inherit;
-  font-size: 0.9375rem;
+  font-size: 1rem;
   line-height: 1.9;
   resize: vertical;
   transition:
@@ -853,7 +853,7 @@
 .quiz-hint summary {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: var(--s2);
   padding: 9px 12px;
   color: var(--text-2);
@@ -882,6 +882,11 @@
 .quiz-hint summary:hover {
   background: var(--surface-2);
   color: var(--text);
+}
+
+.quiz-hint summary:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: -2px;
 }
 
 .quiz-hint p {
