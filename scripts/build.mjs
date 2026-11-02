@@ -126,6 +126,7 @@ function renderPage({ root = "", title, description, main, mainClass = "shell", 
   ${topbar(root, activeNav)}
   <main id="main" class="${mainClass}"${lessonPage ? ` data-lesson-page data-lesson-slug="${esc(lessonSlug)}"` : ""}>${main.replaceAll('src="images/', `src="${root}images/`)}</main>
   ${footer(root, mainClass)}
+  <button class="to-top" type="button" data-to-top aria-label="العودة إلى أعلى الصفحة">${icon("mingcute:arrow-up-fill")}</button>
   <script src="${root}assets/site.js" defer></script>
   ${lessonPage ? `<script src="${root}assets/lesson.js" defer></script>` : ""}
 </body>

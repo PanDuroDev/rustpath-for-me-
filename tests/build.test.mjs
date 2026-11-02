@@ -92,6 +92,7 @@ draft: true
     assert.match(index, /class="footer-top"/);
     assert.match(index, /id="lesson-search"/);
     assert.match(index, /id="lesson-search-index"/);
+    assert.match(index, /data-to-top/);
 
     const stage = await readFile(path.join(outDir, "stages", "1.html"), "utf8");
     assert.match(stage, /درس تجريبي/);

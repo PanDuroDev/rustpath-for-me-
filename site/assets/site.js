@@ -151,4 +151,29 @@
       }
     });
   }
+  const toTop = document.querySelector("[data-to-top]");
+  if (toTop) {
+    const syncToTop = () => toTop.classList.toggle("is-visible", scrollY > 600);
+    syncToTop();
+    addEventListener("scroll", syncToTop, { passive: true });
+    toTop.addEventListener("click", () => scrollTo({ top: 0 }));
+  }
+
+  const lessonPage = document.querySelector("[data-lesson-page]");
+  if (lessonPage) {
+    const positionKey = `rustpath-pos-${lessonPage.dataset.lessonSlug}`;
+    try {
+      const saved = Number(localStorage.getItem(positionKey));
+      if (saved > 300 && !location.hash) requestAnimationFrame(() => scrollTo({ top: saved }));
+    } catch (_) {}
+    let saveTimer;
+    addEventListener("scroll", () => {
+      clearTimeout(saveTimer);
+      saveTimer = setTimeout(() => {
+        try {
+          localStorage.setItem(positionKey, String(Math.round(scrollY)));
+        } catch (_) {}
+      }, 250);
+    }, { passive: true });
+  }
 })();
