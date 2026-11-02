@@ -29,6 +29,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Check JavaScript syntax
+        run: |
+          node --check docs/app.js
+          node --check docs/common.js
+          node --check docs/progress.js
+          node --check scripts/validate-progress.mjs
       - name: Validate progress data
         run: node scripts/validate-progress.mjs
 
