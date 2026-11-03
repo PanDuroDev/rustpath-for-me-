@@ -17,7 +17,10 @@ test("build generates dashboard, stage, lesson and progress pages from Markdown"
   await mkdir(lessonsDir, { recursive: true });
   await mkdir(stagesDir, { recursive: true });
   await mkdir(path.join(contentDir, "images"), { recursive: true });
-  await writeFile(path.join(contentDir, "images", "shot.png"), "png");
+  await writeFile(
+    path.join(contentDir, "images", "shot.png"),
+    Buffer.from("89504e470d0a1a0a0000000d49484452000000010000000108060000001f15c4890000000a49444154789c6360000002000154a24f5f0000000049454e44ae426082", "hex"),
+  );
 
   await writeFile(
     path.join(stagesDir, "1.md"),
@@ -93,10 +96,16 @@ draft: true
     assert.match(index, /id="lesson-search"/);
     assert.match(index, /id="lesson-search-index"/);
     assert.match(index, /data-to-top/);
+    assert.match(index, /assets\/site\.css\?v=[a-f0-9]{8}/);
+    assert.match(index, /<link rel="canonical" href="https:\/\/pandurodev\.github\.io\/rustpath-for-me-\/">/);
+    assert.match(index, /property="og:title" content="لوحة التعلّم · RustPath"/);
+    assert.match(index, /name="twitter:card" content="summary"/);
+    assert.doesNotMatch(index, /prismjs/);
 
     const stage = await readFile(path.join(outDir, "stages", "1.html"), "utf8");
     assert.match(stage, /درس تجريبي/);
     assert.match(stage, /href="\.\.\/index.html#stages" aria-current="page"/);
+    assert.doesNotMatch(stage, /prismjs/);
     assert.match(index, /data-phase-toggle="phase-more-1"/);
     assert.match(index, /id="phase-more-1" hidden/);
     assert.match(index, /data-slug="demo"/);
@@ -106,12 +115,24 @@ draft: true
     assert.match(lesson, /data-quiz-group="demo"/);
     assert.match(lesson, /data-quiz-submit/);
     assert.match(lesson, /src="\.\.\/images\/shot\.png"/);
-    assert.equal(await readFile(path.join(outDir, "images", "shot.png"), "utf8"), "png");
+    assert.match(lesson, /width="1" height="1"/);
+    assert.match(lesson, /prism-rust/);
+    assert.match(lesson, /"@type":"LearningResource"/);
+    assert.match(lesson, /property="og:type" content="article"/);
+    assert.match(await readFile(path.join(outDir, "images", "shot.png"), "hex"), /^89504e47/);
 
     const notFound = await readFile(path.join(outDir, "404.html"), "utf8");
     assert.match(notFound, /الصفحة غير موجودة/);
     assert.match(notFound, /class="not-found-actions"/);
     assert.match(notFound, /href="index.html"/);
+    assert.match(notFound, /name="robots" content="noindex"/);
+
+    const sitemap = await readFile(path.join(outDir, "sitemap.xml"), "utf8");
+    assert.match(sitemap, /<loc>https:\/\/pandurodev\.github\.io\/rustpath-for-me-\/lessons\/01-demo\.html<\/loc>/);
+    assert.match(sitemap, /<loc>https:\/\/pandurodev\.github\.io\/rustpath-for-me-\/stages\/1\.html<\/loc>/);
+
+    const robots = await readFile(path.join(outDir, "robots.txt"), "utf8");
+    assert.match(robots, /Sitemap: https:\/\/pandurodev\.github\.io\/rustpath-for-me-\/sitemap\.xml/);
 
     const progress = await readFile(path.join(outDir, "progress.html"), "utf8");
     assert.match(progress, /سجل التقدم/);

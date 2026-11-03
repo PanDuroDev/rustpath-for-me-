@@ -153,7 +153,11 @@
   }
   const toTop = document.querySelector("[data-to-top]");
   if (toTop) {
-    const syncToTop = () => toTop.classList.toggle("is-visible", scrollY > 600);
+    // Hiding near the page end avoids covering the footer on small screens.
+    const syncToTop = () => {
+      const nearEnd = scrollY + innerHeight > document.documentElement.scrollHeight - 160;
+      toTop.classList.toggle("is-visible", scrollY > 600 && !nearEnd);
+    };
     syncToTop();
     addEventListener("scroll", syncToTop, { passive: true });
     toTop.addEventListener("click", () => scrollTo({ top: 0 }));

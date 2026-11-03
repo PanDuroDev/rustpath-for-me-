@@ -1,13 +1,20 @@
-import { access, cp, mkdir, rm, writeFile } from "node:fs/promises";
+import { createHash } from "node:crypto";
+import { access, cp, mkdir, readdir, readFile, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { escapeHtml, renderInline } from "./lib/markdown.mjs";
 import { findCurrentLesson, loadContent, officialStats } from "./lib/content.mjs";
+import { imageSize } from "./lib/images.mjs";
 
 const ROOT = path.resolve(fileURLToPath(new URL("..", import.meta.url)));
 const DEFAULT_OUT = path.join(ROOT, "_site");
 const REPO = "https://github.com/PanDuroDev/rustpath-for-me-";
 const SITE = "https://pandurodev.github.io/rustpath-for-me-/";
+
+// Filled by buildSite so link tags get a content hash without threading a map through every page.
+let assetVersions = new Map();
+const assetUrl = (name) => `assets/${name}${assetVersions.has(name) ? `?v=${assetVersions.get(name)}` : ""}`;
+const hasCodeBlocks = (html) => html.includes('class="code-block"');
 
 const esc = escapeHtml;
 const pad = (id) => String(id).padStart(2, "0");
@@ -87,7 +94,22 @@ function footer(root, mainClass) {
 </footer>`;
 }
 
-function renderPage({ root = "", title, description, main, mainClass = "shell", activeNav = "", lessonPage = false, lessonSlug = "", lessonCss = false }) {
+function renderPage({
+  root = "",
+  title,
+  description,
+  main,
+  mainClass = "shell",
+  activeNav = "",
+  lessonPage = false,
+  lessonSlug = "",
+  lessonCss = false,
+  canonical = "",
+  ogType = "website",
+  jsonLd = "",
+  hasCode = false,
+  imageSizes = new Map(),
+}) {
   const themeBoot = `<script>
 (() => {
   try {
@@ -97,6 +119,29 @@ function renderPage({ root = "", title, description, main, mainClass = "shell", 
   } catch (_) {}
 })();
 </script>`;
+  const social = canonical
+    ? `  <link rel="canonical" href="${esc(canonical)}">
+  <meta property="og:type" content="${ogType}">
+  <meta property="og:site_name" content="RustPath">
+  <meta property="og:locale" content="ar_AR">
+  <meta property="og:title" content="${esc(title)} · RustPath">
+  <meta property="og:description" content="${esc(description)}">
+  <meta property="og:url" content="${esc(canonical)}">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="${esc(title)} · RustPath">
+  <meta name="twitter:description" content="${esc(description)}">`
+    : `  <meta name="robots" content="noindex">`;
+  const prism = hasCode
+    ? `  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-rust.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-powershell.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-bash.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-toml.min.js" defer></script>`
+    : "";
+  const sizedMain = main.replace(/<img src="images\/([^"]+)" /g, (match, name) => {
+    const size = imageSizes.get(name);
+    return size ? match.replace("<img ", `<img width="${size.width}" height="${size.height}" `) : match;
+  });
   return `<!doctype html>
 <html lang="ar" dir="rtl" data-theme="dark">
 <head>
@@ -106,29 +151,26 @@ function renderPage({ root = "", title, description, main, mainClass = "shell", 
   <meta name="description" content="${esc(description)}">
   <meta name="color-scheme" content="dark light">
   <meta name="theme-color" content="#090909">
-  ${themeBoot}
+${social}
+${themeBoot}
   <link rel="icon" href="${root}favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="${root}assets/site.css">
-  ${lessonCss ? `<link rel="stylesheet" href="${root}assets/lesson.css">` : ""}
-  <link rel="stylesheet" href="${root}assets/blocks.css">
+  <link rel="stylesheet" href="${root}${assetUrl("site.css")}">
+  ${lessonCss ? `<link rel="stylesheet" href="${root}${assetUrl("lesson.css")}">` : ""}
+  <link rel="stylesheet" href="${root}${assetUrl("blocks.css")}">
   <script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js" defer></script>
-  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js" defer></script>
-  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-rust.min.js" defer></script>
-  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-powershell.min.js" defer></script>
-  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-bash.min.js" defer></script>
-  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-toml.min.js" defer></script>
+${prism}${jsonLd ? `\n  <script type="application/ld+json">${jsonLd}</script>` : ""}
 </head>
 <body>
   <a class="skip-link" href="#main">تخطَّ إلى المحتوى</a>
   ${topbar(root, activeNav)}
-  <main id="main" class="${mainClass}"${lessonPage ? ` data-lesson-page data-lesson-slug="${esc(lessonSlug)}"` : ""}>${main.replaceAll('src="images/', `src="${root}images/`)}</main>
+  <main id="main" class="${mainClass}"${lessonPage ? ` data-lesson-page data-lesson-slug="${esc(lessonSlug)}"` : ""}>${sizedMain.replaceAll('src="images/', `src="${root}images/`)}</main>
   ${footer(root, mainClass)}
   <button class="to-top" type="button" data-to-top aria-label="العودة إلى أعلى الصفحة">${icon("mingcute:arrow-up-fill")}</button>
-  <script src="${root}assets/site.js" defer></script>
-  ${lessonPage ? `<script src="${root}assets/lesson.js" defer></script>` : ""}
+  <script src="${root}${assetUrl("site.js")}" defer></script>
+  ${lessonPage ? `<script src="${root}${assetUrl("lesson.js")}" defer></script>` : ""}
 </body>
 </html>`;
 }
@@ -255,10 +297,11 @@ function dashboardPage({ stages, lessons }) {
     description: lead,
     main,
     activeNav: "home",
+    canonical: SITE,
   });
 }
 
-function stagePage(stage, stages) {
+function stagePage(stage, stages, imageSizes) {
   const stats = stageStats(stage);
   const index = stages.findIndex((item) => item.id === stage.id);
   const previous = stages[index - 1];
@@ -287,6 +330,9 @@ ${stage.bodyHtml ? `<section class="lesson-content-section"><div class="lesson-p
     main,
     activeNav: "stages",
     lessonCss: true,
+    canonical: `${SITE}stages/${stage.id}.html`,
+    hasCode: hasCodeBlocks(stage.bodyHtml || ""),
+    imageSizes,
   });
 }
 
@@ -308,7 +354,7 @@ function renderLessonRow(lesson, root, details = false) {
 </a>`;
 }
 
-function lessonPage(lesson, lessons, stages) {
+function lessonPage(lesson, lessons, stages, imageSizes) {
   const stage = stages.find((item) => item.id === lesson.stage);
   const index = lessons.findIndex((item) => item.id === lesson.id);
   const previous = lessons[index - 1];
@@ -351,6 +397,16 @@ ${toc}
 </section>
 ${finish}
 ${pager}`;
+  const jsonLd = JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "LearningResource",
+    name: lesson.title,
+    description: lesson.summary,
+    url: `${SITE}${lesson.url}`,
+    inLanguage: "ar",
+    learningResourceType: "lesson",
+    isPartOf: { "@type": "Course", name: "RustPath", url: SITE },
+  }).replaceAll("<", "\\u003c");
   return renderPage({
     root: "../",
     title: `الدرس ${pad(lesson.id)}: ${lesson.title}`,
@@ -361,6 +417,11 @@ ${pager}`;
     lessonPage: true,
     lessonSlug: lesson.slug,
     lessonCss: true,
+    canonical: `${SITE}${lesson.url}`,
+    ogType: "article",
+    jsonLd,
+    hasCode: hasCodeBlocks(lesson.bodyHtml),
+    imageSizes,
   });
 }
 
@@ -384,6 +445,7 @@ ${sections}
     description: "حالة الدروس والمراحل في مسار RustPath.",
     main,
     activeNav: "progress",
+    canonical: `${SITE}progress.html`,
   });
 }
 
@@ -485,29 +547,46 @@ function llmsText(stages, lessons) {
   return lines.join("\n");
 }
 
+function sitemap(stages, lessons) {
+  const pages = ["", "progress.html", ...stages.map((stage) => `stages/${stage.id}.html`), ...lessons.map((lesson) => lesson.url)];
+  const urls = pages.map((page) => `  <url><loc>${SITE}${page}</loc></url>`).join("\n");
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`;
+}
+
+const robots = `User-agent: *\nAllow: /\nSitemap: ${SITE}sitemap.xml\n`;
+
 export async function buildSite({ outDir = DEFAULT_OUT, contentDir = path.join(ROOT, "content"), siteDir = path.join(ROOT, "site") } = {}) {
   const { stages, lessons } = await loadContent(contentDir);
+  const imagesDir = path.join(contentDir, "images");
 
   const imageRefs = new Set();
   for (const item of [...stages, ...lessons]) {
     for (const match of item.bodyHtml.matchAll(/src="images\/([^"]+)"/g)) imageRefs.add(match[1]);
   }
   const missingImages = [];
+  const imageSizes = new Map();
   for (const name of imageRefs) {
     try {
-      await access(path.join(contentDir, "images", name));
+      await access(path.join(imagesDir, name));
     } catch (_) {
       missingImages.push(`images/${name}`);
+      continue;
     }
+    const size = await imageSize(path.join(imagesDir, name));
+    if (size) imageSizes.set(name, size);
   }
   if (missingImages.length) {
     throw new Error(`missing image files:\n${missingImages.join("\n")}`);
   }
 
+  assetVersions = new Map();
+  for (const name of await readdir(path.join(siteDir, "assets"))) {
+    assetVersions.set(name, createHash("sha256").update(await readFile(path.join(siteDir, "assets", name))).digest("hex").slice(0, 8));
+  }
+
   await rm(outDir, { recursive: true, force: true });
   await mkdir(path.join(outDir, "stages"), { recursive: true });
   await mkdir(path.join(outDir, "lessons"), { recursive: true });
-  const imagesDir = path.join(contentDir, "images");
   try {
     await access(imagesDir);
     await cp(imagesDir, path.join(outDir, "images"), { recursive: true });
@@ -526,13 +605,15 @@ export async function buildSite({ outDir = DEFAULT_OUT, contentDir = path.join(R
     await writeFile(path.join(outDir, "api", "lessons", `${lesson.slug}.json`), apiLesson(lesson));
   }
   await writeFile(path.join(outDir, "llms.txt"), llmsText(stages, lessons));
+  await writeFile(path.join(outDir, "sitemap.xml"), sitemap(stages, lessons));
+  await writeFile(path.join(outDir, "robots.txt"), robots);
 
   for (const stage of stages) {
-    await writeFile(path.join(outDir, "stages", `${stage.id}.html`), stagePage(stage, stages));
+    await writeFile(path.join(outDir, "stages", `${stage.id}.html`), stagePage(stage, stages, imageSizes));
   }
 
   for (const lesson of lessons) {
-    await writeFile(path.join(outDir, lesson.url), lessonPage(lesson, lessons, stages));
+    await writeFile(path.join(outDir, lesson.url), lessonPage(lesson, lessons, stages, imageSizes));
   }
 
   return { outDir, stages, lessons };
