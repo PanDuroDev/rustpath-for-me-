@@ -115,6 +115,20 @@ draft: true
 
     const progress = await readFile(path.join(outDir, "progress.html"), "utf8");
     assert.match(progress, /سجل التقدم/);
+
+    const apiIndex = JSON.parse(await readFile(path.join(outDir, "api", "index.json"), "utf8"));
+    assert.equal(apiIndex.counts.lessons, 6);
+    assert.equal(apiIndex.access.write, "none");
+    assert.equal(apiIndex.lessons[0].slug, "demo");
+
+    const apiLesson = JSON.parse(await readFile(path.join(outDir, "api", "lessons", "demo.json"), "utf8"));
+    assert.equal(apiLesson.slug, "demo");
+    assert.equal(apiLesson.questions[0].prompt, "هل يعمل البناء؟");
+    assert.match(apiLesson.markdown, /الشرح/);
+
+    const llms = await readFile(path.join(outDir, "llms.txt"), "utf8");
+    assert.match(llms, /RustPath/);
+    assert.match(llms, /api\/index\.json/);
   } finally {
     await rm(temp, { recursive: true, force: true });
   }

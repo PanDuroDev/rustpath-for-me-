@@ -533,7 +533,7 @@ function renderSingle(fields, options, file, line) {
     .join("");
   return {
     html: `<fieldset class="quiz-question" data-qid="${escapeHtml(id)}" data-type="single" data-group="${escapeHtml(group)}" data-graded="true"><legend>${renderInline(prompt)}</legend><div class="quiz-options">${optionsHtml}</div>${hint ? `<details class="quiz-hint"><summary><iconify-icon class="hint-icon" icon="mingcute:bulb-fill" aria-hidden="true"></iconify-icon>تلميح<iconify-icon class="hint-chevron" icon="mingcute:down-fill" aria-hidden="true"></iconify-icon></summary><p>${renderInline(hint)}</p></details>` : ""}${renderFeedback(fields.explanation)}</fieldset>`,
-    meta: { id, type: "single", group, graded: true, line },
+    meta: { id, type: "single", group, graded: true, prompt, line, options: options.map((option) => ({ text: option.text, correct: option.correct })) },
   };
 }
 
@@ -554,7 +554,7 @@ function renderMultiple(fields, options, file, line) {
     .join("");
   return {
     html: `<fieldset class="quiz-question" data-qid="${escapeHtml(id)}" data-type="multiple" data-group="${escapeHtml(group)}" data-graded="true"><legend>${renderInline(prompt)}</legend><div class="quiz-options">${optionsHtml}</div>${hint ? `<details class="quiz-hint"><summary><iconify-icon class="hint-icon" icon="mingcute:bulb-fill" aria-hidden="true"></iconify-icon>تلميح<iconify-icon class="hint-chevron" icon="mingcute:down-fill" aria-hidden="true"></iconify-icon></summary><p>${renderInline(hint)}</p></details>` : ""}${renderFeedback(fields.explanation)}</fieldset>`,
-    meta: { id, type: "multiple", group, graded: true, line },
+    meta: { id, type: "multiple", group, graded: true, prompt, line, options: options.map((option) => ({ text: option.text, correct: option.correct })) },
   };
 }
 
@@ -578,7 +578,7 @@ function renderTrueFalse(fields, file, line) {
     .join("");
   return {
     html: `<fieldset class="quiz-question" data-qid="${escapeHtml(id)}" data-type="truefalse" data-group="${escapeHtml(group)}" data-graded="true"><legend>${renderInline(prompt)}</legend><div class="quiz-options">${optionsHtml}</div>${hint ? `<details class="quiz-hint"><summary><iconify-icon class="hint-icon" icon="mingcute:bulb-fill" aria-hidden="true"></iconify-icon>تلميح<iconify-icon class="hint-chevron" icon="mingcute:down-fill" aria-hidden="true"></iconify-icon></summary><p>${renderInline(hint)}</p></details>` : ""}${renderFeedback(fields.explanation)}</fieldset>`,
-    meta: { id, type: "truefalse", group, graded: true, line },
+    meta: { id, type: "truefalse", group, graded: true, prompt, answer, line },
   };
 }
 
@@ -593,7 +593,7 @@ function renderShort(fields, file, line) {
   const answersJson = escapeHtml(JSON.stringify(answers));
   return {
     html: `<fieldset class="quiz-question" data-qid="${escapeHtml(id)}" data-type="short" data-group="${escapeHtml(group)}" data-graded="true"><legend>${renderInline(prompt)}</legend><input class="short-input" type="text" autocomplete="off" placeholder="${escapeHtml(placeholder)}" data-answers="${answersJson}" data-case-sensitive="${caseSensitive}">${hint ? `<details class="quiz-hint"><summary><iconify-icon class="hint-icon" icon="mingcute:bulb-fill" aria-hidden="true"></iconify-icon>تلميح<iconify-icon class="hint-chevron" icon="mingcute:down-fill" aria-hidden="true"></iconify-icon></summary><p>${renderInline(hint)}</p></details>` : ""}${renderFeedback(fields.explanation)}</fieldset>`,
-    meta: { id, type: "short", group, graded: true, line },
+    meta: { id, type: "short", group, graded: true, prompt, answers, line },
   };
 }
 
@@ -610,7 +610,7 @@ function renderLong(fields, options, file, line) {
   const hint = fields.hint ? `<details class="quiz-hint"><summary><iconify-icon class="hint-icon" icon="mingcute:bulb-fill" aria-hidden="true"></iconify-icon>تلميح<iconify-icon class="hint-chevron" icon="mingcute:down-fill" aria-hidden="true"></iconify-icon></summary><p>${renderInline(fields.hint)}</p></details>` : "";
   return {
     html: `<fieldset class="quiz-question" data-qid="${escapeHtml(id)}" data-type="long" data-group="${escapeHtml(group)}" data-graded="false"><legend>${renderInline(prompt)}</legend><textarea class="long-input" rows="${rows}" placeholder="اكتب إجابتك هنا..."></textarea>${hint}<div class="long-actions"><button class="quiz-submit" type="button" data-reveal>اعرض الإجابة النموذجية</button></div><div class="model-answer" hidden>${model ? `<p class="model-label">إجابة نموذجية</p>${renderMarkdown(model).html}` : ""}${checksHtml}</div></fieldset>`,
-    meta: { id, type: "long", group, graded: false, line },
+    meta: { id, type: "long", group, graded: false, prompt, line },
   };
 }
 

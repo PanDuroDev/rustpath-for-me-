@@ -294,4 +294,26 @@
       }
     });
   });
+  window.RustPath = {
+    version: 1,
+    getProgress() {
+      const done = [];
+      const lessons = {};
+      try {
+        for (let index = 0; index < localStorage.length; index += 1) {
+          const key = localStorage.key(index) || "";
+          if (key.startsWith("rustpath:done:")) done.push(key.slice(15));
+          else if (key.startsWith("rustpath:lesson:")) {
+            const slug = key.slice(17);
+            try {
+              lessons[slug] = JSON.parse(localStorage.getItem(key) || "{}");
+            } catch (_) {
+              lessons[slug] = {};
+            }
+          }
+        }
+      } catch (_) {}
+      return { done, lessons };
+    },
+  };
 })();

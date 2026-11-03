@@ -392,6 +392,99 @@ function notFoundPage() {
   return renderPage({ title: "الصفحة غير موجودة", description: "هذا الرابط غير موجود في RustPath.", main, activeNav: "" });
 }
 
+const API_BASE = "https://pandurodev.github.io/rustpath-for-me-";
+
+function apiIndex(stages, lessons) {
+  return `${JSON.stringify(
+    {
+      schema: 1,
+      site: { name: "RustPath", url: API_BASE, language: "ar", direction: "rtl" },
+      access: {
+        read: "public",
+        write: "none",
+        note: "المحتوى للقراءة فقط. التقدم محلي في المتصفح ويمكن قراءته عبر window.RustPath.getProgress().",
+      },
+      counts: { stages: stages.length, lessons: lessons.length },
+      stages: stages.map((stage) => ({
+        id: stage.id,
+        title: stage.title,
+        summary: stage.summary,
+        lessonCount: stage.lessons.length,
+        url: `${API_BASE}/stages/${stage.id}.html`,
+        markdown: stage.body,
+      })),
+      lessons: lessons.map((lesson) => ({
+        id: lesson.id,
+        slug: lesson.slug,
+        title: lesson.title,
+        summary: lesson.summary,
+        status: lesson.status,
+        kind: lesson.kind,
+        draft: lesson.draft,
+        minutes: lesson.minutes,
+        stage: lesson.stage,
+        stageTitle: lesson.stageTitle,
+        url: `${API_BASE}/${lesson.url}`,
+        api: `${API_BASE}/api/lessons/${lesson.slug}.json`,
+      })),
+    },
+    null,
+    2,
+  )}\n`;
+}
+
+function apiLesson(lesson) {
+  return `${JSON.stringify(
+    {
+      schema: 1,
+      id: lesson.id,
+      slug: lesson.slug,
+      title: lesson.title,
+      summary: lesson.summary,
+      stage: lesson.stage,
+      stageTitle: lesson.stageTitle,
+      status: lesson.status,
+      kind: lesson.kind,
+      draft: lesson.draft,
+      minutes: lesson.minutes,
+      url: `${API_BASE}/${lesson.url}`,
+      objectives: lesson.objectives,
+      headings: lesson.headings,
+      markdown: lesson.body,
+      html: lesson.bodyHtml,
+      quizzes: lesson.groups,
+      questions: lesson.questions,
+    },
+    null,
+    2,
+  )}\n`;
+}
+
+function llmsText(stages, lessons) {
+  const lines = [
+    "# RustPath",
+    "",
+    "> مسار عربي منظّم لتعلّم Rust من الأساسيات إلى المشاريع، مبني من ملفات Markdown.",
+    "",
+    "المحتوى عام ومتاح للقراءة فقط. تقدم المتعلم محلي في المتصفح ولا يُخزَّن على الخادم.",
+    "",
+    "## API",
+    "",
+    `- [فهرس المنهج](${API_BASE}/api/index.json): المراحل والدروس وروابطها.`,
+    `- [API كل درس](${API_BASE}/api/lessons/): بيانات الدرس والمحتوى والأسئلة.`,
+    "",
+    "## المراحل",
+    "",
+    ...stages.map((stage) => `- [المرحلة ${stage.id}: ${stage.title}](${API_BASE}/stages/${stage.id}.html): ${stage.summary}`),
+    "",
+    "## الدروس",
+    "",
+    ...lessons.map((lesson) => `- [${String(lesson.id).padStart(2, "0")} — ${lesson.title}](${API_BASE}/${lesson.url}): ${lesson.summary}`),
+    "",
+  ];
+  return lines.join("\n");
+}
+
 export async function buildSite({ outDir = DEFAULT_OUT, contentDir = path.join(ROOT, "content"), siteDir = path.join(ROOT, "site") } = {}) {
   const { stages, lessons } = await loadContent(contentDir);
 
@@ -426,6 +519,13 @@ export async function buildSite({ outDir = DEFAULT_OUT, contentDir = path.join(R
   await writeFile(path.join(outDir, "index.html"), dashboardPage({ stages, lessons }));
   await writeFile(path.join(outDir, "progress.html"), progressPage({ stages, lessons }));
   await writeFile(path.join(outDir, "404.html"), notFoundPage());
+
+  await mkdir(path.join(outDir, "api", "lessons"), { recursive: true });
+  await writeFile(path.join(outDir, "api", "index.json"), apiIndex(stages, lessons));
+  for (const lesson of lessons) {
+    await writeFile(path.join(outDir, "api", "lessons", `${lesson.slug}.json`), apiLesson(lesson));
+  }
+  await writeFile(path.join(outDir, "llms.txt"), llmsText(stages, lessons));
 
   for (const stage of stages) {
     await writeFile(path.join(outDir, "stages", `${stage.id}.html`), stagePage(stage, stages));
