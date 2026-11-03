@@ -83,6 +83,40 @@
     });
   });
 
+  document.querySelectorAll("[data-copy-anchor]").forEach((anchor) => {
+    anchor.addEventListener("click", async () => {
+      const url = `${location.origin}${location.pathname}${anchor.hash}`;
+      try {
+        await navigator.clipboard.writeText(url);
+      } catch (_) {
+        return;
+      }
+      anchor.classList.add("is-copied");
+      clearTimeout(anchor.copyTimer);
+      anchor.copyTimer = setTimeout(() => anchor.classList.remove("is-copied"), 1500);
+    });
+  });
+
+  const toc = document.querySelector(".lesson-toc");
+  if (toc) {
+    const links = new Map();
+    toc.querySelectorAll('a[href^="#"]').forEach((link) => links.set(link.hash.slice(1), link));
+    const headings = [...links.keys()].map((id) => document.getElementById(id)).filter(Boolean);
+    if (headings.length && "IntersectionObserver" in window) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (!entry.isIntersecting) continue;
+            links.forEach((link) => link.removeAttribute("aria-current"));
+            links.get(entry.target.id)?.setAttribute("aria-current", "location");
+          }
+        },
+        { rootMargin: "0px 0px -70% 0px" },
+      );
+      headings.forEach((heading) => observer.observe(heading));
+    }
+  }
+
   if ("IntersectionObserver" in window && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
     const targets = document.querySelectorAll(
       ".stat-card, .current-card, .phase-card, .topic-item, .lesson, .lesson-prose > *, .principles, .journey-pager, .site-footer .footer-top, .site-footer .footer-bottom",

@@ -53,6 +53,13 @@ function icon(name, className = "") {
   return `<iconify-icon${className ? ` class="${className}"` : ""} icon="${name}" aria-hidden="true"></iconify-icon>`;
 }
 
+function addHeadingAnchors(html) {
+  return html.replace(/<h2 id="([^"]+)">([\s\S]*?)<\/h2>/g, (_, id, inner) => {
+    const label = inner.replace(/<[^>]+>/g, "").trim();
+    return `<h2 id="${id}">${inner}<a class="heading-anchor" href="#${id}" data-copy-anchor aria-label="نسخ رابط القسم: ${escapeHtml(label)}">${icon("mingcute:link-fill")}</a></h2>`;
+  });
+}
+
 function topbar(root, active = "") {
   const current = (name) => (active === name ? ' aria-current="page"' : "");
   return `<header class="topbar">
@@ -240,6 +247,15 @@ function renderStageCard(stage) {
 </article>`;
 }
 
+function searchBlock(lessons) {
+  const index = JSON.stringify(lessons.map((lesson) => ({ id: lesson.id, title: lesson.title, summary: lesson.summary, url: lesson.url, stage: lesson.stage, stageTitle: lesson.stageTitle }))).replaceAll("<", "\\u003c");
+  return `<div class="lesson-search">
+    <input id="lesson-search" type="search" aria-label="ابحث في الدروس" placeholder="ابحث باسم الدرس أو المرحلة…" autocomplete="off">
+    <ul class="search-results" id="search-results" aria-live="polite" hidden></ul>
+  </div>
+  <script type="application/json" id="lesson-search-index">${index}</script>`;
+}
+
 function dashboardPage({ stages, lessons }) {
   const stats = officialStats(lessons);
   const current = findCurrentLesson(lessons);
@@ -278,11 +294,7 @@ function dashboardPage({ stages, lessons }) {
     <div><p class="eyebrow"><span class="eyebrow-line"></span> المنهج</p><h2 id="stages-title">المراحل والدروس</h2><p class="section-description">افتح أي مرحلة لترى دروسها، ثم ابدأ من الدرس الذي يناسبك.</p></div>
     <span class="subtle-count">${stats.available} درسًا متاحًا</span>
   </div>
-  <div class="lesson-search">
-    <input id="lesson-search" type="search" aria-label="ابحث في الدروس" placeholder="ابحث باسم الدرس أو المرحلة…" autocomplete="off">
-    <ul class="search-results" id="search-results" aria-live="polite" hidden></ul>
-  </div>
-  <script type="application/json" id="lesson-search-index">${JSON.stringify(lessons.map((lesson) => ({ id: lesson.id, title: lesson.title, summary: lesson.summary, url: lesson.url, stage: lesson.stage, stageTitle: lesson.stageTitle }))).replaceAll("<", "\\u003c")}</script>
+  ${searchBlock(lessons)}
   <div class="roadmap-list">${stages.map(renderStageCard).join("\n")}</div>
 </section>
 
@@ -354,8 +366,7 @@ function renderLessonRow(lesson, root, details = false) {
 </a>`;
 }
 
-function lessonPage(lesson, lessons, stages, imageSizes) {
-  const stage = stages.find((item) => item.id === lesson.stage);
+function lessonPage(lesson, lessons, imageSizes) {
   const index = lessons.findIndex((item) => item.id === lesson.id);
   const previous = lessons[index - 1];
   const next = lessons[index + 1];
@@ -380,7 +391,8 @@ function lessonPage(lesson, lessons, stages, imageSizes) {
     ? `<section class="lesson-finish" id="lesson-finish" hidden><div class="finish-copy"><span class="panel-kicker">إنجاز</span><h2>أكملت اختبارات هذا الدرس</h2><p>أجبت عن الأسئلة بنجاح. يمكنك مراجعة الشرح أو الانتقال إلى الدرس التالي.</p><p class="finish-status" data-finish-status></p></div><div class="finish-actions"><button class="secondary-action" type="button" data-quiz-reset>أعد تعيين الإجابات</button><a class="primary-link" href="${next ? `../${next.url}` : "../index.html"}">${next ? "الدرس التالي" : "العودة إلى لوحة التعلّم"} ${icon("mingcute:arrow-left-fill")}</a></div></section>`
     : "";
   const pager = `<nav class="journey-pager" aria-label="التنقل بين الدروس">${previous ? `<a class="secondary-action" href="../${previous.url}">${icon("mingcute:arrow-right-fill")} السابق: ${esc(previous.title)}</a>` : "<span></span>"}${next ? `<a class="lesson-open-link" href="../${next.url}">التالي: ${esc(next.title)} ${icon("mingcute:arrow-left-fill")}</a>` : `<a class="lesson-open-link" href="../index.html">العودة إلى لوحة التعلّم ${icon("mingcute:arrow-left-fill")}</a>`}</nav>`;
-  const main = `<div class="lesson-topline"><a class="back-link" href="../stages/${lesson.stage}.html">${icon("mingcute:arrow-right-fill")} ${esc(stage ? stage.title : "المرحلة")}</a><span class="lesson-live-status">${statusLabel(lesson)}</span></div><header class="lesson-heading">
+  const breadcrumbs = `<nav class="breadcrumbs" aria-label="مسار التنقل"><a href="../index.html">الرئيسية</a><span aria-hidden="true">/</span><a href="../stages/${lesson.stage}.html">المرحلة ${lesson.stage}</a><span aria-hidden="true">/</span><span aria-current="page">${esc(lesson.title)}</span></nav>`;
+  const main = `<div class="lesson-topline">${breadcrumbs}<span class="lesson-live-status">${statusLabel(lesson)}</span></div><header class="lesson-heading">
   <span class="lesson-kicker">المرحلة ${lesson.stage} · الدرس ${pad(lesson.id)}</span>
   <h1>${esc(lesson.title)}</h1>
   <p class="lesson-intro">${esc(lesson.summary)}</p>
@@ -392,7 +404,7 @@ ${toc}
 <section class="lesson-content-section" aria-labelledby="lesson-content">
   <div class="lesson-section-heading"><div><span class="panel-kicker">الشرح والأمثلة</span><h2 id="lesson-content">محتوى الدرس</h2></div><span class="quiet-label">${lesson.headings.length ? `${lesson.headings.length} أقسام` : "درس"}</span></div>
   ${draftNotice}
-  <div class="lesson-prose">${lesson.bodyHtml}</div>
+  <div class="lesson-prose">${addHeadingAnchors(lesson.bodyHtml)}</div>
   ${quizActions}
 </section>
 ${finish}
@@ -449,8 +461,8 @@ ${sections}
   });
 }
 
-function notFoundPage() {
-  const main = `<header class="page-hero"><p class="eyebrow"><span class="eyebrow-line"></span> 404</p><h1>الصفحة غير موجودة</h1><p class="lead">الرابط الذي فتحته غير صحيح أو أن الصفحة نُقلت. يمكنك العودة إلى لوحة التعلّم أو مراجعة سجل تقدمك.</p><p class="not-found-actions"><a class="primary-link" href="index.html">العودة إلى لوحة التعلّم ${icon("mingcute:arrow-left-fill")}</a><a class="secondary-action" href="progress.html">سجل التقدم</a></p></header>`;
+function notFoundPage(lessons) {
+  const main = `<header class="page-hero"><p class="eyebrow"><span class="eyebrow-line"></span> 404</p><h1>الصفحة غير موجودة</h1><p class="lead">الرابط الذي فتحته غير صحيح أو أن الصفحة نُقلت. ابحث عن الدرس الذي تريده أو ارجع إلى لوحة التعلّم.</p>${searchBlock(lessons)}<p class="not-found-actions"><a class="primary-link" href="index.html">العودة إلى لوحة التعلّم ${icon("mingcute:arrow-left-fill")}</a><a class="secondary-action" href="progress.html">سجل التقدم</a></p></header>`;
   return renderPage({ title: "الصفحة غير موجودة", description: "هذا الرابط غير موجود في RustPath.", main, activeNav: "" });
 }
 
@@ -597,7 +609,7 @@ export async function buildSite({ outDir = DEFAULT_OUT, contentDir = path.join(R
 
   await writeFile(path.join(outDir, "index.html"), dashboardPage({ stages, lessons }));
   await writeFile(path.join(outDir, "progress.html"), progressPage({ stages, lessons }));
-  await writeFile(path.join(outDir, "404.html"), notFoundPage());
+  await writeFile(path.join(outDir, "404.html"), notFoundPage(lessons));
 
   await mkdir(path.join(outDir, "api", "lessons"), { recursive: true });
   await writeFile(path.join(outDir, "api", "index.json"), apiIndex(stages, lessons));
@@ -613,7 +625,7 @@ export async function buildSite({ outDir = DEFAULT_OUT, contentDir = path.join(R
   }
 
   for (const lesson of lessons) {
-    await writeFile(path.join(outDir, lesson.url), lessonPage(lesson, lessons, stages, imageSizes));
+    await writeFile(path.join(outDir, lesson.url), lessonPage(lesson, lessons, imageSizes));
   }
 
   return { outDir, stages, lessons };

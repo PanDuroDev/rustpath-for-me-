@@ -39,3 +39,11 @@
 @media(prefers-reduced-motion:reduce){.lesson-progress-track span{transition:none}}
 .challenge-steps li.is-complete{border-color:var(--text-3);background:var(--surface-2);color:var(--text)}
 .challenge-steps li.is-complete:after{content:"✓";float:inline-end;font-weight:700}
+/* Breadcrumbs, section anchors and scrollspy */
+.breadcrumbs{display:flex;flex-wrap:wrap;align-items:center;gap:6px;min-width:0;color:var(--text-2);font-size:.875rem}
+.breadcrumbs a{color:var(--text-2);text-decoration:underline;text-underline-offset:4px}
+.breadcrumbs a:hover{color:var(--text)}
+.breadcrumbs [aria-current]{max-width:min(52vw,420px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text)}
+.heading-anchor{display:inline-flex;align-items:center;vertical-align:middle;margin-inline-start:8px;color:var(--text-3);font-size:.8em;text-decoration:none;opacity:.5;transition:opacity .15s ease,color .15s ease}
+.heading-anchor:hover,.heading-anchor:focus-visible,.heading-anchor.is-copied{opacity:1;color:var(--text)}
+.lesson-toc a[aria-current="location"]{color:var(--text);font-weight:600}

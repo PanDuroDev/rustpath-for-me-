@@ -119,6 +119,9 @@ draft: true
     assert.match(lesson, /prism-rust/);
     assert.match(lesson, /"@type":"LearningResource"/);
     assert.match(lesson, /property="og:type" content="article"/);
+    assert.match(lesson, /class="breadcrumbs"/);
+    assert.match(lesson, /data-copy-anchor/);
+    assert.match(lesson, /class="heading-anchor"/);
     assert.match(await readFile(path.join(outDir, "images", "shot.png"), "hex"), /^89504e47/);
 
     const notFound = await readFile(path.join(outDir, "404.html"), "utf8");
@@ -126,6 +129,8 @@ draft: true
     assert.match(notFound, /class="not-found-actions"/);
     assert.match(notFound, /href="index.html"/);
     assert.match(notFound, /name="robots" content="noindex"/);
+    assert.match(notFound, /id="lesson-search"/);
+    assert.match(notFound, /id="lesson-search-index"/);
 
     const sitemap = await readFile(path.join(outDir, "sitemap.xml"), "utf8");
     assert.match(sitemap, /<loc>https:\/\/pandurodev\.github\.io\/rustpath-for-me-\/lessons\/01-demo\.html<\/loc>/);
